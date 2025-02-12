@@ -126,3 +126,4 @@ class FeneconRestSensor(CoordinatorEntity, SensorEntity):
         value = self.coordinator.data.get(self._sensor_id, None)
         _LOGGER.info(f"FEMS: Sensorwert für {self._attr_name}: {value}")
         return value
+ 

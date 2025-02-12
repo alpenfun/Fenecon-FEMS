@@ -49,3 +49,4 @@ class FeneconFEMSEntity(CoordinatorEntity):
     def __init__(self, coordinator):
         """Initialisiert das Entity mit einem Update Coordinator."""
         super().__init__(coordinator)
+ 
