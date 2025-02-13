@@ -3,10 +3,10 @@
     "name": "Fenecon FEMS",
     "version": "0.0.1",
     "documentation": "https://github.com/alpenfun/Fenecon-FEMS",
+    "issue_tracker": "https://github.com/alpenfun/Fenecon-FEMS/issues",
     "dependencies": [],
     "codeowners": ["@alpenfun"],
-    "requirements": ["pymodbus==2.5.3"],
+    "requirements": ["pymodbus==3.4.1"],
     "iot_class": "local_polling",
     "config_flow": true
-
-} 
+}
