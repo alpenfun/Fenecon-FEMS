@@ -15,15 +15,10 @@ try:
 except ImportError:
     from pymodbus.client import ModbusTcpClient
 
-
 DOMAIN = "fems"
 SCAN_INTERVAL = timedelta(seconds=30)
 
 _LOGGER = logging.getLogger(__name__)
-
-MODBUS_HOST = "192.168.11.104"
-MODBUS_PORT = 502
-REST_URL = "http://192.168.11.104:8084"
 
 DEBUG_LOGGING = True
 
@@ -31,9 +26,10 @@ _LOGGER.info("FEMS: sensor.py wurde geladen.")  # Wird diese Zeile geloggt?
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """Setzt die Sensoren für die Fenecon-FEMS-Integration ein."""
-    _LOGGER.info("FEMS: async_setup_entry wurde aufgerufen.")  # Wird diese Zeile geloggt?
+    _LOGGER.info("FEMS: async_setup_entry wurde aufgerufen.")
 
-    coordinator = FeneconDataUpdateCoordinator(hass)
+    # Übergabe der Konfiguration an den Coordinator:
+    coordinator = FeneconDataUpdateCoordinator(hass, entry.data)
     await coordinator.async_config_entry_first_refresh()
 
     sensors = [
@@ -47,12 +43,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class FeneconDataUpdateCoordinator(DataUpdateCoordinator):
     """Koordiniert die Aktualisierung der Sensordaten."""
 
-    def __init__(self, hass: HomeAssistant):
-        """Initialisiert den Coordinator."""
-        _LOGGER.info("FEMS: DataUpdateCoordinator wird initialisiert.")  # Wird diese Zeile geloggt?
+    def __init__(self, hass: HomeAssistant, config: dict):
+        """Initialisiert den Coordinator mit den vom Benutzer eingegebenen Einstellungen."""
+        _LOGGER.info("FEMS: DataUpdateCoordinator wird initialisiert.")
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
-        self.modbus_client = ModbusTcpClient(MODBUS_HOST, port=MODBUS_PORT)
-        self.rest_url = REST_URL
+        
+        # Werte aus der Konfiguration übernehmen, mit Fallback-Werten falls nötig:
+        self.modbus_host = config.get("modbus_host", "192.168.11.104")
+        self.modbus_port = config.get("modbus_port", 502)
+        self.rest_url = config.get("rest_url", "http://192.168.11.104:8084")
+        
+        self.modbus_client = ModbusTcpClient(self.modbus_host, port=self.modbus_port)
 
     async def _async_update_data(self):
         """Holt die aktuellen Daten von Modbus und REST."""
@@ -68,20 +69,19 @@ class FeneconDataUpdateCoordinator(DataUpdateCoordinator):
                 _LOGGER.info(f"FEMS: Modbus Battery SOC Wert: {data['battery_soc']}")
             else:
                 _LOGGER.error("FEMS: Modbus-Fehler: Antwort ungültig.")
-
         except Exception as e:
             _LOGGER.error(f"FEMS: Fehler beim Abrufen der Modbus-Daten: {e}")
 
         try:
             _LOGGER.info(f"FEMS: REST-Abfrage von {self.rest_url} gestartet.")
-            response = await hass.async_add_executor_job(requests.get, self.rest_url)
+            # Hier wird self.hass verwendet:
+            response = await self.hass.async_add_executor_job(requests.get, self.rest_url)
             if response.status_code == 200:
                 json_data = response.json()
                 data["grid_power"] = json_data.get("grid_power", 0)
                 _LOGGER.info(f"FEMS: REST Grid Power Wert: {data['grid_power']}")
             else:
                 _LOGGER.error(f"FEMS: REST-Fehler: Ungültige Antwort {response.status_code}")
-
         except Exception as e:
             _LOGGER.error(f"FEMS: Fehler beim Abrufen der REST-Daten: {e}")
 
@@ -126,4 +126,3 @@ class FeneconRestSensor(CoordinatorEntity, SensorEntity):
         value = self.coordinator.data.get(self._sensor_id, None)
         _LOGGER.info(f"FEMS: Sensorwert für {self._attr_name}: {value}")
         return value
- 
