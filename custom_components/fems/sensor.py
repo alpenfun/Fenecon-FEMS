@@ -50,8 +50,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     config = entry.data
     base_url = config.get("rest_url", "http://192.168.11.104:8084")  # Standardwert
-    username = config.get("username", "")
-    password = config.get("password", "")
+    username = config.get("username", "x")
+    password = config.get("password", "user")
 
     sensors = [
         FeneconRestSensor(base_url, sensor_key, sensor_info, username, password)
@@ -80,7 +80,7 @@ class FeneconRestSensor(SensorEntity):
 
     async def async_update(self):
         """Holt die aktuellen Sensordaten von der REST-API."""
-        url = f"{self._base_url}/rest/channel/battery0/{self._sensor_info['path']}"
+        url = f"{self._base_url}/rest/channel/{self._sensor_info['path']}"
         headers = {}
         auth = None
 
