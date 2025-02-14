@@ -39,19 +39,20 @@ class FeneconOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry):
         self.config_entry = config_entry.data
 
-    async def async_step_init(self, user_input=None):
-        """Startet den Optionen-Dialog."""
-        if user_input is not None:
-            # Optionen speichern
-            return self.async_create_entry(title="", data=user_input)
+async def async_step_init(self, user_input=None):
+    """Startet den Optionen-Dialog."""
+    if user_input is not None:
+        # Optionen speichern
+        return self.async_create_entry(title="", data=user_input)
 
-        config_data = self.config_entry.options or {}
+    # Zugriff auf Optionen statt data
+    config_data = self.config_entry.options or {}
 
-        return self.async_show_form(
-            step_id="init",
-            data_schema=vol.Schema({
-                vol.Required("modbus_host", default=config_data.get("modbus_host", "")): str,
-                vol.Required("modbus_port", default=config_data.get("modbus_port", "")): int,
-                vol.Required("rest_url", default=config_data.get("rest_url", "")): str,
-            })
-        )
+    return self.async_show_form(
+        step_id="init",
+        data_schema=vol.Schema({
+            vol.Required("modbus_host", default=config_data.get("modbus_host", "")): str,
+            vol.Required("modbus_port", default=config_data.get("modbus_port", "")): int,
+            vol.Required("rest_url", default=config_data.get("rest_url", "")): str,
+        })
+    )

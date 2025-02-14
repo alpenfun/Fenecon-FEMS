@@ -124,7 +124,13 @@ class FeneconModbusSensor(SensorEntity):
     async def async_update(self):
         """Holt die aktuellen Modbus-Daten."""
         try:
-            await self._client.connect()
+            # Überprüfen, ob der Client existiert, bevor er geschlossen wird
+            if self._client:
+                await self._client.close()  # Schließt den Client, wenn er existiert
+            else:
+                _LOGGER.error("Client ist None, kann nicht geschlossen werden.")
+            
+            await self._client.connect()  # Verbindet den Client
             response = await self._client.read_holding_registers(self._sensor_info["address"], 1, slave=self._sensor_info["slave"])
             if response.isError():
                 _LOGGER.warning(f"Modbus Fehler: {response}")
@@ -133,7 +139,10 @@ class FeneconModbusSensor(SensorEntity):
         except Exception as error:
             _LOGGER.error(f"FEMS Modbus Fehler: {error}")
         finally:
-            await self._client.close()
+            if self._client:
+                await self._client.close()  # Sicherstellen, dass der Client im Finally-Block geschlossen wird
+            else:
+                _LOGGER.error("Client ist None, kann nicht geschlossen werden.")
 
     @property
     def native_value(self):
