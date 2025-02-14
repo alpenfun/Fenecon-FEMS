@@ -96,7 +96,6 @@ class FeneconRestSensor(SensorEntity):
         self._sensor_info = sensor_info
         self._state = None
         self._session = async_get_clientsession(hass)
-        # Speichere die REST-Authentifizierungsdaten:
         self._rest_username = rest_username
         self._rest_password = rest_password
 
@@ -104,7 +103,7 @@ class FeneconRestSensor(SensorEntity):
         """Holt die aktuellen REST-Daten."""
         url = f"{self._base_url}/rest/channel/{self._sensor_info['path']}"
         try:
-            # Erstelle das BasicAuth-Objekt mit den konfigurierten Werten
+            from aiohttp import BasicAuth
             auth = BasicAuth(self._rest_username, self._rest_password)
             async with async_timeout.timeout(10):
                 async with self._session.get(url, auth=auth) as response:
@@ -119,6 +118,23 @@ class FeneconRestSensor(SensorEntity):
     @property
     def native_value(self):
         return self._state
+
+    @property
+    def name(self):
+        return self._sensor_info.get("name", "FEMS Sensor")
+
+    @property
+    def unit_of_measurement(self):
+        return self._sensor_info.get("unit")
+
+    @property
+    def device_class(self):
+        return self._sensor_info.get("device_class")
+
+    @property
+    def state_class(self):
+        return self._sensor_info.get("state_class")
+
 
 
 class FeneconModbusSensor(SensorEntity):
@@ -137,9 +153,13 @@ class FeneconModbusSensor(SensorEntity):
         """Holt die aktuellen Modbus-Daten."""
         client = None
         try:
-            # Erstelle einen neuen Client für jede Aktualisierung
             client = AsyncModbusTcpClient(self._host, port=self._port)
-            await client.connect()
+            connected = await client.connect()
+            if not connected:
+                _LOGGER.error("Modbus Client konnte nicht verbunden werden.")
+                self._state = None
+                return
+
             response = await client.read_holding_registers(
                 self._sensor_info["address"], 1, slave=self._sensor_info["slave"]
             )
@@ -152,17 +172,29 @@ class FeneconModbusSensor(SensorEntity):
             _LOGGER.error(f"FEMS Modbus Fehler: {error}")
             self._state = None
         finally:
-            if client:
-                # Überprüfen, ob client.close() awaitable ist
+            if client is not None:
                 close_result = client.close()
                 if asyncio.iscoroutine(close_result):
                     await close_result
-                else:
-                    # Falls close() kein awaitable zurückgibt, einfach aufrufen
-                    close_result
             else:
                 _LOGGER.error("Client ist None, kann nicht geschlossen werden.")
 
     @property
     def native_value(self):
         return self._state
+
+    @property
+    def name(self):
+        return self._sensor_info.get("name", "FEMS Sensor")
+
+    @property
+    def unit_of_measurement(self):
+        return self._sensor_info.get("unit")
+
+    @property
+    def device_class(self):
+        return self._sensor_info.get("device_class")
+
+    @property
+    def state_class(self):
+        return self._sensor_info.get("state_class")
