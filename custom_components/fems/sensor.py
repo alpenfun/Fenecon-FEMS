@@ -4,7 +4,6 @@ import asyncio
 from datetime import timedelta
 from pymodbus.client import AsyncModbusTcpClient
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.const import UnitOfElectricPotential, UnitOfElectricCurrent
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from aiohttp import BasicAuth
 from .const import DOMAIN
@@ -12,12 +11,13 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
 
+# Verwende hier explizit Strings für die Einheiten
 SENSORS = {
     "battery_voltage": {
         "protocol": "rest",
         "path": "battery0/Tower0PackVoltage",
         "name": "FEMS Batteriespannung",
-        "unit": UnitOfElectricPotential.VOLT,
+        "unit": "V",  # statt UnitOfElectricPotential.VOLT
         "device_class": "voltage",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -26,7 +26,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Tower0NoOfCycles",
         "name": "FEMS Ladezyklen",
-        "unit": None,
+        "unit": None,  # Kein Unit, da es sich um Zyklen handelt
         "device_class": None,
         "state_class": "total_increasing",
         "multiplier": 1,
@@ -35,7 +35,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Current",
         "name": "FEMS Batteriestrom",
-        "unit": UnitOfElectricCurrent.AMPERE,
+        "unit": "A",  # statt UnitOfElectricCurrent.AMPERE
         "device_class": "current",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -45,7 +45,7 @@ SENSORS = {
         "address": 302,
         "slave": 1,
         "name": "FEMS Batterie SOH",
-        "unit": "%",
+        "unit": "%",  # Einheit für den Batteriezustand
         "device_class": "battery",
         "state_class": "measurement",
         "multiplier": 1,
@@ -67,7 +67,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     rest_url = config.get("rest_url")
     modbus_host = config.get("modbus_host")
     modbus_port = config.get("modbus_port")
-    # Neue Parameter:
+    # Neue Parameter: REST-Authentifizierung
     rest_username = config.get("rest_username")
     rest_password = config.get("rest_password")
 
@@ -82,7 +82,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
             )
         elif protocol == "modbus":
             sensors.append(
-                FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info)
+                FeneconModbusSensor(
+                    hass, modbus_host, modbus_port, sensor_key, sensor_info
+                )
             )
     async_add_entities(sensors, update_before_add=True)
 
