@@ -1,7 +1,5 @@
 import logging
-import aiohttp
 import async_timeout
-import json
 import asyncio
 from datetime import timedelta
 from pymodbus.client import AsyncModbusTcpClient
@@ -58,11 +56,11 @@ async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     _LOGGER.debug(f"Versuche, Konfiguration für entry {entry.entry_id} abzurufen.")
     config = entry.data  # Direkt die Konfiguration des Entries verwenden
-    
+
     if config is None:
         _LOGGER.error(f"Keine Konfiguration für entry {entry.entry_id} gefunden.")
         return False
-    
+
     _LOGGER.debug(f"Konfiguration für entry {entry.entry_id}: {config}")
     rest_url = config.get("rest_url")
     modbus_host = config.get("modbus_host")
@@ -76,7 +74,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         elif protocol == "modbus":
             sensors.append(FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info))
     async_add_entities(sensors, update_before_add=True)
-
 
 class FeneconRestSensor(SensorEntity):
     """Repräsentiert einen REST-Sensor für Fenecon FEMS."""
@@ -119,32 +116,29 @@ class FeneconModbusSensor(SensorEntity):
         self._sensor_key = sensor_key
         self._sensor_info = sensor_info
         self._state = None
-        self._client = AsyncModbusTcpClient(host, port=port)
 
     async def async_update(self):
         """Holt die aktuellen Modbus-Daten."""
+        client = None
         try:
-            # Überprüfen, ob der Client existiert, bevor er geschlossen wird
-            if self._client:
-                await self._client.close()  # Schließt den Client, wenn er existiert
-            else:
-                _LOGGER.error("Client ist None, kann nicht geschlossen werden.")
-            
-            await self._client.connect()  # Verbindet den Client
-            response = await self._client.read_holding_registers(self._sensor_info["address"], 1, slave=self._sensor_info["slave"])
+            # Erstelle einen neuen Client für jede Aktualisierung
+            client = AsyncModbusTcpClient(self._host, port=self._port)
+            await client.connect()
+            response = await client.read_holding_registers(self._sensor_info["address"], 1, slave=self._sensor_info["slave"])
             if response.isError():
                 _LOGGER.warning(f"Modbus Fehler: {response}")
-                return
-            self._state = response.registers[0] * self._sensor_info["multiplier"]
+                self._state = None
+            else:
+                self._state = response.registers[0] * self._sensor_info["multiplier"]
         except Exception as error:
             _LOGGER.error(f"FEMS Modbus Fehler: {error}")
+            self._state = None
         finally:
-            if self._client:
-                await self._client.close()  # Sicherstellen, dass der Client im Finally-Block geschlossen wird
+            if client:
+                await client.close()
             else:
                 _LOGGER.error("Client ist None, kann nicht geschlossen werden.")
 
     @property
     def native_value(self):
         return self._state
- 

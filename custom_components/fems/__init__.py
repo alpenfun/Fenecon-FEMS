@@ -29,7 +29,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.info("Fenecon FEMS: async_setup_entry wurde aufgerufen.")
     hass.data.setdefault(DOMAIN, {})
 
-    # Speichern der Konfiguration
+    # Speichern der Konfiguration im hass.data (falls benötigt)
     hass.data[DOMAIN][entry.entry_id] = entry.data
 
     # Listener für Änderungen an den Optionen registrieren
@@ -41,10 +41,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     
     return True
 
-
 async def async_options_update_listener(hass: HomeAssistant, entry: ConfigEntry):
     """Wird aufgerufen, wenn die Optionen im UI geändert werden."""
     _LOGGER.info("Fenecon FEMS: Optionen wurden aktualisiert, Neustart der Integration erforderlich.")
     log_debug(f"Neue Optionen: {entry.options}")
-
     await hass.config_entries.async_reload(entry.entry_id)
