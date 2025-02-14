@@ -6,14 +6,11 @@ from pymodbus.client import AsyncModbusTcpClient
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import UnitOfElectricPotential, UnitOfElectricCurrent
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from aiohttp import BasicAuth  # Import BasicAuth
+from aiohttp import BasicAuth
 from .const import DOMAIN
-
 
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
-
-
 
 SENSORS = {
     "battery_voltage": {
@@ -56,6 +53,7 @@ SENSORS = {
     },
 }
 
+
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     _LOGGER.debug(f"Versuche, Konfiguration für entry {entry.entry_id} abzurufen.")
@@ -78,10 +76,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
         protocol = sensor_info.get("protocol", "rest")
         if protocol == "rest":
             sensors.append(
-                FeneconRestSensor(hass, rest_url, sensor_key, sensor_info, rest_username, rest_password)
+                FeneconRestSensor(
+                    hass, rest_url, sensor_key, sensor_info, rest_username, rest_password
+                )
             )
         elif protocol == "modbus":
-            sensors.append(FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info))
+            sensors.append(
+                FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info)
+            )
     async_add_entities(sensors, update_before_add=True)
 
 
@@ -103,7 +105,6 @@ class FeneconRestSensor(SensorEntity):
         """Holt die aktuellen REST-Daten."""
         url = f"{self._base_url}/rest/channel/{self._sensor_info['path']}"
         try:
-            from aiohttp import BasicAuth
             auth = BasicAuth(self._rest_username, self._rest_password)
             async with async_timeout.timeout(10):
                 async with self._session.get(url, auth=auth) as response:
@@ -134,7 +135,6 @@ class FeneconRestSensor(SensorEntity):
     @property
     def state_class(self):
         return self._sensor_info.get("state_class")
-
 
 
 class FeneconModbusSensor(SensorEntity):
