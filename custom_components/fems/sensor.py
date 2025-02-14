@@ -79,7 +79,7 @@ class FeneconRestSensor(SensorEntity):
         self._multiplier = sensor_info["multiplier"]
         self._username = username
         self._password = password
-        # Verwende die HA-Session, um "Unclosed client session"-Warnungen zu vermeiden:
+        # Verwende die HA-HTTP-Session, um "Unclosed client session"-Warnungen zu vermeiden:
         self._session = async_get_clientsession(hass)
 
     async def async_update(self):
@@ -98,24 +98,34 @@ class FeneconRestSensor(SensorEntity):
                         _LOGGER.warning(f"FEMS Sensor {self._sensor_key}: Fehler {response.status} beim Abruf der Daten.")
                         self._state = None
                         return
-                    
-                    data = await response.json()
+
+                    # Versuche, die Antwort als JSON zu laden
+                    try:
+                        data = await response.json()
+                    except json.JSONDecodeError as e:
+                        text = await response.text()
+                        _LOGGER.error(f"FEMS Sensor {self._sensor_key}: JSONDecodeError: {e}. Antwort: {text}")
+                        self._state = None
+                        return
+
                     sensor_value = None
-                    # Prüfe, ob data eine Liste ist:
                     if isinstance(data, list):
                         sensor_value = next(
                             (item.get("value") for item in data if item.get("address") == self._sensor_info["path"]),
                             None
                         )
-                    # Falls data ein Dict ist:
                     elif isinstance(data, dict):
-                        # Falls der Sensorwert direkt im Dict steht:
+                        # Falls der Sensorwert direkt im Dict enthalten ist
                         if data.get("address") == self._sensor_info["path"]:
                             sensor_value = data.get("value")
                         else:
                             sensor_value = data.get("value")
+                    else:
+                        _LOGGER.error(f"FEMS Sensor {self._sensor_key}: Unerwarteter Datentyp: {type(data)}")
                     
-                    if sensor_value is not None:
+                    if sensor_value is None:
+                        _LOGGER.warning(f"FEMS Sensor {self._sensor_key}: Kein Wert in der Antwort gefunden. Rohdaten: {data}")
+                    else:
                         try:
                             sensor_value = float(sensor_value) * self._multiplier
                         except (ValueError, TypeError) as e:
@@ -123,7 +133,7 @@ class FeneconRestSensor(SensorEntity):
                             sensor_value = None
                     self._state = sensor_value
 
-        except (aiohttp.ClientError, asyncio.TimeoutError, json.JSONDecodeError) as error:
+        except (aiohttp.ClientError, asyncio.TimeoutError) as error:
             _LOGGER.error(f"FEMS Sensor {self._sensor_key}: Fehler beim Abrufen der Daten: {error}")
             self._state = None
 
