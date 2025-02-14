@@ -36,7 +36,7 @@ class FeneconOptionsFlowHandler(config_entries.OptionsFlow):
     """Options flow für Fenecon FEMS."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry):
-        self.config_entry = config_entry
+        self.config_entry = config_entry.data
 
     async def async_step_init(self, user_input=None):
         """Startet den Optionen-Dialog."""

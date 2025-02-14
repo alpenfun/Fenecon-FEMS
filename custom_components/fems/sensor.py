@@ -56,7 +56,9 @@ SENSORS = {
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
+    _LOGGER.debug(f"Versuche, Konfiguration für entry {entry.entry_id} abzurufen.")
     config = hass.data[DOMAIN][entry.entry_id]
+    if config is None: _LOGGER.error(f"Keine Konfiguration für entry {entry.entry_id} gefunden.") return False_LOGGER.debug(f"Konfiguration für entry {entry.entry_id}: {config}")
     rest_url = config.get("rest_url")
     modbus_host = config.get("modbus_host")
     modbus_port = config.get("modbus_port")
