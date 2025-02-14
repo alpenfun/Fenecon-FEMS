@@ -19,9 +19,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
-                vol.Required("modbus_host", default="192.168.11.104"): str,
-                vol.Required("modbus_port", default=502): int,
-                vol.Required("rest_url", default="http://192.168.11.104:8084"): str,
+                vol.Required("modbus_host"): str,
+                vol.Required("modbus_port"): int,
+                vol.Required("rest_url"): str,
             }),
             errors=errors
         )
@@ -48,8 +48,8 @@ class FeneconOptionsFlowHandler(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema({
-                vol.Required("modbus_host", default=config_data.get("modbus_host", "192.168.11.104")): str,
-                vol.Required("modbus_port", default=config_data.get("modbus_port", 502)): int,
-                vol.Required("rest_url", default=config_data.get("rest_url", "http://192.168.11.104:8084")): str,
+                vol.Required("modbus_host", default=config_data.get("modbus_host", "")): str,
+                vol.Required("modbus_port", default=config_data.get("modbus_port", "")): int,
+                vol.Required("rest_url", default=config_data.get("rest_url", "")): str,
             })
         )
