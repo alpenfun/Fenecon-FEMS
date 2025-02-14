@@ -9,6 +9,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from aiohttp import BasicAuth  # Import BasicAuth
 from .const import DOMAIN
 
+
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
 
@@ -68,20 +69,26 @@ async def async_setup_entry(hass, entry, async_add_entities):
     rest_url = config.get("rest_url")
     modbus_host = config.get("modbus_host")
     modbus_port = config.get("modbus_port")
+    # Neue Parameter:
+    rest_username = config.get("rest_username")
+    rest_password = config.get("rest_password")
 
     sensors = []
     for sensor_key, sensor_info in SENSORS.items():
         protocol = sensor_info.get("protocol", "rest")
         if protocol == "rest":
-            sensors.append(FeneconRestSensor(hass, rest_url, sensor_key, sensor_info))
+            sensors.append(
+                FeneconRestSensor(hass, rest_url, sensor_key, sensor_info, rest_username, rest_password)
+            )
         elif protocol == "modbus":
             sensors.append(FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info))
     async_add_entities(sensors, update_before_add=True)
 
+
 class FeneconRestSensor(SensorEntity):
     """Repräsentiert einen REST-Sensor für Fenecon FEMS."""
 
-    def __init__(self, hass, base_url, sensor_key, sensor_info):
+    def __init__(self, hass, base_url, sensor_key, sensor_info, rest_username, rest_password):
         """Initialisiert den REST-Sensor."""
         self.hass = hass
         self._base_url = base_url
@@ -89,15 +96,16 @@ class FeneconRestSensor(SensorEntity):
         self._sensor_info = sensor_info
         self._state = None
         self._session = async_get_clientsession(hass)
+        # Speichere die REST-Authentifizierungsdaten:
+        self._rest_username = rest_username
+        self._rest_password = rest_password
 
     async def async_update(self):
         """Holt die aktuellen REST-Daten."""
         url = f"{self._base_url}/rest/channel/{self._sensor_info['path']}"
-        # Hole REST-Auth-Daten aus der Konfiguration
-        rest_username = self._sensor_info.get("rest_username")
-        rest_password = self._sensor_info.get("rest_password")
-        auth = BasicAuth(rest_username, rest_password)
         try:
+            # Erstelle das BasicAuth-Objekt mit den konfigurierten Werten
+            auth = BasicAuth(self._rest_username, self._rest_password)
             async with async_timeout.timeout(10):
                 async with self._session.get(url, auth=auth) as response:
                     if response.status != 200:
@@ -111,7 +119,6 @@ class FeneconRestSensor(SensorEntity):
     @property
     def native_value(self):
         return self._state
-
 
 
 class FeneconModbusSensor(SensorEntity):
