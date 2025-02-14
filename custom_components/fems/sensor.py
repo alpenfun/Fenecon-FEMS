@@ -57,7 +57,7 @@ SENSORS = {
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     _LOGGER.debug(f"Versuche, Konfiguration für entry {entry.entry_id} abzurufen.")
-    config = hass.data[DOMAIN].get(entry.entry_id, None)
+    config = entry.data  # Direkt die Konfiguration des Entries verwenden
     
     if config is None:
         _LOGGER.error(f"Keine Konfiguration für entry {entry.entry_id} gefunden.")
@@ -76,6 +76,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
         elif protocol == "modbus":
             sensors.append(FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info))
     async_add_entities(sensors, update_before_add=True)
+
 
 class FeneconRestSensor(SensorEntity):
     """Repräsentiert einen REST-Sensor für Fenecon FEMS."""
