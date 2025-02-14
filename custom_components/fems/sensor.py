@@ -2,9 +2,11 @@ import logging
 import aiohttp
 import async_timeout
 import json
+import asyncio  # Import hinzugefügt
 from datetime import timedelta
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import UnitOfElectricPotential, UnitOfElectricCurrent
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,12 +51,12 @@ SENSORS = {
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     config = entry.data
-    base_url = config.get("rest_url", "http://192.168.11.104:8084")  # Standardwert
+    base_url = config.get("rest_url", "http://192.168.11.104:8084")
     username = config.get("username", "x")
     password = config.get("password", "user")
 
     sensors = [
-        FeneconRestSensor(base_url, sensor_key, sensor_info, username, password)
+        FeneconRestSensor(hass, base_url, sensor_key, sensor_info, username, password)
         for sensor_key, sensor_info in SENSORS.items()
     ]
     async_add_entities(sensors, update_before_add=True)
@@ -62,8 +64,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class FeneconRestSensor(SensorEntity):
     """Repräsentiert einen REST-Sensor für Fenecon FEMS."""
 
-    def __init__(self, base_url, sensor_key, sensor_info, username, password):
+    def __init__(self, hass, base_url, sensor_key, sensor_info, username, password):
         """Initialisiert den Sensor."""
+        self.hass = hass
         self._base_url = base_url
         self._sensor_key = sensor_key
         self._sensor_info = sensor_info
@@ -76,7 +79,8 @@ class FeneconRestSensor(SensorEntity):
         self._multiplier = sensor_info["multiplier"]
         self._username = username
         self._password = password
-        self._session = aiohttp.ClientSession()
+        # Verwende die HA-Session, um "Unclosed client session"-Warnungen zu vermeiden:
+        self._session = async_get_clientsession(hass)
 
     async def async_update(self):
         """Holt die aktuellen Sensordaten von der REST-API."""
@@ -92,16 +96,32 @@ class FeneconRestSensor(SensorEntity):
                 async with self._session.get(url, headers=headers, auth=auth) as response:
                     if response.status != 200:
                         _LOGGER.warning(f"FEMS Sensor {self._sensor_key}: Fehler {response.status} beim Abruf der Daten.")
+                        self._state = None
                         return
                     
                     data = await response.json()
-                    self._state = next(
-                        (item["value"] for item in data if item["address"] == self._sensor_info["path"]), 
-                        None
-                    )
+                    sensor_value = None
+                    # Prüfe, ob data eine Liste ist:
+                    if isinstance(data, list):
+                        sensor_value = next(
+                            (item.get("value") for item in data if item.get("address") == self._sensor_info["path"]),
+                            None
+                        )
+                    # Falls data ein Dict ist:
+                    elif isinstance(data, dict):
+                        # Falls der Sensorwert direkt im Dict steht:
+                        if data.get("address") == self._sensor_info["path"]:
+                            sensor_value = data.get("value")
+                        else:
+                            sensor_value = data.get("value")
                     
-                    if self._state is not None:
-                        self._state *= self._multiplier
+                    if sensor_value is not None:
+                        try:
+                            sensor_value = float(sensor_value) * self._multiplier
+                        except (ValueError, TypeError) as e:
+                            _LOGGER.error(f"FEMS Sensor {self._sensor_key}: Fehler beim Konvertieren des Wertes: {e}")
+                            sensor_value = None
+                    self._state = sensor_value
 
         except (aiohttp.ClientError, asyncio.TimeoutError, json.JSONDecodeError) as error:
             _LOGGER.error(f"FEMS Sensor {self._sensor_key}: Fehler beim Abrufen der Daten: {error}")
