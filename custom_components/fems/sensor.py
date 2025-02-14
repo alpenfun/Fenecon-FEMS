@@ -147,3 +147,4 @@ class FeneconModbusSensor(SensorEntity):
     @property
     def native_value(self):
         return self._state
+ 
