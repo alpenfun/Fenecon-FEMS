@@ -42,7 +42,8 @@ class FeneconOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        config_data = self.config_entry.options or {}
+        # Falls noch keine Optionen gesetzt wurden, verwende die Werte aus entry.data
+        config_data = dict(self.config_entry.options) if self.config_entry.options else dict(self.config_entry.data)
 
         return self.async_show_form(
             step_id="init",

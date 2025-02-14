@@ -1,6 +1,6 @@
+import asyncio
 import logging
 import async_timeout
-import asyncio
 from datetime import timedelta
 from pymodbus.client import AsyncModbusTcpClient
 from homeassistant.components.sensor import SensorEntity
@@ -10,6 +10,8 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
+
+
 
 SENSORS = {
     "battery_voltage": {
@@ -105,6 +107,7 @@ class FeneconRestSensor(SensorEntity):
     def native_value(self):
         return self._state
 
+
 class FeneconModbusSensor(SensorEntity):
     """Repräsentiert einen Modbus-Sensor für Fenecon FEMS."""
 
@@ -124,7 +127,9 @@ class FeneconModbusSensor(SensorEntity):
             # Erstelle einen neuen Client für jede Aktualisierung
             client = AsyncModbusTcpClient(self._host, port=self._port)
             await client.connect()
-            response = await client.read_holding_registers(self._sensor_info["address"], 1, slave=self._sensor_info["slave"])
+            response = await client.read_holding_registers(
+                self._sensor_info["address"], 1, slave=self._sensor_info["slave"]
+            )
             if response.isError():
                 _LOGGER.warning(f"Modbus Fehler: {response}")
                 self._state = None
@@ -135,7 +140,13 @@ class FeneconModbusSensor(SensorEntity):
             self._state = None
         finally:
             if client:
-                await client.close()
+                # Überprüfen, ob client.close() awaitable ist
+                close_result = client.close()
+                if asyncio.iscoroutine(close_result):
+                    await close_result
+                else:
+                    # Falls close() kein awaitable zurückgibt, einfach aufrufen
+                    close_result
             else:
                 _LOGGER.error("Client ist None, kann nicht geschlossen werden.")
 
