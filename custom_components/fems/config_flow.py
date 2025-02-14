@@ -10,17 +10,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         """Einstiegspunkt für die UI-Konfiguration."""
         errors = {}
-
         if user_input is not None:
             # Speichern der Konfiguration
             return self.async_create_entry(title="Fenecon FEMS", data=user_input)
-
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({
                 vol.Required("modbus_host"): str,
                 vol.Required("modbus_port"): int,
                 vol.Required("rest_url"): str,
+                vol.Required("rest_username"): str,
+                vol.Required("rest_password"): str,
             }),
             errors=errors
         )
@@ -41,9 +41,9 @@ class FeneconOptionsFlowHandler(config_entries.OptionsFlow):
         """Startet den Optionen-Dialog."""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
-
-        # Falls noch keine Optionen gesetzt wurden, verwende die Werte aus entry.data
-        config_data = dict(self.config_entry.options) if self.config_entry.options else dict(self.config_entry.data)
+        
+        # Falls noch keine Optionen gesetzt sind, nutze die ursprünglichen Daten
+        config_data = self.config_entry.options if self.config_entry.options else self.config_entry.data
 
         return self.async_show_form(
             step_id="init",
@@ -51,5 +51,7 @@ class FeneconOptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required("modbus_host", default=config_data.get("modbus_host", "")): str,
                 vol.Required("modbus_port", default=config_data.get("modbus_port", "")): int,
                 vol.Required("rest_url", default=config_data.get("rest_url", "")): str,
+                vol.Required("rest_username", default=config_data.get("rest_username", "")): str,
+                vol.Required("rest_password", default=config_data.get("rest_password", "")): str,
             })
         )

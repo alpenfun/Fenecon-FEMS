@@ -1,11 +1,12 @@
-import asyncio
 import logging
 import async_timeout
+import asyncio
 from datetime import timedelta
 from pymodbus.client import AsyncModbusTcpClient
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.const import UnitOfElectricPotential, UnitOfElectricCurrent
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from aiohttp import BasicAuth  # Import BasicAuth
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -92,9 +93,13 @@ class FeneconRestSensor(SensorEntity):
     async def async_update(self):
         """Holt die aktuellen REST-Daten."""
         url = f"{self._base_url}/rest/channel/{self._sensor_info['path']}"
+        # Hole REST-Auth-Daten aus der Konfiguration
+        rest_username = self._sensor_info.get("rest_username")
+        rest_password = self._sensor_info.get("rest_password")
+        auth = BasicAuth(rest_username, rest_password)
         try:
             async with async_timeout.timeout(10):
-                async with self._session.get(url) as response:
+                async with self._session.get(url, auth=auth) as response:
                     if response.status != 200:
                         _LOGGER.warning(f"FEMS Sensor {self._sensor_key}: Fehler {response.status}")
                         return
@@ -106,6 +111,7 @@ class FeneconRestSensor(SensorEntity):
     @property
     def native_value(self):
         return self._state
+
 
 
 class FeneconModbusSensor(SensorEntity):
