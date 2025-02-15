@@ -11,7 +11,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
 
-# Definiere die Sensoren mit expliziten Einheit-Strings (falls benötigt)
+# SENSORS-Dictionary: Hier werden alle Sensoren definiert, einschließlich des neuen Sensors "charger_power".
 SENSORS = {
     "battery_voltage": {
         "protocol": "rest",
@@ -21,15 +21,17 @@ SENSORS = {
         "device_class": "voltage",
         "state_class": "measurement",
         "multiplier": 0.1,
+        "unique_id": "fems_battery_voltage",
     },
     "battery_cycles": {
         "protocol": "rest",
         "path": "battery0/Tower0NoOfCycles",
-        "name": "FEMS Ladezyklen",
+        "name": "FEMS Batterieladezyklen",
         "unit": None,  # Kein Einheit, da es um Zyklen geht
         "device_class": None,
         "state_class": "total_increasing",
         "multiplier": 1,
+        "unique_id": "fems_battery_cycles",
     },
     "battery_current": {
         "protocol": "rest",
@@ -39,6 +41,17 @@ SENSORS = {
         "device_class": "current",
         "state_class": "measurement",
         "multiplier": 0.1,
+        "unique_id": "fems_battery_current",
+    },
+    "battery_state_of_health": {
+        "protocol": "rest",
+        "path": "battery0/Soh",
+        "name": "FEMS Batterie State of Health",
+        "unit": "%",  # Einheit in Prozent
+        "device_class": "battery",
+        "state_class": "measurement",
+        "multiplier": 1,
+        "unique_id": "fems_battery_state_of_health",
     },
     "battery_soh": {
         "protocol": "modbus",
@@ -49,10 +62,90 @@ SENSORS = {
         "device_class": "battery",
         "state_class": "measurement",
         "multiplier": 1,
-        "data_type": "uint16"
+        "data_type": "uint16",
+        "unique_id": "fems_battery_soh",
     },
+    "actual_power": {
+      "protocol": "rest",
+      "path": "charger1/ActualPower",
+      "name": "FEMS PV 2 Leistung",
+      "unit": "W",  # Leistung in Watt
+      "device_class": "power",
+      "state_class": "measurement",
+      "multiplier": 1,
+      "unique_id": "fems_ActualPower",
+    },
+    "voltage2": {
+      "protocol": "rest",
+      "path": "charger1/Voltage",
+      "name": "FEMS PV 2 Spannung",
+      "unit": "V",
+      "device_class": "voltage",
+      "state_class": "measurement",
+      "multiplier": 0.001,  # Umrechnung von mV zu V
+      "unique_id": "fems_Voltage",
+    },    
+    "current1": {
+      "protocol": "rest",
+      "path": "charger1/Current",
+      "name": "FEMS PV 2 Strom",
+      "unit": "A",
+      "device_class": "current",
+      "state_class": "measurement",
+      "multiplier": 0.001,
+      "unique_id": "fems_current1",
+    },
+    "ActualEnergy1": {
+      "protocol": "rest",
+      "path": "charger1/ActualEnergy",
+      "name": "FEMS PV 2 Erzeugung",
+      "unit": "Wh",
+      "device_class": "energy",
+      "state_class": "total_increasing",
+      "multiplier": 1,
+      "unique_id": "fems_actual_energy1",
+    },
+    "ActualPower1": {
+      "protocol": "rest",
+      "path": "charger0/ActualPower",
+      "name": "FEMS PV 1 Leistung",
+      "unit": "W",
+      "device_class": "power",
+      "state_class": "measurement",
+      "multiplier": 1,
+      "unique_id": "fems_actual_power1",
+    },
+    "Charge_voltage0": {
+      "protocol": "rest",
+      "path": "charger0/Voltage",
+      "name": "FEMS PV 1 Spannung",
+      "unit": "V",
+      "device_class": "voltage",
+      "state_class": "measurement",
+      "multiplier": 0.001,
+      "unique_id": "fems_charge_voltage0",
+    }, 
+    "charger0_Current": {
+      "protocol": "rest",
+      "path": "charger0/Current",
+      "name": "FEMS PV 1 Strom",
+      "unit": "A",
+      "device_class": "current",
+      "state_class": "measurement",
+      "multiplier": 0.001,
+      "unique_id": "fems_charger0_Current",
+    }, 
+    "charger0_actualEnergy": {
+      "protocol": "rest",
+      "path": "charger0/ActualEnergy",
+      "name": "FEMS PV 1 Erzeugung",
+      "unit": "Wh",
+      "device_class": "energy",
+      "state_class": "total_increasing",
+      "multiplier": 1,
+      "unique_id": "fems_charger0_actualenergy",
+    },      
 }
-
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
@@ -106,7 +199,7 @@ class FeneconRestSensor(SensorEntity):
         url = f"{self._base_url}/rest/channel/{self._sensor_info['path']}"
         try:
             auth = BasicAuth(self._rest_username, self._rest_password)
-            async with async_timeout.timeout(10):
+            async with async_timeout.timeout(30):
                 async with self._session.get(url, auth=auth) as response:
                     if response.status != 200:
                         _LOGGER.warning(f"FEMS Sensor {self._sensor_key}: Fehler {response.status}")
@@ -125,16 +218,17 @@ class FeneconRestSensor(SensorEntity):
         return self._sensor_info.get("name", "FEMS Sensor")
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         unit = self._sensor_info.get("unit")
         if not unit:
-            # Fallback basierend auf device_class
             if self.device_class == "voltage":
                 return "V"
             elif self.device_class == "current":
                 return "A"
             elif self.device_class == "battery":
                 return "%"
+            elif self.device_class == "power":
+                return "W"
         return unit
 
     @property
@@ -144,6 +238,10 @@ class FeneconRestSensor(SensorEntity):
     @property
     def state_class(self):
         return self._sensor_info.get("state_class")
+
+    @property
+    def unique_id(self):
+        return self._sensor_info.get("unique_id")
 
 
 class FeneconModbusSensor(SensorEntity):
@@ -196,11 +294,13 @@ class FeneconModbusSensor(SensorEntity):
         return self._sensor_info.get("name", "FEMS Sensor")
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self):
         unit = self._sensor_info.get("unit")
         if not unit:
             if self.device_class == "battery":
                 return "%"
+            elif self.device_class == "power":
+                return "W"
         return unit
 
     @property
@@ -210,3 +310,7 @@ class FeneconModbusSensor(SensorEntity):
     @property
     def state_class(self):
         return self._sensor_info.get("state_class")
+
+    @property
+    def unique_id(self):
+        return self._sensor_info.get("unique_id")
