@@ -11,13 +11,16 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
 
-# SENSORS-Dictionary: Hier werden alle Sensoren definiert, einschließlich des neuen Sensors "charger_power".
+# SENSORS-Dictionary: Hier werden alle Sensoren definiert.
 SENSORS = {
+
+# Beginn Rest Sensoren
+ 
     "battery_voltage": {
         "protocol": "rest",
         "path": "battery0/Tower0PackVoltage",
         "name": "FEMS Batteriespannung",
-        "unit": "V",  # Spannung in Volt
+        "unit": "V",
         "device_class": "voltage",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -27,7 +30,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Tower0NoOfCycles",
         "name": "FEMS Batterieladezyklen",
-        "unit": None,  # Kein Einheit, da es um Zyklen geht
+        "unit": None,
         "device_class": None,
         "state_class": "total_increasing",
         "multiplier": 1,
@@ -37,7 +40,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Current",
         "name": "FEMS Batteriestrom",
-        "unit": "A",  # Strom in Ampere
+        "unit": "A",
         "device_class": "current",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -47,45 +50,33 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Soh",
         "name": "FEMS Batterie State of Health",
-        "unit": "%",  # Einheit in Prozent
+        "unit": "%",
         "device_class": "battery",
         "state_class": "measurement",
         "multiplier": 1,
         "unique_id": "fems_battery_state_of_health",
     },
-    "battery_soh": {
-        "protocol": "modbus",
-        "address": 302,
-        "slave": 1,
-        "name": "FEMS Batterie SOH",
-        "unit": "%",  # Batteriezustand in Prozent
-        "device_class": "battery",
-        "state_class": "measurement",
-        "multiplier": 1,
-        "data_type": "uint16",
-        "unique_id": "fems_battery_soh",
-    },
     "actual_power": {
       "protocol": "rest",
       "path": "charger1/ActualPower",
       "name": "FEMS PV 2 Leistung",
-      "unit": "W",  # Leistung in Watt
+      "unit": "W", 
       "device_class": "power",
       "state_class": "measurement",
       "multiplier": 1,
-      "unique_id": "fems_ActualPower",
+      "unique_id": "fems_actual_power",
     },
-    "voltage2": {
+    "voltage": {
       "protocol": "rest",
       "path": "charger1/Voltage",
       "name": "FEMS PV 2 Spannung",
       "unit": "V",
       "device_class": "voltage",
       "state_class": "measurement",
-      "multiplier": 0.001,  # Umrechnung von mV zu V
-      "unique_id": "fems_Voltage",
+      "multiplier": 0.001,
+      "unique_id": "fems_voltage",
     },    
-    "current1": {
+    "current": {
       "protocol": "rest",
       "path": "charger1/Current",
       "name": "FEMS PV 2 Strom",
@@ -93,9 +84,9 @@ SENSORS = {
       "device_class": "current",
       "state_class": "measurement",
       "multiplier": 0.001,
-      "unique_id": "fems_current1",
+      "unique_id": "fems_current",
     },
-    "ActualEnergy1": {
+    "actual_energy": {
       "protocol": "rest",
       "path": "charger1/ActualEnergy",
       "name": "FEMS PV 2 Erzeugung",
@@ -103,9 +94,9 @@ SENSORS = {
       "device_class": "energy",
       "state_class": "total_increasing",
       "multiplier": 1,
-      "unique_id": "fems_actual_energy1",
+      "unique_id": "fems_actual_energy",
     },
-    "ActualPower1": {
+    "actual-power_0": {
       "protocol": "rest",
       "path": "charger0/ActualPower",
       "name": "FEMS PV 1 Leistung",
@@ -113,9 +104,9 @@ SENSORS = {
       "device_class": "power",
       "state_class": "measurement",
       "multiplier": 1,
-      "unique_id": "fems_actual_power1",
+      "unique_id": "fems_actual-power_0",
     },
-    "Charge_voltage0": {
+    "voltage_0": {
       "protocol": "rest",
       "path": "charger0/Voltage",
       "name": "FEMS PV 1 Spannung",
@@ -123,9 +114,9 @@ SENSORS = {
       "device_class": "voltage",
       "state_class": "measurement",
       "multiplier": 0.001,
-      "unique_id": "fems_charge_voltage0",
+      "unique_id": "fems_voltage_0",
     }, 
-    "charger0_Current": {
+    "current_0": {
       "protocol": "rest",
       "path": "charger0/Current",
       "name": "FEMS PV 1 Strom",
@@ -133,9 +124,9 @@ SENSORS = {
       "device_class": "current",
       "state_class": "measurement",
       "multiplier": 0.001,
-      "unique_id": "fems_charger0_Current",
+      "unique_id": "fems_current_0",
     }, 
-    "charger0_actualEnergy": {
+    "actual_energy_0": {
       "protocol": "rest",
       "path": "charger0/ActualEnergy",
       "name": "FEMS PV 1 Erzeugung",
@@ -143,14 +134,29 @@ SENSORS = {
       "device_class": "energy",
       "state_class": "total_increasing",
       "multiplier": 1,
-      "unique_id": "fems_charger0_actualenergy",
-    },      
+      "unique_id": "fems_actual_energy_0",
+    },
+
+# Beginn Modbus Sensoren   
+  
+    "battery_soh": {
+        "protocol": "modbus",
+        "address": 302,
+        "slave": 1,
+        "name": "FEMS Batterie SOH",
+        "unit": "%",
+        "device_class": "battery",
+        "state_class": "measurement",
+        "multiplier": 1,
+        "data_type": "uint16",
+        "unique_id": "fems_battery_soh",
+    },     
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     _LOGGER.debug(f"Versuche, Konfiguration für entry {entry.entry_id} abzurufen.")
-    config = entry.data  # Direkt die Konfiguration des ConfigEntry verwenden
+    config = entry.data 
 
     if config is None:
         _LOGGER.error(f"Keine Konfiguration für entry {entry.entry_id} gefunden.")
@@ -160,7 +166,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
     rest_url = config.get("rest_url")
     modbus_host = config.get("modbus_host")
     modbus_port = config.get("modbus_port")
-    # REST-Authentifizierungsparameter
     rest_username = config.get("rest_username")
     rest_password = config.get("rest_password")
 
