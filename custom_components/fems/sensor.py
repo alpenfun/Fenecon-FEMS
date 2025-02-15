@@ -11,13 +11,14 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
 
-# Verwende hier explizit Strings für die Einheiten
+# Verwende hier explizit Strings für die Einheiten. 
+# Falls ein Sensor keine Einheit benötigt, kannst du None lassen.
 SENSORS = {
     "battery_voltage": {
         "protocol": "rest",
         "path": "battery0/Tower0PackVoltage",
         "name": "FEMS Batteriespannung",
-        "unit": "V",  # statt UnitOfElectricPotential.VOLT
+        "unit": "V",  # Gültige Einheit für Spannung
         "device_class": "voltage",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -26,7 +27,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Tower0NoOfCycles",
         "name": "FEMS Ladezyklen",
-        "unit": None,  # Kein Unit, da es sich um Zyklen handelt
+        "unit": None,  # Hier keine Einheit, da es Zyklen sind
         "device_class": None,
         "state_class": "total_increasing",
         "multiplier": 1,
@@ -35,7 +36,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Current",
         "name": "FEMS Batteriestrom",
-        "unit": "A",  # statt UnitOfElectricCurrent.AMPERE
+        "unit": "A",  # Gültige Einheit für Strom
         "device_class": "current",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -45,7 +46,7 @@ SENSORS = {
         "address": 302,
         "slave": 1,
         "name": "FEMS Batterie SOH",
-        "unit": "%",  # Einheit für den Batteriezustand
+        "unit": "%",  # Gültige Einheit für Batteriezustand
         "device_class": "battery",
         "state_class": "measurement",
         "multiplier": 1,
@@ -82,9 +83,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
             )
         elif protocol == "modbus":
             sensors.append(
-                FeneconModbusSensor(
-                    hass, modbus_host, modbus_port, sensor_key, sensor_info
-                )
+                FeneconModbusSensor(hass, modbus_host, modbus_port, sensor_key, sensor_info)
             )
     async_add_entities(sensors, update_before_add=True)
 
@@ -128,7 +127,16 @@ class FeneconRestSensor(SensorEntity):
 
     @property
     def unit_of_measurement(self):
-        return self._sensor_info.get("unit")
+        # Liefert die Einheit aus sensor_info oder einen sinnvollen Fallback basierend auf device_class
+        unit = self._sensor_info.get("unit")
+        if unit is None:
+            if self.device_class == "voltage":
+                return "V"
+            elif self.device_class == "current":
+                return "A"
+            elif self.device_class == "battery":
+                return "%"
+        return unit
 
     @property
     def device_class(self):
@@ -191,7 +199,11 @@ class FeneconModbusSensor(SensorEntity):
 
     @property
     def unit_of_measurement(self):
-        return self._sensor_info.get("unit")
+        unit = self._sensor_info.get("unit")
+        if unit is None:
+            if self.device_class == "battery":
+                return "%"
+        return unit
 
     @property
     def device_class(self):
