@@ -11,14 +11,13 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 SCAN_INTERVAL = timedelta(seconds=60)
 
-# Verwende hier explizit Strings für die Einheiten. 
-# Falls ein Sensor keine Einheit benötigt, kannst du None lassen.
+# Definiere die Sensoren mit expliziten Einheit-Strings (falls benötigt)
 SENSORS = {
     "battery_voltage": {
         "protocol": "rest",
         "path": "battery0/Tower0PackVoltage",
         "name": "FEMS Batteriespannung",
-        "unit": "V",  # Gültige Einheit für Spannung
+        "unit": "V",  # Spannung in Volt
         "device_class": "voltage",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -27,7 +26,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Tower0NoOfCycles",
         "name": "FEMS Ladezyklen",
-        "unit": None,  # Hier keine Einheit, da es Zyklen sind
+        "unit": None,  # Kein Einheit, da es um Zyklen geht
         "device_class": None,
         "state_class": "total_increasing",
         "multiplier": 1,
@@ -36,7 +35,7 @@ SENSORS = {
         "protocol": "rest",
         "path": "battery0/Current",
         "name": "FEMS Batteriestrom",
-        "unit": "A",  # Gültige Einheit für Strom
+        "unit": "A",  # Strom in Ampere
         "device_class": "current",
         "state_class": "measurement",
         "multiplier": 0.1,
@@ -46,7 +45,7 @@ SENSORS = {
         "address": 302,
         "slave": 1,
         "name": "FEMS Batterie SOH",
-        "unit": "%",  # Gültige Einheit für Batteriezustand
+        "unit": "%",  # Batteriezustand in Prozent
         "device_class": "battery",
         "state_class": "measurement",
         "multiplier": 1,
@@ -58,7 +57,7 @@ SENSORS = {
 async def async_setup_entry(hass, entry, async_add_entities):
     """Setzt die Sensoren basierend auf der Konfiguration auf."""
     _LOGGER.debug(f"Versuche, Konfiguration für entry {entry.entry_id} abzurufen.")
-    config = entry.data  # Direkt die Konfiguration des Entries verwenden
+    config = entry.data  # Direkt die Konfiguration des ConfigEntry verwenden
 
     if config is None:
         _LOGGER.error(f"Keine Konfiguration für entry {entry.entry_id} gefunden.")
@@ -68,7 +67,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     rest_url = config.get("rest_url")
     modbus_host = config.get("modbus_host")
     modbus_port = config.get("modbus_port")
-    # Neue Parameter: REST-Authentifizierung
+    # REST-Authentifizierungsparameter
     rest_username = config.get("rest_username")
     rest_password = config.get("rest_password")
 
@@ -127,9 +126,9 @@ class FeneconRestSensor(SensorEntity):
 
     @property
     def unit_of_measurement(self):
-        # Liefert die Einheit aus sensor_info oder einen sinnvollen Fallback basierend auf device_class
         unit = self._sensor_info.get("unit")
-        if unit is None:
+        if not unit:
+            # Fallback basierend auf device_class
             if self.device_class == "voltage":
                 return "V"
             elif self.device_class == "current":
@@ -169,7 +168,6 @@ class FeneconModbusSensor(SensorEntity):
                 _LOGGER.error("Modbus Client konnte nicht verbunden werden.")
                 self._state = None
                 return
-
             response = await client.read_holding_registers(
                 self._sensor_info["address"], 1, slave=self._sensor_info["slave"]
             )
@@ -200,7 +198,7 @@ class FeneconModbusSensor(SensorEntity):
     @property
     def unit_of_measurement(self):
         unit = self._sensor_info.get("unit")
-        if unit is None:
+        if not unit:
             if self.device_class == "battery":
                 return "%"
         return unit
