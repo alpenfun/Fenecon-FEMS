@@ -96,6 +96,26 @@
       "battery_discharge_energy": {
         "name": "Battery discharge energy"
       }
+    },
+    "binary_sensor": {
+      "fault_status": {
+        "name": "Fault status"
+      },
+      "rest_communication": {
+        "name": "REST communication"
+      },
+      "modbus_communication": {
+        "name": "Modbus communication"
+      },
+      "system_ok": {
+        "name": "System OK"
+      },
+      "system_warning": {
+        "name": "System warning"
+      },
+      "system_error": {
+        "name": "System error"
+      }
     }
   }
 }
