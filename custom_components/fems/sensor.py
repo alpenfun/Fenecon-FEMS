@@ -120,7 +120,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         translation_key="battery_capacity",
         name="Batteriekapazität",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.rest.get("battery0/Capacity"),
     ),
