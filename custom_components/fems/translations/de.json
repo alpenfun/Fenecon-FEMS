@@ -118,24 +118,4 @@
       }
     }
   }
-}      "grid_buy_energy": {
-        "name": "Netzbezug Energie"
-      },
-      "grid_sell_energy": {
-        "name": "Netzeinspeisung Energie"
-      },
-      "pv_energy": {
-        "name": "PV Energie"
-      },
-      "house_energy": {
-        "name": "Hausverbrauch Energie"
-      },
-      "battery_charge_energy": {
-        "name": "Batterie Ladeenergie"
-      },
-      "battery_discharge_energy": {
-        "name": "Batterie Entladeenergie"
-      }
-    }
-  }
 }
