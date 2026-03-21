@@ -71,7 +71,23 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
     async def _async_update_data(self) -> FemsData:
         """Fetch data from REST and Modbus."""
         try:
-            battery_group = "battery0/(Soc|Voltage|Tower0PackVoltage)"
+            battery_group = (
+                "battery0/("
+                "Soc|"
+                "Voltage|"
+                "Tower0PackVoltage|"
+                "RunFailed|"
+                "LowMinVoltageFault|"
+                "LowMinVoltageWarning|"
+                "LowMinVoltageFaultBatteryStopped|"
+                "StatusFault|"
+                "StatusWarning|"
+                "StatusAlarm|"
+                "Tower0StatusFault|"
+                "Tower0StatusWarning|"
+                "Tower0StatusAlarm"
+                ")"
+            )
             charger0_group = "charger0/(ActualPower|Voltage|Current)"
             charger1_group = "charger1/(ActualPower|Voltage|Current)"
 
