@@ -21,11 +21,56 @@
       "battery_soc": {
         "name": "Battery SoC"
       },
+      "battery_soh": {
+        "name": "Battery SoH"
+      },
+      "battery_current": {
+        "name": "Battery current"
+      },
       "battery_voltage_dc": {
         "name": "Battery voltage DC"
       },
       "battery_pack_voltage": {
         "name": "Battery voltage"
+      },
+      "battery_cycles": {
+        "name": "Battery cycles"
+      },
+      "battery_capacity": {
+        "name": "Battery capacity"
+      },
+      "battery_state": {
+        "name": "Battery state"
+      },
+      "battery_state_machine": {
+        "name": "Battery state machine"
+      },
+      "battery_start_stop": {
+        "name": "Battery Start/Stop"
+      },
+      "battery_min_cell_voltage": {
+        "name": "Battery min cell voltage"
+      },
+      "battery_max_cell_voltage": {
+        "name": "Battery max cell voltage"
+      },
+      "battery_min_cell_temperature": {
+        "name": "Battery min cell temperature"
+      },
+      "battery_max_cell_temperature": {
+        "name": "Battery max cell temperature"
+      },
+      "tower0_min_cell_voltage": {
+        "name": "Tower0 min cell voltage"
+      },
+      "tower0_max_cell_voltage": {
+        "name": "Tower0 max cell voltage"
+      },
+      "tower0_min_temperature": {
+        "name": "Tower0 min temperature"
+      },
+      "tower0_max_temperature": {
+        "name": "Tower0 max temperature"
       },
       "ess_soc_modbus": {
         "name": "Battery SoC (Modbus)"
