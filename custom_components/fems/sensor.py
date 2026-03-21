@@ -35,7 +35,33 @@ class FemsSensorDescription(SensorEntityDescription):
     value_fn: Callable[[FemsDataUpdateCoordinator], Any]
 
 
-SENSORS: tuple[FemsSensorDescription, ...] = (
+def _scaled_rest_value(
+    coordinator: FemsDataUpdateCoordinator,
+    key: str,
+    divisor: float,
+    precision: int,
+) -> float | None:
+    """Return scaled REST value."""
+    value = coordinator.data.rest.get(key)
+    if value is None:
+        return None
+    return round(value / divisor, precision)
+
+
+def _cell_voltage_value_fn(
+    module: int,
+    cell: int,
+) -> Callable[[FemsDataUpdateCoordinator], Any]:
+    """Create value function for one cell voltage."""
+    rest_key = f"battery0/Tower0Module{module}Cell{cell:03d}Voltage"
+
+    def value_fn(coordinator: FemsDataUpdateCoordinator) -> float | None:
+        return _scaled_rest_value(coordinator, rest_key, 1000, 3)
+
+    return value_fn
+
+
+_SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_soc",
         translation_key="battery_soc",
@@ -78,10 +104,8 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/Tower0PackVoltage") is None
-            else round(c.data.rest["battery0/Tower0PackVoltage"] / 10, 1)
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0PackVoltage", 10, 1
         ),
     ),
     FemsSensorDescription(
@@ -125,11 +149,7 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/MinCellVoltage") is None
-            else round(c.data.rest["battery0/MinCellVoltage"] / 1000, 3)
-        ),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/MinCellVoltage", 1000, 3),
     ),
     FemsSensorDescription(
         key="battery_max_cell_voltage",
@@ -138,11 +158,7 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/MaxCellVoltage") is None
-            else round(c.data.rest["battery0/MaxCellVoltage"] / 1000, 3)
-        ),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/MaxCellVoltage", 1000, 3),
     ),
     FemsSensorDescription(
         key="battery_min_cell_temperature",
@@ -169,10 +185,8 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/Tower0MinCellVoltage") is None
-            else round(c.data.rest["battery0/Tower0MinCellVoltage"] / 1000, 3)
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0MinCellVoltage", 1000, 3
         ),
     ),
     FemsSensorDescription(
@@ -182,10 +196,8 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/Tower0MaxCellVoltage") is None
-            else round(c.data.rest["battery0/Tower0MaxCellVoltage"] / 1000, 3)
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0MaxCellVoltage", 1000, 3
         ),
     ),
     FemsSensorDescription(
@@ -195,11 +207,7 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/Tower0MinTemperature") is None
-            else round(c.data.rest["battery0/Tower0MinTemperature"] / 10, 1)
-        ),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MinTemperature", 10, 1),
     ),
     FemsSensorDescription(
         key="tower0_max_temperature",
@@ -208,11 +216,7 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: (
-            None
-            if c.data.rest.get("battery0/Tower0MaxTemperature") is None
-            else round(c.data.rest["battery0/Tower0MaxTemperature"] / 10, 1)
-        ),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MaxTemperature", 10, 1),
     ),
     FemsSensorDescription(
         key="ess_soc_modbus",
@@ -421,7 +425,22 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: c.data.modbus.get("ess_dc_discharge_energy"),
     ),
-)
+]
+
+for module in range(7):
+    for cell in range(14):
+        _SENSOR_LIST.append(
+            FemsSensorDescription(
+                key=f"tower0_module{module}_cell{cell:03d}_voltage",
+                name=f"Tower0 Module{module} Cell{cell:03d} Voltage",
+                native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+                device_class=SensorDeviceClass.VOLTAGE,
+                state_class=SensorStateClass.MEASUREMENT,
+                value_fn=_cell_voltage_value_fn(module, cell),
+            )
+        )
+
+SENSORS: tuple[FemsSensorDescription, ...] = tuple(_SENSOR_LIST)
 
 
 async def async_setup_entry(
