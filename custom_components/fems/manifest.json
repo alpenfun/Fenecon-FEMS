@@ -1,13 +1,13 @@
 {
   "domain": "fems",
   "name": "FEMS",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "documentation": "https://github.com/alpenfun/Fenecon-FEMS",
   "issue_tracker": "https://github.com/alpenfun/Fenecon-FEMS/issues",
   "config_flow": true,
   "iot_class": "local_polling",
   "requirements": [
-    "pymodbus==3.8.6"
+    "pymodbus==3.11.2"
   ],
   "codeowners": [
     "@alpenfun"
