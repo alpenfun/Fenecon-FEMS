@@ -21,7 +21,9 @@ from .const import (
     CONF_USERNAME,
     COORDINATOR_UPDATE_INTERVAL,
     DOMAIN,
-    MODBUS_REGISTERS,
+    MODBUS_UINT16_INPUT_REGISTERS,
+    MODBUS_FLOAT32_HOLDING_REGISTERS,
+    MODBUS_FLOAT64_HOLDING_REGISTERS,
     REST_BATTERY_CHANNELS,
     REST_CHARGER0_CHANNELS,
     REST_CHARGER1_CHANNELS,
@@ -78,7 +80,21 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             charger1 = await self.rest_api.async_fetch_group(charger1_group)
 
             await self.modbus_api.async_connect()
-            modbus = await self.modbus_api.async_read_many_float32(MODBUS_REGISTERS)
+
+            modbus_uint16 = await self.modbus_api.async_read_many_uint16_input(
+            MODBUS_UINT16_INPUT_REGISTERS
+        )
+            modbus_float32 = await self.modbus_api.async_read_many_float32(
+            MODBUS_FLOAT32_HOLDING_REGISTERS
+        )
+            modbus_float64 = await self.modbus_api.async_read_many_float64(
+            MODBUS_FLOAT64_HOLDING_REGISTERS
+        )
+
+modbus = {}
+modbus.update(modbus_uint16)
+modbus.update(modbus_float32)
+modbus.update(modbus_float64)
 
             rest = {}
             rest.update(battery)
