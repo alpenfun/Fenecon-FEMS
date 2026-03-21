@@ -72,6 +72,24 @@
       "tower0_max_temperature": {
         "name": "Tower0 max temperature"
       },
+      "charger0_power": {
+        "name": "Charger 0 power"
+      },
+      "charger0_voltage": {
+        "name": "Charger 0 voltage"
+      },
+      "charger0_current": {
+        "name": "Charger 0 current"
+      },
+      "charger1_power": {
+        "name": "Charger 1 power"
+      },
+      "charger1_voltage": {
+        "name": "Charger 1 voltage"
+      },
+      "charger1_current": {
+        "name": "Charger 1 current"
+      },
       "ess_soc_modbus": {
         "name": "Battery SoC (Modbus)"
       },
