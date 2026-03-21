@@ -27,6 +27,12 @@
       "battery_pack_voltage": {
         "name": "Batteriespannung"
       },
+      "ess_soc_modbus": {
+        "name": "Batterie SoC (Modbus)"
+      },
+      "ess_power": {
+        "name": "ESS Leistung"
+      },
       "pv_power": {
         "name": "PV Leistung"
       },
@@ -35,6 +41,60 @@
       },
       "house_power": {
         "name": "Hausverbrauch"
+      },
+      "ess_power_l1": {
+        "name": "ESS Leistung L1"
+      },
+      "ess_power_l2": {
+        "name": "ESS Leistung L2"
+      },
+      "ess_power_l3": {
+        "name": "ESS Leistung L3"
+      },
+      "grid_power_l1": {
+        "name": "Netzleistung L1"
+      },
+      "grid_power_l2": {
+        "name": "Netzleistung L2"
+      },
+      "grid_power_l3": {
+        "name": "Netzleistung L3"
+      },
+      "house_power_l1": {
+        "name": "Hausverbrauch L1"
+      },
+      "house_power_l2": {
+        "name": "Hausverbrauch L2"
+      },
+      "house_power_l3": {
+        "name": "Hausverbrauch L3"
+      },
+      "ess_discharge_power": {
+        "name": "Batterie Entladeleistung"
+      },
+      "ess_active_charge_energy": {
+        "name": "ESS AC Ladeenergie"
+      },
+      "ess_active_discharge_energy": {
+        "name": "ESS AC Entladeenergie"
+      },
+      "grid_buy_energy": {
+        "name": "Netzbezug Energie"
+      },
+      "grid_sell_energy": {
+        "name": "Netzeinspeisung Energie"
+      },
+      "pv_energy": {
+        "name": "PV Energie"
+      },
+      "house_energy": {
+        "name": "Hausverbrauch Energie"
+      },
+      "battery_charge_energy": {
+        "name": "Batterie Ladeenergie"
+      },
+      "battery_discharge_energy": {
+        "name": "Batterie Entladeenergie"
       }
     }
   }
