@@ -35,6 +35,27 @@ class FemsSensorDescription(SensorEntityDescription):
     value_fn: Callable[[FemsDataUpdateCoordinator], Any]
 
 
+BATTERY_STATE_MAP: dict[int, str] = {
+    0: "Unknown",
+    1: "Stopped",
+    2: "Starting",
+    3: "Running",
+    4: "Stopping",
+    5: "Fault",
+}
+
+
+BATTERY_STATE_MACHINE_MAP: dict[int, str] = {
+    0: "Unknown",
+    1: "Init",
+    2: "Idle",
+    3: "Charge",
+    4: "Discharge",
+    5: "Standby",
+    6: "Error",
+}
+
+
 def _scaled_rest_value(
     coordinator: FemsDataUpdateCoordinator,
     key: str,
@@ -46,6 +67,26 @@ def _scaled_rest_value(
     if value is None:
         return None
     return round(value / divisor, precision)
+
+
+def _mapped_rest_value(
+    coordinator: FemsDataUpdateCoordinator,
+    key: str,
+    mapping: dict[int, str],
+) -> str | None:
+    """Return mapped REST value with fallback."""
+    value = coordinator.data.rest.get(key)
+    if value is None:
+        return None
+
+    if isinstance(value, bool):
+        numeric_value = int(value)
+    elif isinstance(value, (int, float)):
+        numeric_value = int(value)
+    else:
+        return str(value)
+
+    return mapping.get(numeric_value, f"Unknown ({numeric_value})")
 
 
 def _cell_voltage_value_fn(
@@ -126,14 +167,18 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_state",
         translation_key="battery_state",
-        name="Batterie Status State",
-        value_fn=lambda c: c.data.rest.get("battery0/State"),
+        name="Batterie Status",
+        value_fn=lambda c: _mapped_rest_value(
+            c, "battery0/State", BATTERY_STATE_MAP
+        ),
     ),
     FemsSensorDescription(
         key="battery_state_machine",
         translation_key="battery_state_machine",
-        name="Batterie State Machine",
-        value_fn=lambda c: c.data.rest.get("battery0/StateMachine"),
+        name="Batterie Zustandsmaschine",
+        value_fn=lambda c: _mapped_rest_value(
+            c, "battery0/StateMachine", BATTERY_STATE_MACHINE_MAP
+        ),
     ),
     FemsSensorDescription(
         key="battery_start_stop",
