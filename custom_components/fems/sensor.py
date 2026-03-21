@@ -14,9 +14,11 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
+    UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfEnergy,
     UnitOfPower,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -44,6 +46,23 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: c.data.rest.get("battery0/Soc"),
     ),
     FemsSensorDescription(
+        key="battery_soh",
+        translation_key="battery_soh",
+        name="Batterie SoH",
+        native_unit_of_measurement=PERCENTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: c.data.rest.get("battery0/Soh"),
+    ),
+    FemsSensorDescription(
+        key="battery_current",
+        translation_key="battery_current",
+        name="Batteriestrom",
+        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
+        device_class=SensorDeviceClass.CURRENT,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: c.data.rest.get("battery0/Current"),
+    ),
+    FemsSensorDescription(
         key="battery_voltage_dc",
         translation_key="battery_voltage_dc",
         name="Batteriespannung DC",
@@ -63,6 +82,136 @@ SENSORS: tuple[FemsSensorDescription, ...] = (
             None
             if c.data.rest.get("battery0/Tower0PackVoltage") is None
             else round(c.data.rest["battery0/Tower0PackVoltage"] / 10, 1)
+        ),
+    ),
+    FemsSensorDescription(
+        key="battery_cycles",
+        translation_key="battery_cycles",
+        name="Batterieladezyklen",
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: c.data.rest.get("battery0/Tower0NoOfCycles"),
+    ),
+    FemsSensorDescription(
+        key="battery_capacity",
+        translation_key="battery_capacity",
+        name="Batteriekapazität",
+        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: c.data.rest.get("battery0/Capacity"),
+    ),
+    FemsSensorDescription(
+        key="battery_state",
+        translation_key="battery_state",
+        name="Batterie Status State",
+        value_fn=lambda c: c.data.rest.get("battery0/State"),
+    ),
+    FemsSensorDescription(
+        key="battery_state_machine",
+        translation_key="battery_state_machine",
+        name="Batterie State Machine",
+        value_fn=lambda c: c.data.rest.get("battery0/StateMachine"),
+    ),
+    FemsSensorDescription(
+        key="battery_start_stop",
+        translation_key="battery_start_stop",
+        name="Batterie StartStop",
+        value_fn=lambda c: c.data.rest.get("battery0/StartStop"),
+    ),
+    FemsSensorDescription(
+        key="battery_min_cell_voltage",
+        translation_key="battery_min_cell_voltage",
+        name="Batterie Min Cell Voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: (
+            None
+            if c.data.rest.get("battery0/MinCellVoltage") is None
+            else round(c.data.rest["battery0/MinCellVoltage"] / 1000, 3)
+        ),
+    ),
+    FemsSensorDescription(
+        key="battery_max_cell_voltage",
+        translation_key="battery_max_cell_voltage",
+        name="Batterie Max Cell Voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: (
+            None
+            if c.data.rest.get("battery0/MaxCellVoltage") is None
+            else round(c.data.rest["battery0/MaxCellVoltage"] / 1000, 3)
+        ),
+    ),
+    FemsSensorDescription(
+        key="battery_min_cell_temperature",
+        translation_key="battery_min_cell_temperature",
+        name="Batterie Min Cell Temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: c.data.rest.get("battery0/MinCellTemperature"),
+    ),
+    FemsSensorDescription(
+        key="battery_max_cell_temperature",
+        translation_key="battery_max_cell_temperature",
+        name="Batterie Max Cell Temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: c.data.rest.get("battery0/MaxCellTemperature"),
+    ),
+    FemsSensorDescription(
+        key="tower0_min_cell_voltage",
+        translation_key="tower0_min_cell_voltage",
+        name="Tower0 Min Cell Voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: (
+            None
+            if c.data.rest.get("battery0/Tower0MinCellVoltage") is None
+            else round(c.data.rest["battery0/Tower0MinCellVoltage"] / 1000, 3)
+        ),
+    ),
+    FemsSensorDescription(
+        key="tower0_max_cell_voltage",
+        translation_key="tower0_max_cell_voltage",
+        name="Tower0 Max Cell Voltage",
+        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+        device_class=SensorDeviceClass.VOLTAGE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: (
+            None
+            if c.data.rest.get("battery0/Tower0MaxCellVoltage") is None
+            else round(c.data.rest["battery0/Tower0MaxCellVoltage"] / 1000, 3)
+        ),
+    ),
+    FemsSensorDescription(
+        key="tower0_min_temperature",
+        translation_key="tower0_min_temperature",
+        name="Tower0 Min Temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: (
+            None
+            if c.data.rest.get("battery0/Tower0MinTemperature") is None
+            else round(c.data.rest["battery0/Tower0MinTemperature"] / 10, 1)
+        ),
+    ),
+    FemsSensorDescription(
+        key="tower0_max_temperature",
+        translation_key="tower0_max_temperature",
+        name="Tower0 Max Temperature",
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        device_class=SensorDeviceClass.TEMPERATURE,
+        state_class=SensorStateClass.MEASUREMENT,
+        value_fn=lambda c: (
+            None
+            if c.data.rest.get("battery0/Tower0MaxTemperature") is None
+            else round(c.data.rest["battery0/Tower0MaxTemperature"] / 10, 1)
         ),
     ),
     FemsSensorDescription(
