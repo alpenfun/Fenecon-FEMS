@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+import logging
 
 from aiohttp import ClientError
 from homeassistant.config_entries import ConfigEntry
@@ -24,12 +25,11 @@ from .const import (
     MODBUS_UINT16_INPUT_REGISTERS,
     MODBUS_FLOAT32_HOLDING_REGISTERS,
     MODBUS_FLOAT64_HOLDING_REGISTERS,
-    REST_BATTERY_CHANNELS,
-    REST_CHARGER0_CHANNELS,
-    REST_CHARGER1_CHANNELS,
 )
 from .fems_modbus import FemsModbusApi
 from .fems_rest import FemsRestApi
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
@@ -37,7 +37,7 @@ class FemsData:
     """Container for all fetched FEMS data."""
 
     rest: dict[str, Any]
-    modbus: dict[str, float | None]
+    modbus: dict[str, Any]
 
 
 class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
@@ -62,7 +62,7 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
 
         super().__init__(
             hass,
-            logger=__import__("logging").getLogger(__name__),
+            logger=_LOGGER,
             name=DOMAIN,
             update_interval=COORDINATOR_UPDATE_INTERVAL,
             always_update=False,
@@ -82,19 +82,19 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             await self.modbus_api.async_connect()
 
             modbus_uint16 = await self.modbus_api.async_read_many_uint16_input(
-            MODBUS_UINT16_INPUT_REGISTERS
-        )
+                MODBUS_UINT16_INPUT_REGISTERS
+            )
             modbus_float32 = await self.modbus_api.async_read_many_float32(
-            MODBUS_FLOAT32_HOLDING_REGISTERS
-        )
+                MODBUS_FLOAT32_HOLDING_REGISTERS
+            )
             modbus_float64 = await self.modbus_api.async_read_many_float64(
-            MODBUS_FLOAT64_HOLDING_REGISTERS
-        )
+                MODBUS_FLOAT64_HOLDING_REGISTERS
+            )
 
-modbus = {}
-modbus.update(modbus_uint16)
-modbus.update(modbus_float32)
-modbus.update(modbus_float64)
+            modbus = {}
+            modbus.update(modbus_uint16)
+            modbus.update(modbus_float32)
+            modbus.update(modbus_float64)
 
             rest = {}
             rest.update(battery)
