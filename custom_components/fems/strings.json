@@ -2,16 +2,16 @@
   "config": {
     "step": {
       "user": {
-        "title": "FEMS einrichten",
-        "description": "Verbindung zu FEMS konfigurieren",
+        "title": "Set up FEMS",
+        "description": "Configure connection to FEMS",
         "data": {
           "rest_host": "REST Host",
           "rest_port": "REST Port",
           "modbus_host": "Modbus Host",
           "modbus_port": "Modbus Port",
           "modbus_slave": "Modbus Slave",
-          "username": "Benutzername",
-          "password": "Passwort"
+          "username": "Username",
+          "password": "Password"
         }
       }
     }
@@ -19,22 +19,82 @@
   "entity": {
     "sensor": {
       "battery_soc": {
-        "name": "Batterie SoC"
+        "name": "Battery SoC"
       },
       "battery_voltage_dc": {
-        "name": "Batteriespannung DC"
+        "name": "Battery voltage DC"
       },
       "battery_pack_voltage": {
-        "name": "Batteriespannung"
+        "name": "Battery voltage"
+      },
+      "ess_soc_modbus": {
+        "name": "Battery SoC (Modbus)"
+      },
+      "ess_power": {
+        "name": "ESS power"
       },
       "pv_power": {
-        "name": "PV Leistung"
+        "name": "PV power"
       },
       "grid_power": {
-        "name": "Netzleistung"
+        "name": "Grid power"
       },
       "house_power": {
-        "name": "Hausverbrauch"
+        "name": "House consumption"
+      },
+      "ess_power_l1": {
+        "name": "ESS power L1"
+      },
+      "ess_power_l2": {
+        "name": "ESS power L2"
+      },
+      "ess_power_l3": {
+        "name": "ESS power L3"
+      },
+      "grid_power_l1": {
+        "name": "Grid power L1"
+      },
+      "grid_power_l2": {
+        "name": "Grid power L2"
+      },
+      "grid_power_l3": {
+        "name": "Grid power L3"
+      },
+      "house_power_l1": {
+        "name": "House consumption L1"
+      },
+      "house_power_l2": {
+        "name": "House consumption L2"
+      },
+      "house_power_l3": {
+        "name": "House consumption L3"
+      },
+      "ess_discharge_power": {
+        "name": "Battery discharge power"
+      },
+      "ess_active_charge_energy": {
+        "name": "ESS AC charge energy"
+      },
+      "ess_active_discharge_energy": {
+        "name": "ESS AC discharge energy"
+      },
+      "grid_buy_energy": {
+        "name": "Grid import energy"
+      },
+      "grid_sell_energy": {
+        "name": "Grid export energy"
+      },
+      "pv_energy": {
+        "name": "PV energy"
+      },
+      "house_energy": {
+        "name": "House consumption energy"
+      },
+      "battery_charge_energy": {
+        "name": "Battery charge energy"
+      },
+      "battery_discharge_energy": {
+        "name": "Battery discharge energy"
       }
     }
   }
