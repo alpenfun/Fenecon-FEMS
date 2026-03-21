@@ -1,48 +1,43 @@
-"""Fenecon FEMS Integration."""
-import logging
+"""The FEMS integration."""
+
+from __future__ import annotations
+
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.typing import ConfigType
+from homeassistant.exceptions import ConfigEntryNotReady
 
-DOMAIN = "fems"
-_LOGGER = logging.getLogger(__name__)
+from .const import DOMAIN, PLATFORMS
+from .coordinator import FemsDataUpdateCoordinator
 
-DEBUG_LOGGING = False
+type FemsConfigEntry = ConfigEntry
 
-def log_debug(message: str):
-    """Hilfsfunktion für Debug-Logging."""
-    if DEBUG_LOGGING:
-        _LOGGER.debug(message)
-
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Setzt die Integration über configuration.yaml ein (Legacy-Support)."""
-    _LOGGER.info("Fenecon FEMS: async_setup wurde aufgerufen.")
-    if DOMAIN not in config:
-        return True
-
-    hass.data.setdefault(DOMAIN, config[DOMAIN])
-    log_debug(f"Konfiguration geladen: {config[DOMAIN]}")
+async def async_setup(hass: HomeAssistant, config: dict) -> bool:
+    """Set up the FEMS component."""
     return True
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Setzt die Integration über UI-Setup ein."""
-    _LOGGER.info("Fenecon FEMS: async_setup_entry wurde aufgerufen.")
+
+async def async_setup_entry(hass: HomeAssistant, entry: FemsConfigEntry) -> bool:
+    """Set up FEMS from a config entry."""
+    coordinator = FemsDataUpdateCoordinator(hass, entry)
+
+    try:
+        await coordinator.async_config_entry_first_refresh()
+    except Exception as err:
+        raise ConfigEntryNotReady(f"Initial FEMS refresh failed: {err}") from err
+
     hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    # Speichern der Konfiguration im hass.data (falls benötigt)
-    hass.data[DOMAIN][entry.entry_id] = entry.data
-
-    # Listener für Änderungen an den Optionen registrieren
-    entry.async_on_unload(entry.add_update_listener(async_options_update_listener))
-    
-    await hass.config_entries.async_forward_entry_setups(entry, ["sensor"])
-
-    log_debug(f"Config Entry für {DOMAIN}: {entry.data}")
-    
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
-async def async_options_update_listener(hass: HomeAssistant, entry: ConfigEntry):
-    """Wird aufgerufen, wenn die Optionen im UI geändert werden."""
-    _LOGGER.info("Fenecon FEMS: Optionen wurden aktualisiert, Neustart der Integration erforderlich.")
-    log_debug(f"Neue Optionen: {entry.options}")
-    await hass.config_entries.async_reload(entry.entry_id)
+
+async def async_unload_entry(hass: HomeAssistant, entry: FemsConfigEntry) -> bool:
+    """Unload a config entry."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    return unload_ok

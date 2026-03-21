@@ -1,12 +1,15 @@
 {
-    "domain": "fems",
-    "name": "Fenecon FEMS",
-    "version": "0.0.1",
-    "documentation": "https://github.com/alpenfun/Fenecon-FEMS",
-    "issue_tracker": "https://github.com/alpenfun/Fenecon-FEMS/issues",
-    "dependencies": [],
-    "codeowners": ["@alpenfun"],
-    "requirements": ["pymodbus==3.4.1"],
-    "iot_class": "local_polling",
-    "config_flow": true
+  "domain": "fems",
+  "name": "FEMS",
+  "version": "0.1.0",
+  "documentation": "https://github.com/alpenfun/Fenecon-FEMS",
+  "issue_tracker": "https://github.com/alpenfun/Fenecon-FEMS/issues",
+  "config_flow": true,
+  "iot_class": "local_polling",
+  "requirements": [
+    "pymodbus==3.8.6"
+  ],
+  "codeowners": [
+    "@alpenfun"
+  ]
 }

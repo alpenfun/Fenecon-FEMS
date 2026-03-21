@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "FEMS einrichten",
+        "description": "Verbindung zu FEMS konfigurieren",
+        "data": {
+          "rest_host": "REST Host",
+          "rest_port": "REST Port",
+          "modbus_host": "Modbus Host",
+          "modbus_port": "Modbus Port",
+          "modbus_slave": "Modbus Slave",
+          "username": "Benutzername",
+          "password": "Passwort"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery_soc": {
+        "name": "Batterie SoC"
+      },
+      "battery_voltage_dc": {
+        "name": "Batteriespannung DC"
+      },
+      "battery_pack_voltage": {
+        "name": "Batteriespannung"
+      },
+      "pv_power": {
+        "name": "PV Leistung"
+      },
+      "grid_power": {
+        "name": "Netzleistung"
+      },
+      "house_power": {
+        "name": "Hausverbrauch"
+      }
+    }
+  }
+}
