@@ -115,6 +115,19 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             charger0 = await self.rest_api.async_fetch_group(charger0_group)
             charger1 = await self.rest_api.async_fetch_group(charger1_group)
 
+            cell_voltages: dict[str, Any] = {}
+            for module in range(7):
+                cell_group = (
+                    "battery0/("
+                    + "|".join(
+                        f"Tower0Module{module}Cell{cell:03d}Voltage"
+                        for cell in range(14)
+                    )
+                    + ")"
+                )
+                module_data = await self.rest_api.async_fetch_group(cell_group)
+                cell_voltages.update(module_data)
+
             await self.modbus_api.async_connect()
 
             modbus_uint16 = await self.modbus_api.async_read_many_uint16_input(
@@ -136,6 +149,7 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             rest.update(battery)
             rest.update(charger0)
             rest.update(charger1)
+            rest.update(cell_voltages)
 
             return FemsData(rest=rest, modbus=modbus)
 
