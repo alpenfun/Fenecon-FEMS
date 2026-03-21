@@ -23,7 +23,7 @@ MODBUS_TIMEOUT = 10
 
 COORDINATOR_UPDATE_INTERVAL = timedelta(seconds=30)
 
-PLATFORMS = ["sensor"]
+PLATFORMS = ["sensor", "binary_sensor"]
 
 MANUFACTURER = "FENECON"
 MODEL = "FEMS"
