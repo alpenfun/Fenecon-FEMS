@@ -96,6 +96,46 @@
       "battery_discharge_energy": {
         "name": "Batterie Entladeenergie"
       }
+    },
+    "binary_sensor": {
+      "fault_status": {
+        "name": "Fehlerstatus"
+      },
+      "rest_communication": {
+        "name": "REST Kommunikation"
+      },
+      "modbus_communication": {
+        "name": "Modbus Kommunikation"
+      },
+      "system_ok": {
+        "name": "System OK"
+      },
+      "system_warning": {
+        "name": "System Warnung"
+      },
+      "system_error": {
+        "name": "System Fehler"
+      }
+    }
+  }
+}      "grid_buy_energy": {
+        "name": "Netzbezug Energie"
+      },
+      "grid_sell_energy": {
+        "name": "Netzeinspeisung Energie"
+      },
+      "pv_energy": {
+        "name": "PV Energie"
+      },
+      "house_energy": {
+        "name": "Hausverbrauch Energie"
+      },
+      "battery_charge_energy": {
+        "name": "Batterie Ladeenergie"
+      },
+      "battery_discharge_energy": {
+        "name": "Batterie Entladeenergie"
+      }
     }
   }
 }
