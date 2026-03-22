@@ -262,7 +262,9 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MinCellVoltage", 1000, 3),
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0MinCellVoltage", 1000, 3
+        ),
     ),
     FemsSensorDescription(
         key="tower0_max_cell_voltage",
@@ -271,7 +273,9 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MaxCellVoltage", 1000, 3),
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0MaxCellVoltage", 1000, 3
+        ),
     ),
     FemsSensorDescription(
         key="tower0_min_temperature",
@@ -682,6 +686,8 @@ for module in range(7):
             name=f"Modul {module} Spannungsdifferenz",
             native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             device_class=SensorDeviceClass.VOLTAGE,
+            entity_category=EntityCategory.DIAGNOSTIC,
+            entity_registry_enabled_default=False,
             state_class=SensorStateClass.MEASUREMENT,
             value_fn=_module_spread_value_fn(module),
         )
@@ -695,6 +701,8 @@ for module in range(7):
                 name=f"Tower0 Modul {module} Zelle {cell:03d} Spannung",
                 native_unit_of_measurement=UnitOfElectricPotential.VOLT,
                 device_class=SensorDeviceClass.VOLTAGE,
+                entity_category=EntityCategory.DIAGNOSTIC,
+                entity_registry_enabled_default=False,
                 state_class=SensorStateClass.MEASUREMENT,
                 value_fn=_cell_voltage_value_fn(module, cell),
             )
