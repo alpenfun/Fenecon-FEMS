@@ -14,6 +14,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    CONF_BATTERY_MODULE_COUNT,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
     CONF_MODBUS_SLAVE,
@@ -22,6 +23,7 @@ from .const import (
     CONF_REST_PORT,
     CONF_USERNAME,
     COORDINATOR_UPDATE_INTERVAL,
+    DEFAULT_BATTERY_MODULE_COUNT,
     DOMAIN,
     MODBUS_FLOAT32_HOLDING_REGISTERS,
     MODBUS_FLOAT64_HOLDING_REGISTERS,
@@ -47,6 +49,10 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize coordinator."""
         self.entry = entry
+        self.battery_module_count = entry.data.get(
+            CONF_BATTERY_MODULE_COUNT,
+            DEFAULT_BATTERY_MODULE_COUNT,
+        )
 
         session = async_get_clientsession(hass)
         self.rest_api = FemsRestApi(
@@ -117,7 +123,7 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
         charger1_task = self.rest_api.async_fetch_group(charger1_group)
 
         cell_tasks = []
-        for module in range(7):
+        for module in range(self.battery_module_count):
             cell_group = (
                 "battery0/("
                 + "|".join(
