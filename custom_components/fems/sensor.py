@@ -698,6 +698,7 @@ for module in range(7):
         _SENSOR_LIST.append(
             FemsSensorDescription(
                 key=f"tower0_module{module}_cell{cell:03d}_voltage",
+                translation_key=f"tower0_module{module}_cell{cell:03d}_voltage",
                 name=f"Tower0 Modul {module} Zelle {cell:03d} Spannung",
                 native_unit_of_measurement=UnitOfElectricPotential.VOLT,
                 device_class=SensorDeviceClass.VOLTAGE,
