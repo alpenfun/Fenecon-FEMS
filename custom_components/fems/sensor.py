@@ -136,7 +136,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_soc",
         translation_key="battery_soc",
-        name="Batterie SoC",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
@@ -145,7 +144,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_soh",
         translation_key="battery_soh",
-        name="Batterie SoH",
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Soh"),
@@ -153,7 +151,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_current",
         translation_key="battery_current",
-        name="Batteriestrom",
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -162,7 +159,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_voltage_dc",
         translation_key="battery_voltage_dc",
-        name="Batteriespannung DC",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -171,7 +167,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_pack_voltage",
         translation_key="battery_pack_voltage",
-        name="Batteriespannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -180,14 +175,12 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_cycles",
         translation_key="battery_cycles",
-        name="Batterieladezyklen",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0NoOfCycles"),
     ),
     FemsSensorDescription(
         key="battery_capacity",
         translation_key="battery_capacity",
-        name="Batteriekapazität",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Capacity"),
@@ -195,25 +188,21 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_state",
         translation_key="battery_state",
-        name="Batteriestatus",
         value_fn=lambda c: _rest_value(c, "battery0/State"),
     ),
     FemsSensorDescription(
         key="battery_state_machine",
         translation_key="battery_state_machine",
-        name="Batterie Zustandsmaschine",
         value_fn=lambda c: _rest_value(c, "battery0/StateMachine"),
     ),
     FemsSensorDescription(
         key="battery_start_stop",
         translation_key="battery_start_stop",
-        name="Batterie Start/Stop",
         value_fn=lambda c: _rest_value(c, "battery0/StartStop"),
     ),
     FemsSensorDescription(
         key="battery_min_cell_voltage",
         translation_key="battery_min_cell_voltage",
-        name="Min. Zellspannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -222,7 +211,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_max_cell_voltage",
         translation_key="battery_max_cell_voltage",
-        name="Max. Zellspannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -231,7 +219,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="cell_voltage_spread",
         translation_key="cell_voltage_spread",
-        name="Zellspannungsdifferenz",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -240,7 +227,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_min_cell_temperature",
         translation_key="battery_min_cell_temperature",
-        name="Min. Zelltemperatur",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -249,7 +235,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_max_cell_temperature",
         translation_key="battery_max_cell_temperature",
-        name="Max. Zelltemperatur",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -258,7 +243,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_min_cell_voltage",
         translation_key="tower0_min_cell_voltage",
-        name="Tower0 Min. Zellspannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -269,7 +253,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_max_cell_voltage",
         translation_key="tower0_max_cell_voltage",
-        name="Tower0 Max. Zellspannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -280,7 +263,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_min_temperature",
         translation_key="tower0_min_temperature",
-        name="Tower0 Min. Temperatur",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -289,7 +271,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_max_temperature",
         translation_key="tower0_max_temperature",
-        name="Tower0 Max. Temperatur",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -298,7 +279,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="charger0_power",
         translation_key="charger0_power",
-        name="Ladegerät 0 Leistung",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -307,7 +287,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="charger0_voltage",
         translation_key="charger0_voltage",
-        name="Ladegerät 0 Spannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -316,7 +295,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="charger0_current",
         translation_key="charger0_current",
-        name="Ladegerät 0 Strom",
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -325,7 +303,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="charger1_power",
         translation_key="charger1_power",
-        name="Ladegerät 1 Leistung",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -334,7 +311,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="charger1_voltage",
         translation_key="charger1_voltage",
-        name="Ladegerät 1 Spannung",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
@@ -343,7 +319,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="charger1_current",
         translation_key="charger1_current",
-        name="Ladegerät 1 Strom",
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
@@ -352,7 +327,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_run_failed",
         translation_key="battery_run_failed",
-        name="Batterie Lauf fehlgeschlagen",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/RunFailed"),
@@ -360,7 +334,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_modbus_communication_failed",
         translation_key="battery_modbus_communication_failed",
-        name="Batterie Modbus-Kommunikation fehlgeschlagen",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/ModbusCommunicationFailed"),
@@ -368,7 +341,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="low_min_voltage_fault",
         translation_key="low_min_voltage_fault",
-        name="Fehler: Mindestspannung zu niedrig",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageFault"),
@@ -376,7 +348,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="low_min_voltage_warning",
         translation_key="low_min_voltage_warning",
-        name="Warnung: Mindestspannung zu niedrig",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageWarning"),
@@ -384,7 +355,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="low_min_voltage_fault_battery_stopped",
         translation_key="low_min_voltage_fault_battery_stopped",
-        name="Fehler Mindestspannung: Batterie gestoppt",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageFaultBatteryStopped"),
@@ -392,7 +362,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="level1_cell_under_voltage",
         translation_key="level1_cell_under_voltage",
-        name="Unterspannung Zelle Stufe 1",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Level1CellUnderVoltage"),
@@ -400,7 +369,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="level2_cell_under_voltage",
         translation_key="level2_cell_under_voltage",
-        name="Unterspannung Zelle Stufe 2",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Level2CellUnderVoltage"),
@@ -408,7 +376,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_level1_cell_under_voltage",
         translation_key="tower0_level1_cell_under_voltage",
-        name="Tower0 Unterspannung Zelle Stufe 1",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0Level1CellUnderVoltage"),
@@ -416,7 +383,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_level2_cell_under_voltage",
         translation_key="tower0_level2_cell_under_voltage",
-        name="Tower0 Unterspannung Zelle Stufe 2",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0Level2CellUnderVoltage"),
@@ -424,7 +390,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="status_fault",
         translation_key="status_fault",
-        name="Status Fehler",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusFault"),
@@ -432,7 +397,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="status_warning",
         translation_key="status_warning",
-        name="Status Warnung",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusWarning"),
@@ -440,7 +404,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="status_alarm",
         translation_key="status_alarm",
-        name="Status Alarm",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusAlarm"),
@@ -448,7 +411,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_status_fault",
         translation_key="tower0_status_fault",
-        name="Tower0 Status Fehler",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusFault"),
@@ -456,7 +418,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_status_warning",
         translation_key="tower0_status_warning",
-        name="Tower0 Status Warnung",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusWarning"),
@@ -464,7 +425,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="tower0_status_alarm",
         translation_key="tower0_status_alarm",
-        name="Tower0 Status Alarm",
         entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusAlarm"),
@@ -472,7 +432,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_soc_modbus",
         translation_key="ess_soc_modbus",
-        name="Batterie SoC (Modbus)",
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
@@ -481,7 +440,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_power",
         translation_key="ess_power",
-        name="ESS Leistung",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -490,7 +448,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="pv_power",
         translation_key="pv_power",
-        name="PV Leistung",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -499,7 +456,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="grid_power",
         translation_key="grid_power",
-        name="Netzleistung",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -508,7 +464,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="house_power",
         translation_key="house_power",
-        name="Hausverbrauch",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -517,7 +472,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_power_l1",
         translation_key="ess_power_l1",
-        name="ESS Leistung L1",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -526,7 +480,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_power_l2",
         translation_key="ess_power_l2",
-        name="ESS Leistung L2",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -535,7 +488,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_power_l3",
         translation_key="ess_power_l3",
-        name="ESS Leistung L3",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -544,7 +496,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="grid_power_l1",
         translation_key="grid_power_l1",
-        name="Netzleistung L1",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -553,7 +504,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="grid_power_l2",
         translation_key="grid_power_l2",
-        name="Netzleistung L2",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -562,7 +512,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="grid_power_l3",
         translation_key="grid_power_l3",
-        name="Netzleistung L3",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -571,7 +520,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="house_power_l1",
         translation_key="house_power_l1",
-        name="Hausverbrauch L1",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -580,7 +528,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="house_power_l2",
         translation_key="house_power_l2",
-        name="Hausverbrauch L2",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -589,7 +536,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="house_power_l3",
         translation_key="house_power_l3",
-        name="Hausverbrauch L3",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -598,7 +544,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_discharge_power",
         translation_key="ess_discharge_power",
-        name="Batterie Entladeleistung",
         native_unit_of_measurement=UnitOfPower.WATT,
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
@@ -607,7 +552,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_active_charge_energy",
         translation_key="ess_active_charge_energy",
-        name="ESS AC Ladeenergie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -616,7 +560,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="ess_active_discharge_energy",
         translation_key="ess_active_discharge_energy",
-        name="ESS AC Entladeenergie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -625,7 +568,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="grid_buy_energy",
         translation_key="grid_buy_energy",
-        name="Netzbezug Energie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -634,7 +576,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="grid_sell_energy",
         translation_key="grid_sell_energy",
-        name="Netzeinspeisung Energie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -643,7 +584,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="pv_energy",
         translation_key="pv_energy",
-        name="PV Energie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -652,7 +592,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="house_energy",
         translation_key="house_energy",
-        name="Hausverbrauch Energie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -661,7 +600,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_charge_energy",
         translation_key="battery_charge_energy",
-        name="Batterie Ladeenergie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -670,7 +608,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_discharge_energy",
         translation_key="battery_discharge_energy",
-        name="Batterie Entladeenergie",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
@@ -683,7 +620,6 @@ for module in range(7):
         FemsSensorDescription(
             key=f"modul_{module}_spread",
             translation_key=f"modul_{module}_spread",
-            name=f"Modul {module} Spannungsdifferenz",
             native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             device_class=SensorDeviceClass.VOLTAGE,
             entity_category=EntityCategory.DIAGNOSTIC,
@@ -699,7 +635,6 @@ for module in range(7):
             FemsSensorDescription(
                 key=f"tower0_module{module}_cell{cell:03d}_voltage",
                 translation_key=f"tower0_module{module}_cell{cell:03d}_voltage",
-                name=f"Tower0 Modul {module} Zelle {cell:03d} Spannung",
                 native_unit_of_measurement=UnitOfElectricPotential.VOLT,
                 device_class=SensorDeviceClass.VOLTAGE,
                 entity_category=EntityCategory.DIAGNOSTIC,
