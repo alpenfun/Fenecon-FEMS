@@ -54,6 +54,7 @@ BATTERY_STATE_MACHINE_MAP: dict[int, str] = {
     4: "Discharge",
     5: "Standby",
     6: "Error",
+    11: "State 11",
 }
 
 
