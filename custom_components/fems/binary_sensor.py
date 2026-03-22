@@ -113,7 +113,6 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
     FemsBinarySensorDescription(
         key="fault_status",
         translation_key="fault_status",
-        name="Fehlerstatus",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_fault_active,
@@ -122,7 +121,6 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
     FemsBinarySensorDescription(
         key="rest_communication",
         translation_key="rest_communication",
-        name="REST-Kommunikation",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_rest_available,
@@ -130,7 +128,6 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
     FemsBinarySensorDescription(
         key="modbus_communication",
         translation_key="modbus_communication",
-        name="Modbus-Kommunikation",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_modbus_available,
@@ -138,14 +135,12 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
     FemsBinarySensorDescription(
         key="system_ok",
         translation_key="system_ok",
-        name="System OK",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_ok,
     ),
     FemsBinarySensorDescription(
         key="system_warning",
         translation_key="system_warning",
-        name="System Warnung",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_warning,
@@ -154,7 +149,6 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
     FemsBinarySensorDescription(
         key="system_error",
         translation_key="system_error",
-        name="System Fehler",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_error,
