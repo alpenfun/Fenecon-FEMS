@@ -181,6 +181,19 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         ),
     ),
     FemsSensorDescription(
+        key="battery_state_raw",
+        name="Batterie Status Rohwert",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda c: c.data.rest.get("battery0/State")
+        ),
+    FemsSensorDescription(
+        key="battery_state_machine_raw",
+        name="Batterie Zustandsmaschine Rohwert",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda c: c.data.rest.get("battery0/StateMachine")
+        ),    
+    ),
+    FemsSensorDescription(
         key="battery_start_stop",
         translation_key="battery_start_stop",
         name="Batterie StartStop",
