@@ -5,11 +5,11 @@
         "title": "FEMS einrichten",
         "description": "Verbindung zu FEMS konfigurieren",
         "data": {
-          "rest_host": "REST Host",
-          "rest_port": "REST Port",
-          "modbus_host": "Modbus Host",
-          "modbus_port": "Modbus Port",
-          "modbus_slave": "Modbus Slave",
+          "rest_host": "REST-Host",
+          "rest_port": "REST-Port",
+          "modbus_host": "Modbus-Host",
+          "modbus_port": "Modbus-Port",
+          "modbus_slave": "Modbus-Slave",
           "username": "Benutzername",
           "password": "Passwort"
         }
@@ -40,7 +40,7 @@
         "name": "Batteriekapazität"
       },
       "battery_state": {
-        "name": "Batterie Status"
+        "name": "Batteriestatus"
       },
       "battery_state_machine": {
         "name": "Batterie Zustandsmaschine"
@@ -53,6 +53,9 @@
       },
       "battery_max_cell_voltage": {
         "name": "Max. Zellspannung"
+      },
+      "cell_voltage_spread": {
+        "name": "Zellspannungsdifferenz"
       },
       "battery_min_cell_temperature": {
         "name": "Min. Zelltemperatur"
@@ -89,6 +92,51 @@
       },
       "charger1_current": {
         "name": "Ladegerät 1 Strom"
+      },
+      "battery_run_failed": {
+        "name": "Batterie Lauf fehlgeschlagen"
+      },
+      "battery_modbus_communication_failed": {
+        "name": "Batterie Modbus-Kommunikation fehlgeschlagen"
+      },
+      "low_min_voltage_fault": {
+        "name": "Fehler: Mindestspannung zu niedrig"
+      },
+      "low_min_voltage_warning": {
+        "name": "Warnung: Mindestspannung zu niedrig"
+      },
+      "low_min_voltage_fault_battery_stopped": {
+        "name": "Fehler Mindestspannung: Batterie gestoppt"
+      },
+      "level1_cell_under_voltage": {
+        "name": "Unterspannung Zelle Stufe 1"
+      },
+      "level2_cell_under_voltage": {
+        "name": "Unterspannung Zelle Stufe 2"
+      },
+      "tower0_level1_cell_under_voltage": {
+        "name": "Tower0 Unterspannung Zelle Stufe 1"
+      },
+      "tower0_level2_cell_under_voltage": {
+        "name": "Tower0 Unterspannung Zelle Stufe 2"
+      },
+      "status_fault": {
+        "name": "Status Fehler"
+      },
+      "status_warning": {
+        "name": "Status Warnung"
+      },
+      "status_alarm": {
+        "name": "Status Alarm"
+      },
+      "tower0_status_fault": {
+        "name": "Tower0 Status Fehler"
+      },
+      "tower0_status_warning": {
+        "name": "Tower0 Status Warnung"
+      },
+      "tower0_status_alarm": {
+        "name": "Tower0 Status Alarm"
       },
       "ess_soc_modbus": {
         "name": "Batterie SoC (Modbus)"
@@ -158,6 +206,27 @@
       },
       "battery_discharge_energy": {
         "name": "Batterie Entladeenergie"
+      },
+      "modul_0_spread": {
+        "name": "Modul 0 Spannungsdifferenz"
+      },
+      "modul_1_spread": {
+        "name": "Modul 1 Spannungsdifferenz"
+      },
+      "modul_2_spread": {
+        "name": "Modul 2 Spannungsdifferenz"
+      },
+      "modul_3_spread": {
+        "name": "Modul 3 Spannungsdifferenz"
+      },
+      "modul_4_spread": {
+        "name": "Modul 4 Spannungsdifferenz"
+      },
+      "modul_5_spread": {
+        "name": "Modul 5 Spannungsdifferenz"
+      },
+      "modul_6_spread": {
+        "name": "Modul 6 Spannungsdifferenz"
       }
     },
     "binary_sensor": {
@@ -165,10 +234,10 @@
         "name": "Fehlerstatus"
       },
       "rest_communication": {
-        "name": "REST Kommunikation"
+        "name": "REST-Kommunikation"
       },
       "modbus_communication": {
-        "name": "Modbus Kommunikation"
+        "name": "Modbus-Kommunikation"
       },
       "system_ok": {
         "name": "System OK"
