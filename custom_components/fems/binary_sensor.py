@@ -139,6 +139,7 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
         key="system_ok",
         translation_key="system_ok",
         name="System OK",
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_ok,
     ),
     FemsBinarySensorDescription(
@@ -146,6 +147,7 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
         translation_key="system_warning",
         name="System Warnung",
         device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_warning,
         available_fn=lambda c: bool(c.data.rest),
     ),
@@ -154,6 +156,7 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
         translation_key="system_error",
         name="System Fehler",
         device_class=BinarySensorDeviceClass.PROBLEM,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_error,
     ),
 )
