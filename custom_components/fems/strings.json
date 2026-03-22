@@ -97,28 +97,28 @@
         "name": "Run Failed"
       },
       "battery_modbus_communication_failed": {
-        "name": "Modbus Communication Failed"
+        "name": "Modbus Error"
       },
       "low_min_voltage_fault": {
-        "name": "Low Min Voltage Fault"
+        "name": "Undervoltage Fault"
       },
       "low_min_voltage_warning": {
-        "name": "Low Min Voltage Warning"
+        "name": "Undervoltage Warning"
       },
       "low_min_voltage_fault_battery_stopped": {
-        "name": "Battery Stopped by Low Min Voltage Fault"
+        "name": "Battery Stopped"
       },
       "level1_cell_under_voltage": {
-        "name": "Level 1 Cell Undervoltage"
+        "name": "Cell Undervoltage Level 1"
       },
       "level2_cell_under_voltage": {
-        "name": "Level 2 Cell Undervoltage"
+        "name": "Cell Undervoltage Level 2"
       },
       "tower0_level1_cell_under_voltage": {
-        "name": "Tower 0 Level 1 Cell Undervoltage"
+        "name": "Tower 0 Cell Undervoltage Level 1"
       },
       "tower0_level2_cell_under_voltage": {
-        "name": "Tower 0 Level 2 Cell Undervoltage"
+        "name": "Tower 0 Cell Undervoltage Level 2"
       },
       "status_fault": {
         "name": "Fault"
@@ -142,7 +142,7 @@
         "name": "State of Charge (Modbus)"
       },
       "ess_power": {
-        "name": "ESS Power"
+        "name": "Battery Power"
       },
       "pv_power": {
         "name": "PV Power"
@@ -151,34 +151,34 @@
         "name": "Grid Power"
       },
       "house_power": {
-        "name": "House Power"
+        "name": "House Load"
       },
       "ess_power_l1": {
-        "name": "ESS Power L1"
+        "name": "Battery L1"
       },
       "ess_power_l2": {
-        "name": "ESS Power L2"
+        "name": "Battery L2"
       },
       "ess_power_l3": {
-        "name": "ESS Power L3"
+        "name": "Battery L3"
       },
       "grid_power_l1": {
-        "name": "Grid Power L1"
+        "name": "Grid L1"
       },
       "grid_power_l2": {
-        "name": "Grid Power L2"
+        "name": "Grid L2"
       },
       "grid_power_l3": {
-        "name": "Grid Power L3"
+        "name": "Grid L3"
       },
       "house_power_l1": {
-        "name": "House Power L1"
+        "name": "House L1"
       },
       "house_power_l2": {
-        "name": "House Power L2"
+        "name": "House L2"
       },
       "house_power_l3": {
-        "name": "House Power L3"
+        "name": "House L3"
       },
       "ess_discharge_power": {
         "name": "Discharge Power"
@@ -190,357 +190,357 @@
         "name": "AC Discharge Energy"
       },
       "grid_buy_energy": {
-        "name": "Grid Import Energy"
+        "name": "Grid Import"
       },
       "grid_sell_energy": {
-        "name": "Grid Export Energy"
+        "name": "Grid Export"
       },
       "pv_energy": {
-        "name": "PV Energy"
+        "name": "PV Yield"
       },
       "house_energy": {
-        "name": "House Energy"
+        "name": "Consumption"
       },
       "battery_charge_energy": {
-        "name": "Battery Charge Energy"
+        "name": "Battery Charge"
       },
       "battery_discharge_energy": {
-        "name": "Battery Discharge Energy"
+        "name": "Battery Discharge"
       },
       "modul_0_spread": {
-        "name": "Module 0 Voltage Spread"
+        "name": "Module 0 ΔV"
       },
       "modul_1_spread": {
-        "name": "Module 1 Voltage Spread"
+        "name": "Module 1 ΔV"
       },
       "modul_2_spread": {
-        "name": "Module 2 Voltage Spread"
+        "name": "Module 2 ΔV"
       },
       "modul_3_spread": {
-        "name": "Module 3 Voltage Spread"
+        "name": "Module 3 ΔV"
       },
       "modul_4_spread": {
-        "name": "Module 4 Voltage Spread"
+        "name": "Module 4 ΔV"
       },
       "modul_5_spread": {
-        "name": "Module 5 Voltage Spread"
+        "name": "Module 5 ΔV"
       },
       "modul_6_spread": {
-        "name": "Module 6 Voltage Spread"
+        "name": "Module 6 ΔV"
       },
       "tower0_module0_cell000_voltage": {
-        "name": "Module 0 Cell 000 Voltage"
+        "name": "Module 0 Cell 000"
       },
       "tower0_module0_cell001_voltage": {
-        "name": "Module 0 Cell 001 Voltage"
+        "name": "Module 0 Cell 001"
       },
       "tower0_module0_cell002_voltage": {
-        "name": "Module 0 Cell 002 Voltage"
+        "name": "Module 0 Cell 002"
       },
       "tower0_module0_cell003_voltage": {
-        "name": "Module 0 Cell 003 Voltage"
+        "name": "Module 0 Cell 003"
       },
       "tower0_module0_cell004_voltage": {
-        "name": "Module 0 Cell 004 Voltage"
+        "name": "Module 0 Cell 004"
       },
       "tower0_module0_cell005_voltage": {
-        "name": "Module 0 Cell 005 Voltage"
+        "name": "Module 0 Cell 005"
       },
       "tower0_module0_cell006_voltage": {
-        "name": "Module 0 Cell 006 Voltage"
+        "name": "Module 0 Cell 006"
       },
       "tower0_module0_cell007_voltage": {
-        "name": "Module 0 Cell 007 Voltage"
+        "name": "Module 0 Cell 007"
       },
       "tower0_module0_cell008_voltage": {
-        "name": "Module 0 Cell 008 Voltage"
+        "name": "Module 0 Cell 008"
       },
       "tower0_module0_cell009_voltage": {
-        "name": "Module 0 Cell 009 Voltage"
+        "name": "Module 0 Cell 009"
       },
       "tower0_module0_cell010_voltage": {
-        "name": "Module 0 Cell 010 Voltage"
+        "name": "Module 0 Cell 010"
       },
       "tower0_module0_cell011_voltage": {
-        "name": "Module 0 Cell 011 Voltage"
+        "name": "Module 0 Cell 011"
       },
       "tower0_module0_cell012_voltage": {
-        "name": "Module 0 Cell 012 Voltage"
+        "name": "Module 0 Cell 012"
       },
       "tower0_module0_cell013_voltage": {
-        "name": "Module 0 Cell 013 Voltage"
+        "name": "Module 0 Cell 013"
       },
       "tower0_module1_cell000_voltage": {
-        "name": "Module 1 Cell 000 Voltage"
+        "name": "Module 1 Cell 000"
       },
       "tower0_module1_cell001_voltage": {
-        "name": "Module 1 Cell 001 Voltage"
+        "name": "Module 1 Cell 001"
       },
       "tower0_module1_cell002_voltage": {
-        "name": "Module 1 Cell 002 Voltage"
+        "name": "Module 1 Cell 002"
       },
       "tower0_module1_cell003_voltage": {
-        "name": "Module 1 Cell 003 Voltage"
+        "name": "Module 1 Cell 003"
       },
       "tower0_module1_cell004_voltage": {
-        "name": "Module 1 Cell 004 Voltage"
+        "name": "Module 1 Cell 004"
       },
       "tower0_module1_cell005_voltage": {
-        "name": "Module 1 Cell 005 Voltage"
+        "name": "Module 1 Cell 005"
       },
       "tower0_module1_cell006_voltage": {
-        "name": "Module 1 Cell 006 Voltage"
+        "name": "Module 1 Cell 006"
       },
       "tower0_module1_cell007_voltage": {
-        "name": "Module 1 Cell 007 Voltage"
+        "name": "Module 1 Cell 007"
       },
       "tower0_module1_cell008_voltage": {
-        "name": "Module 1 Cell 008 Voltage"
+        "name": "Module 1 Cell 008"
       },
       "tower0_module1_cell009_voltage": {
-        "name": "Module 1 Cell 009 Voltage"
+        "name": "Module 1 Cell 009"
       },
       "tower0_module1_cell010_voltage": {
-        "name": "Module 1 Cell 010 Voltage"
+        "name": "Module 1 Cell 010"
       },
       "tower0_module1_cell011_voltage": {
-        "name": "Module 1 Cell 011 Voltage"
+        "name": "Module 1 Cell 011"
       },
       "tower0_module1_cell012_voltage": {
-        "name": "Module 1 Cell 012 Voltage"
+        "name": "Module 1 Cell 012"
       },
       "tower0_module1_cell013_voltage": {
-        "name": "Module 1 Cell 013 Voltage"
+        "name": "Module 1 Cell 013"
       },
       "tower0_module2_cell000_voltage": {
-        "name": "Module 2 Cell 000 Voltage"
+        "name": "Module 2 Cell 000"
       },
       "tower0_module2_cell001_voltage": {
-        "name": "Module 2 Cell 001 Voltage"
+        "name": "Module 2 Cell 001"
       },
       "tower0_module2_cell002_voltage": {
-        "name": "Module 2 Cell 002 Voltage"
+        "name": "Module 2 Cell 002"
       },
       "tower0_module2_cell003_voltage": {
-        "name": "Module 2 Cell 003 Voltage"
+        "name": "Module 2 Cell 003"
       },
       "tower0_module2_cell004_voltage": {
-        "name": "Module 2 Cell 004 Voltage"
+        "name": "Module 2 Cell 004"
       },
       "tower0_module2_cell005_voltage": {
-        "name": "Module 2 Cell 005 Voltage"
+        "name": "Module 2 Cell 005"
       },
       "tower0_module2_cell006_voltage": {
-        "name": "Module 2 Cell 006 Voltage"
+        "name": "Module 2 Cell 006"
       },
       "tower0_module2_cell007_voltage": {
-        "name": "Module 2 Cell 007 Voltage"
+        "name": "Module 2 Cell 007"
       },
       "tower0_module2_cell008_voltage": {
-        "name": "Module 2 Cell 008 Voltage"
+        "name": "Module 2 Cell 008"
       },
       "tower0_module2_cell009_voltage": {
-        "name": "Module 2 Cell 009 Voltage"
+        "name": "Module 2 Cell 009"
       },
       "tower0_module2_cell010_voltage": {
-        "name": "Module 2 Cell 010 Voltage"
+        "name": "Module 2 Cell 010"
       },
       "tower0_module2_cell011_voltage": {
-        "name": "Module 2 Cell 011 Voltage"
+        "name": "Module 2 Cell 011"
       },
       "tower0_module2_cell012_voltage": {
-        "name": "Module 2 Cell 012 Voltage"
+        "name": "Module 2 Cell 012"
       },
       "tower0_module2_cell013_voltage": {
-        "name": "Module 2 Cell 013 Voltage"
+        "name": "Module 2 Cell 013"
       },
       "tower0_module3_cell000_voltage": {
-        "name": "Module 3 Cell 000 Voltage"
+        "name": "Module 3 Cell 000"
       },
       "tower0_module3_cell001_voltage": {
-        "name": "Module 3 Cell 001 Voltage"
+        "name": "Module 3 Cell 001"
       },
       "tower0_module3_cell002_voltage": {
-        "name": "Module 3 Cell 002 Voltage"
+        "name": "Module 3 Cell 002"
       },
       "tower0_module3_cell003_voltage": {
-        "name": "Module 3 Cell 003 Voltage"
+        "name": "Module 3 Cell 003"
       },
       "tower0_module3_cell004_voltage": {
-        "name": "Module 3 Cell 004 Voltage"
+        "name": "Module 3 Cell 004"
       },
       "tower0_module3_cell005_voltage": {
-        "name": "Module 3 Cell 005 Voltage"
+        "name": "Module 3 Cell 005"
       },
       "tower0_module3_cell006_voltage": {
-        "name": "Module 3 Cell 006 Voltage"
+        "name": "Module 3 Cell 006"
       },
       "tower0_module3_cell007_voltage": {
-        "name": "Module 3 Cell 007 Voltage"
+        "name": "Module 3 Cell 007"
       },
       "tower0_module3_cell008_voltage": {
-        "name": "Module 3 Cell 008 Voltage"
+        "name": "Module 3 Cell 008"
       },
       "tower0_module3_cell009_voltage": {
-        "name": "Module 3 Cell 009 Voltage"
+        "name": "Module 3 Cell 009"
       },
       "tower0_module3_cell010_voltage": {
-        "name": "Module 3 Cell 010 Voltage"
+        "name": "Module 3 Cell 010"
       },
       "tower0_module3_cell011_voltage": {
-        "name": "Module 3 Cell 011 Voltage"
+        "name": "Module 3 Cell 011"
       },
       "tower0_module3_cell012_voltage": {
-        "name": "Module 3 Cell 012 Voltage"
+        "name": "Module 3 Cell 012"
       },
       "tower0_module3_cell013_voltage": {
-        "name": "Module 3 Cell 013 Voltage"
+        "name": "Module 3 Cell 013"
       },
       "tower0_module4_cell000_voltage": {
-        "name": "Module 4 Cell 000 Voltage"
+        "name": "Module 4 Cell 000"
       },
       "tower0_module4_cell001_voltage": {
-        "name": "Module 4 Cell 001 Voltage"
+        "name": "Module 4 Cell 001"
       },
       "tower0_module4_cell002_voltage": {
-        "name": "Module 4 Cell 002 Voltage"
+        "name": "Module 4 Cell 002"
       },
       "tower0_module4_cell003_voltage": {
-        "name": "Module 4 Cell 003 Voltage"
+        "name": "Module 4 Cell 003"
       },
       "tower0_module4_cell004_voltage": {
-        "name": "Module 4 Cell 004 Voltage"
+        "name": "Module 4 Cell 004"
       },
       "tower0_module4_cell005_voltage": {
-        "name": "Module 4 Cell 005 Voltage"
+        "name": "Module 4 Cell 005"
       },
       "tower0_module4_cell006_voltage": {
-        "name": "Module 4 Cell 006 Voltage"
+        "name": "Module 4 Cell 006"
       },
       "tower0_module4_cell007_voltage": {
-        "name": "Module 4 Cell 007 Voltage"
+        "name": "Module 4 Cell 007"
       },
       "tower0_module4_cell008_voltage": {
-        "name": "Module 4 Cell 008 Voltage"
+        "name": "Module 4 Cell 008"
       },
       "tower0_module4_cell009_voltage": {
-        "name": "Module 4 Cell 009 Voltage"
+        "name": "Module 4 Cell 009"
       },
       "tower0_module4_cell010_voltage": {
-        "name": "Module 4 Cell 010 Voltage"
+        "name": "Module 4 Cell 010"
       },
       "tower0_module4_cell011_voltage": {
-        "name": "Module 4 Cell 011 Voltage"
+        "name": "Module 4 Cell 011"
       },
       "tower0_module4_cell012_voltage": {
-        "name": "Module 4 Cell 012 Voltage"
+        "name": "Module 4 Cell 012"
       },
       "tower0_module4_cell013_voltage": {
-        "name": "Module 4 Cell 013 Voltage"
+        "name": "Module 4 Cell 013"
       },
       "tower0_module5_cell000_voltage": {
-        "name": "Module 5 Cell 000 Voltage"
+        "name": "Module 5 Cell 000"
       },
       "tower0_module5_cell001_voltage": {
-        "name": "Module 5 Cell 001 Voltage"
+        "name": "Module 5 Cell 001"
       },
       "tower0_module5_cell002_voltage": {
-        "name": "Module 5 Cell 002 Voltage"
+        "name": "Module 5 Cell 002"
       },
       "tower0_module5_cell003_voltage": {
-        "name": "Module 5 Cell 003 Voltage"
+        "name": "Module 5 Cell 003"
       },
       "tower0_module5_cell004_voltage": {
-        "name": "Module 5 Cell 004 Voltage"
+        "name": "Module 5 Cell 004"
       },
       "tower0_module5_cell005_voltage": {
-        "name": "Module 5 Cell 005 Voltage"
+        "name": "Module 5 Cell 005"
       },
       "tower0_module5_cell006_voltage": {
-        "name": "Module 5 Cell 006 Voltage"
+        "name": "Module 5 Cell 006"
       },
       "tower0_module5_cell007_voltage": {
-        "name": "Module 5 Cell 007 Voltage"
+        "name": "Module 5 Cell 007"
       },
       "tower0_module5_cell008_voltage": {
-        "name": "Module 5 Cell 008 Voltage"
+        "name": "Module 5 Cell 008"
       },
       "tower0_module5_cell009_voltage": {
-        "name": "Module 5 Cell 009 Voltage"
+        "name": "Module 5 Cell 009"
       },
       "tower0_module5_cell010_voltage": {
-        "name": "Module 5 Cell 010 Voltage"
+        "name": "Module 5 Cell 010"
       },
       "tower0_module5_cell011_voltage": {
-        "name": "Module 5 Cell 011 Voltage"
+        "name": "Module 5 Cell 011"
       },
       "tower0_module5_cell012_voltage": {
-        "name": "Module 5 Cell 012 Voltage"
+        "name": "Module 5 Cell 012"
       },
       "tower0_module5_cell013_voltage": {
-        "name": "Module 5 Cell 013 Voltage"
+        "name": "Module 5 Cell 013"
       },
       "tower0_module6_cell000_voltage": {
-        "name": "Module 6 Cell 000 Voltage"
+        "name": "Module 6 Cell 000"
       },
       "tower0_module6_cell001_voltage": {
-        "name": "Module 6 Cell 001 Voltage"
+        "name": "Module 6 Cell 001"
       },
       "tower0_module6_cell002_voltage": {
-        "name": "Module 6 Cell 002 Voltage"
+        "name": "Module 6 Cell 002"
       },
       "tower0_module6_cell003_voltage": {
-        "name": "Module 6 Cell 003 Voltage"
+        "name": "Module 6 Cell 003"
       },
       "tower0_module6_cell004_voltage": {
-        "name": "Module 6 Cell 004 Voltage"
+        "name": "Module 6 Cell 004"
       },
       "tower0_module6_cell005_voltage": {
-        "name": "Module 6 Cell 005 Voltage"
+        "name": "Module 6 Cell 005"
       },
       "tower0_module6_cell006_voltage": {
-        "name": "Module 6 Cell 006 Voltage"
+        "name": "Module 6 Cell 006"
       },
       "tower0_module6_cell007_voltage": {
-        "name": "Module 6 Cell 007 Voltage"
+        "name": "Module 6 Cell 007"
       },
       "tower0_module6_cell008_voltage": {
-        "name": "Module 6 Cell 008 Voltage"
+        "name": "Module 6 Cell 008"
       },
       "tower0_module6_cell009_voltage": {
-        "name": "Module 6 Cell 009 Voltage"
+        "name": "Module 6 Cell 009"
       },
       "tower0_module6_cell010_voltage": {
-        "name": "Module 6 Cell 010 Voltage"
+        "name": "Module 6 Cell 010"
       },
       "tower0_module6_cell011_voltage": {
-        "name": "Module 6 Cell 011 Voltage"
+        "name": "Module 6 Cell 011"
       },
       "tower0_module6_cell012_voltage": {
-        "name": "Module 6 Cell 012 Voltage"
+        "name": "Module 6 Cell 012"
       },
       "tower0_module6_cell013_voltage": {
-        "name": "Module 6 Cell 013 Voltage"
+        "name": "Module 6 Cell 013"
       }
     },
     "binary_sensor": {
       "fault_status": {
-        "name": "Fault Status"
+        "name": "Fault Active"
       },
       "rest_communication": {
-        "name": "REST Communication"
+        "name": "REST Connected"
       },
       "modbus_communication": {
-        "name": "Modbus Communication"
+        "name": "Modbus Connected"
       },
       "system_ok": {
         "name": "System OK"
       },
       "system_warning": {
-        "name": "System Warning"
+        "name": "Warning"
       },
       "system_error": {
-        "name": "System Error"
+        "name": "Error"
       }
     }
   }
