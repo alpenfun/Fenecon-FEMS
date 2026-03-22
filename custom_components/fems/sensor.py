@@ -27,6 +27,7 @@ from .const import DOMAIN
 from .coordinator import FemsDataUpdateCoordinator
 from .entity import FemsCoordinatorEntity
 
+from homeassistant.const import EntityCategory
 
 @dataclass(frozen=True, kw_only=True)
 class FemsSensorDescription(SensorEntityDescription):
@@ -192,7 +193,6 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: c.data.rest.get("battery0/StateMachine")
         ),    
-    ),
     FemsSensorDescription(
         key="battery_start_stop",
         translation_key="battery_start_stop",
