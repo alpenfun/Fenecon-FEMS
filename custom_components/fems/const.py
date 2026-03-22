@@ -11,9 +11,7 @@ CONF_MODBUS_PORT = "modbus_port"
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
 CONF_MODBUS_SLAVE = "modbus_slave"
-CONF_USE_TLS = "use_tls"
 
-DEFAULT_NAME = "FEMS"
 DEFAULT_REST_PORT = 8084
 DEFAULT_MODBUS_PORT = 502
 DEFAULT_MODBUS_SLAVE = 1
@@ -27,24 +25,6 @@ PLATFORMS = ["sensor", "binary_sensor"]
 
 MANUFACTURER = "FENECON"
 MODEL = "FEMS"
-
-REST_BATTERY_CHANNELS = [
-    "battery0/Soc",
-    "battery0/Voltage",
-    "battery0/Tower0PackVoltage",
-]
-
-REST_CHARGER0_CHANNELS = [
-    "charger0/ActualPower",
-    "charger0/Voltage",
-    "charger0/Current",
-]
-
-REST_CHARGER1_CHANNELS = [
-    "charger1/ActualPower",
-    "charger1/Voltage",
-    "charger1/Current",
-]
 
 MODBUS_UINT16_INPUT_REGISTERS = {
     "ess_soc": 302,
