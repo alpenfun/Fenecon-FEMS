@@ -8,6 +8,7 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
+    CONF_BATTERY_MODULE_COUNT,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
     CONF_MODBUS_SLAVE,
@@ -15,10 +16,13 @@ from .const import (
     CONF_REST_HOST,
     CONF_REST_PORT,
     CONF_USERNAME,
+    DEFAULT_BATTERY_MODULE_COUNT,
     DEFAULT_MODBUS_PORT,
     DEFAULT_MODBUS_SLAVE,
     DEFAULT_REST_PORT,
     DOMAIN,
+    MAX_BATTERY_MODULE_COUNT,
+    MIN_BATTERY_MODULE_COUNT,
 )
 
 
@@ -45,6 +49,16 @@ class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_MODBUS_HOST): str,
                 vol.Required(CONF_MODBUS_PORT, default=DEFAULT_MODBUS_PORT): int,
                 vol.Required(CONF_MODBUS_SLAVE, default=DEFAULT_MODBUS_SLAVE): int,
+                vol.Required(
+                    CONF_BATTERY_MODULE_COUNT,
+                    default=DEFAULT_BATTERY_MODULE_COUNT,
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(
+                        min=MIN_BATTERY_MODULE_COUNT,
+                        max=MAX_BATTERY_MODULE_COUNT,
+                    ),
+                ),
                 vol.Optional(CONF_USERNAME, default="x"): str,
                 vol.Optional(CONF_PASSWORD, default="user"): str,
             }
