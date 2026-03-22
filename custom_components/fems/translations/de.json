@@ -227,6 +227,300 @@
       },
       "modul_6_spread": {
         "name": "Modul 6 Spannungsdifferenz"
+      },
+      "tower0_module0_cell000_voltage": {
+        "name": "Tower0 Modul 0 Zelle 000 Spannung"
+      },
+      "tower0_module0_cell001_voltage": {
+        "name": "Tower0 Modul 0 Zelle 001 Spannung"
+      },
+      "tower0_module0_cell002_voltage": {
+        "name": "Tower0 Modul 0 Zelle 002 Spannung"
+      },
+      "tower0_module0_cell003_voltage": {
+        "name": "Tower0 Modul 0 Zelle 003 Spannung"
+      },
+      "tower0_module0_cell004_voltage": {
+        "name": "Tower0 Modul 0 Zelle 004 Spannung"
+      },
+      "tower0_module0_cell005_voltage": {
+        "name": "Tower0 Modul 0 Zelle 005 Spannung"
+      },
+      "tower0_module0_cell006_voltage": {
+        "name": "Tower0 Modul 0 Zelle 006 Spannung"
+      },
+      "tower0_module0_cell007_voltage": {
+        "name": "Tower0 Modul 0 Zelle 007 Spannung"
+      },
+      "tower0_module0_cell008_voltage": {
+        "name": "Tower0 Modul 0 Zelle 008 Spannung"
+      },
+      "tower0_module0_cell009_voltage": {
+        "name": "Tower0 Modul 0 Zelle 009 Spannung"
+      },
+      "tower0_module0_cell010_voltage": {
+        "name": "Tower0 Modul 0 Zelle 010 Spannung"
+      },
+      "tower0_module0_cell011_voltage": {
+        "name": "Tower0 Modul 0 Zelle 011 Spannung"
+      },
+      "tower0_module0_cell012_voltage": {
+        "name": "Tower0 Modul 0 Zelle 012 Spannung"
+      },
+      "tower0_module0_cell013_voltage": {
+        "name": "Tower0 Modul 0 Zelle 013 Spannung"
+      },
+      "tower0_module1_cell000_voltage": {
+        "name": "Tower0 Modul 1 Zelle 000 Spannung"
+      },
+      "tower0_module1_cell001_voltage": {
+        "name": "Tower0 Modul 1 Zelle 001 Spannung"
+      },
+      "tower0_module1_cell002_voltage": {
+        "name": "Tower0 Modul 1 Zelle 002 Spannung"
+      },
+      "tower0_module1_cell003_voltage": {
+        "name": "Tower0 Modul 1 Zelle 003 Spannung"
+      },
+      "tower0_module1_cell004_voltage": {
+        "name": "Tower0 Modul 1 Zelle 004 Spannung"
+      },
+      "tower0_module1_cell005_voltage": {
+        "name": "Tower0 Modul 1 Zelle 005 Spannung"
+      },
+      "tower0_module1_cell006_voltage": {
+        "name": "Tower0 Modul 1 Zelle 006 Spannung"
+      },
+      "tower0_module1_cell007_voltage": {
+        "name": "Tower0 Modul 1 Zelle 007 Spannung"
+      },
+      "tower0_module1_cell008_voltage": {
+        "name": "Tower0 Modul 1 Zelle 008 Spannung"
+      },
+      "tower0_module1_cell009_voltage": {
+        "name": "Tower0 Modul 1 Zelle 009 Spannung"
+      },
+      "tower0_module1_cell010_voltage": {
+        "name": "Tower0 Modul 1 Zelle 010 Spannung"
+      },
+      "tower0_module1_cell011_voltage": {
+        "name": "Tower0 Modul 1 Zelle 011 Spannung"
+      },
+      "tower0_module1_cell012_voltage": {
+        "name": "Tower0 Modul 1 Zelle 012 Spannung"
+      },
+      "tower0_module1_cell013_voltage": {
+        "name": "Tower0 Modul 1 Zelle 013 Spannung"
+      },
+      "tower0_module2_cell000_voltage": {
+        "name": "Tower0 Modul 2 Zelle 000 Spannung"
+      },
+      "tower0_module2_cell001_voltage": {
+        "name": "Tower0 Modul 2 Zelle 001 Spannung"
+      },
+      "tower0_module2_cell002_voltage": {
+        "name": "Tower0 Modul 2 Zelle 002 Spannung"
+      },
+      "tower0_module2_cell003_voltage": {
+        "name": "Tower0 Modul 2 Zelle 003 Spannung"
+      },
+      "tower0_module2_cell004_voltage": {
+        "name": "Tower0 Modul 2 Zelle 004 Spannung"
+      },
+      "tower0_module2_cell005_voltage": {
+        "name": "Tower0 Modul 2 Zelle 005 Spannung"
+      },
+      "tower0_module2_cell006_voltage": {
+        "name": "Tower0 Modul 2 Zelle 006 Spannung"
+      },
+      "tower0_module2_cell007_voltage": {
+        "name": "Tower0 Modul 2 Zelle 007 Spannung"
+      },
+      "tower0_module2_cell008_voltage": {
+        "name": "Tower0 Modul 2 Zelle 008 Spannung"
+      },
+      "tower0_module2_cell009_voltage": {
+        "name": "Tower0 Modul 2 Zelle 009 Spannung"
+      },
+      "tower0_module2_cell010_voltage": {
+        "name": "Tower0 Modul 2 Zelle 010 Spannung"
+      },
+      "tower0_module2_cell011_voltage": {
+        "name": "Tower0 Modul 2 Zelle 011 Spannung"
+      },
+      "tower0_module2_cell012_voltage": {
+        "name": "Tower0 Modul 2 Zelle 012 Spannung"
+      },
+      "tower0_module2_cell013_voltage": {
+        "name": "Tower0 Modul 2 Zelle 013 Spannung"
+      },
+      "tower0_module3_cell000_voltage": {
+        "name": "Tower0 Modul 3 Zelle 000 Spannung"
+      },
+      "tower0_module3_cell001_voltage": {
+        "name": "Tower0 Modul 3 Zelle 001 Spannung"
+      },
+      "tower0_module3_cell002_voltage": {
+        "name": "Tower0 Modul 3 Zelle 002 Spannung"
+      },
+      "tower0_module3_cell003_voltage": {
+        "name": "Tower0 Modul 3 Zelle 003 Spannung"
+      },
+      "tower0_module3_cell004_voltage": {
+        "name": "Tower0 Modul 3 Zelle 004 Spannung"
+      },
+      "tower0_module3_cell005_voltage": {
+        "name": "Tower0 Modul 3 Zelle 005 Spannung"
+      },
+      "tower0_module3_cell006_voltage": {
+        "name": "Tower0 Modul 3 Zelle 006 Spannung"
+      },
+      "tower0_module3_cell007_voltage": {
+        "name": "Tower0 Modul 3 Zelle 007 Spannung"
+      },
+      "tower0_module3_cell008_voltage": {
+        "name": "Tower0 Modul 3 Zelle 008 Spannung"
+      },
+      "tower0_module3_cell009_voltage": {
+        "name": "Tower0 Modul 3 Zelle 009 Spannung"
+      },
+      "tower0_module3_cell010_voltage": {
+        "name": "Tower0 Modul 3 Zelle 010 Spannung"
+      },
+      "tower0_module3_cell011_voltage": {
+        "name": "Tower0 Modul 3 Zelle 011 Spannung"
+      },
+      "tower0_module3_cell012_voltage": {
+        "name": "Tower0 Modul 3 Zelle 012 Spannung"
+      },
+      "tower0_module3_cell013_voltage": {
+        "name": "Tower0 Modul 3 Zelle 013 Spannung"
+      },
+      "tower0_module4_cell000_voltage": {
+        "name": "Tower0 Modul 4 Zelle 000 Spannung"
+      },
+      "tower0_module4_cell001_voltage": {
+        "name": "Tower0 Modul 4 Zelle 001 Spannung"
+      },
+      "tower0_module4_cell002_voltage": {
+        "name": "Tower0 Modul 4 Zelle 002 Spannung"
+      },
+      "tower0_module4_cell003_voltage": {
+        "name": "Tower0 Modul 4 Zelle 003 Spannung"
+      },
+      "tower0_module4_cell004_voltage": {
+        "name": "Tower0 Modul 4 Zelle 004 Spannung"
+      },
+      "tower0_module4_cell005_voltage": {
+        "name": "Tower0 Modul 4 Zelle 005 Spannung"
+      },
+      "tower0_module4_cell006_voltage": {
+        "name": "Tower0 Modul 4 Zelle 006 Spannung"
+      },
+      "tower0_module4_cell007_voltage": {
+        "name": "Tower0 Modul 4 Zelle 007 Spannung"
+      },
+      "tower0_module4_cell008_voltage": {
+        "name": "Tower0 Modul 4 Zelle 008 Spannung"
+      },
+      "tower0_module4_cell009_voltage": {
+        "name": "Tower0 Modul 4 Zelle 009 Spannung"
+      },
+      "tower0_module4_cell010_voltage": {
+        "name": "Tower0 Modul 4 Zelle 010 Spannung"
+      },
+      "tower0_module4_cell011_voltage": {
+        "name": "Tower0 Modul 4 Zelle 011 Spannung"
+      },
+      "tower0_module4_cell012_voltage": {
+        "name": "Tower0 Modul 4 Zelle 012 Spannung"
+      },
+      "tower0_module4_cell013_voltage": {
+        "name": "Tower0 Modul 4 Zelle 013 Spannung"
+      },
+      "tower0_module5_cell000_voltage": {
+        "name": "Tower0 Modul 5 Zelle 000 Spannung"
+      },
+      "tower0_module5_cell001_voltage": {
+        "name": "Tower0 Modul 5 Zelle 001 Spannung"
+      },
+      "tower0_module5_cell002_voltage": {
+        "name": "Tower0 Modul 5 Zelle 002 Spannung"
+      },
+      "tower0_module5_cell003_voltage": {
+        "name": "Tower0 Modul 5 Zelle 003 Spannung"
+      },
+      "tower0_module5_cell004_voltage": {
+        "name": "Tower0 Modul 5 Zelle 004 Spannung"
+      },
+      "tower0_module5_cell005_voltage": {
+        "name": "Tower0 Modul 5 Zelle 005 Spannung"
+      },
+      "tower0_module5_cell006_voltage": {
+        "name": "Tower0 Modul 5 Zelle 006 Spannung"
+      },
+      "tower0_module5_cell007_voltage": {
+        "name": "Tower0 Modul 5 Zelle 007 Spannung"
+      },
+      "tower0_module5_cell008_voltage": {
+        "name": "Tower0 Modul 5 Zelle 008 Spannung"
+      },
+      "tower0_module5_cell009_voltage": {
+        "name": "Tower0 Modul 5 Zelle 009 Spannung"
+      },
+      "tower0_module5_cell010_voltage": {
+        "name": "Tower0 Modul 5 Zelle 010 Spannung"
+      },
+      "tower0_module5_cell011_voltage": {
+        "name": "Tower0 Modul 5 Zelle 011 Spannung"
+      },
+      "tower0_module5_cell012_voltage": {
+        "name": "Tower0 Modul 5 Zelle 012 Spannung"
+      },
+      "tower0_module5_cell013_voltage": {
+        "name": "Tower0 Modul 5 Zelle 013 Spannung"
+      },
+      "tower0_module6_cell000_voltage": {
+        "name": "Tower0 Modul 6 Zelle 000 Spannung"
+      },
+      "tower0_module6_cell001_voltage": {
+        "name": "Tower0 Modul 6 Zelle 001 Spannung"
+      },
+      "tower0_module6_cell002_voltage": {
+        "name": "Tower0 Modul 6 Zelle 002 Spannung"
+      },
+      "tower0_module6_cell003_voltage": {
+        "name": "Tower0 Modul 6 Zelle 003 Spannung"
+      },
+      "tower0_module6_cell004_voltage": {
+        "name": "Tower0 Modul 6 Zelle 004 Spannung"
+      },
+      "tower0_module6_cell005_voltage": {
+        "name": "Tower0 Modul 6 Zelle 005 Spannung"
+      },
+      "tower0_module6_cell006_voltage": {
+        "name": "Tower0 Modul 6 Zelle 006 Spannung"
+      },
+      "tower0_module6_cell007_voltage": {
+        "name": "Tower0 Modul 6 Zelle 007 Spannung"
+      },
+      "tower0_module6_cell008_voltage": {
+        "name": "Tower0 Modul 6 Zelle 008 Spannung"
+      },
+      "tower0_module6_cell009_voltage": {
+        "name": "Tower0 Modul 6 Zelle 009 Spannung"
+      },
+      "tower0_module6_cell010_voltage": {
+        "name": "Tower0 Modul 6 Zelle 010 Spannung"
+      },
+      "tower0_module6_cell011_voltage": {
+        "name": "Tower0 Modul 6 Zelle 011 Spannung"
+      },
+      "tower0_module6_cell012_voltage": {
+        "name": "Tower0 Modul 6 Zelle 012 Spannung"
+      },
+      "tower0_module6_cell013_voltage": {
+        "name": "Tower0 Modul 6 Zelle 013 Spannung"
       }
     },
     "binary_sensor": {
