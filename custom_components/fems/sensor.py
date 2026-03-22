@@ -14,6 +14,7 @@ from homeassistant.components.sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
+    EntityCategory,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfEnergy,
@@ -27,7 +28,6 @@ from .const import DOMAIN
 from .coordinator import FemsDataUpdateCoordinator
 from .entity import FemsCoordinatorEntity
 
-from homeassistant.const import EntityCategory
 
 @dataclass(frozen=True, kw_only=True)
 class FemsSensorDescription(SensorEntityDescription):
@@ -54,7 +54,7 @@ BATTERY_STATE_MACHINE_MAP: dict[int, str] = {
     4: "Discharge",
     5: "Standby",
     6: "Error",
-    11: "State 11",
+    11: "DEBUG_STATE_11",
 }
 
 
@@ -186,14 +186,14 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         key="battery_state_raw",
         name="Batterie Status Rohwert",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda c: c.data.rest.get("battery0/State")
-        ),
+        value_fn=lambda c: c.data.rest.get("battery0/State"),
+    ),
     FemsSensorDescription(
         key="battery_state_machine_raw",
         name="Batterie Zustandsmaschine Rohwert",
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda c: c.data.rest.get("battery0/StateMachine")
-        ),    
+        value_fn=lambda c: c.data.rest.get("battery0/StateMachine"),
+    ),
     FemsSensorDescription(
         key="battery_start_stop",
         translation_key="battery_start_stop",
@@ -265,7 +265,9 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MinTemperature", 10, 1),
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0MinTemperature", 10, 1
+        ),
     ),
     FemsSensorDescription(
         key="tower0_max_temperature",
@@ -274,7 +276,9 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MaxTemperature", 10, 1),
+        value_fn=lambda c: _scaled_rest_value(
+            c, "battery0/Tower0MaxTemperature", 10, 1
+        ),
     ),
     FemsSensorDescription(
         key="charger0_power",
