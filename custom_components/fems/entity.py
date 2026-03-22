@@ -12,27 +12,27 @@ from .coordinator import FemsDataUpdateCoordinator
 _DEVICE_DEFINITIONS: dict[str, dict[str, str]] = {
     "battery": {
         "suffix": "battery",
-        "name": "FEMS Batterie",
+        "name": "Batterie",
     },
     "battery_diagnose": {
         "suffix": "battery_diagnose",
-        "name": "FEMS Batterie Diagnose",
+        "name": "Diagnose",
     },
     "cell_diagnose": {
         "suffix": "cell_diagnose",
-        "name": "FEMS Zellen Diagnose",
+        "name": "Zellen",
     },
     "charger0": {
         "suffix": "charger0",
-        "name": "FEMS Charger 0",
+        "name": "Charger 0",
     },
     "charger1": {
         "suffix": "charger1",
-        "name": "FEMS Charger 1",
+        "name": "Charger 1",
     },
     "energy_management": {
         "suffix": "energy_management",
-        "name": "FEMS Energiemanagement",
+        "name": "Energiemanagement",
     },
 }
 
