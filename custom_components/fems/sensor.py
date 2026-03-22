@@ -24,7 +24,12 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN
+from .const import (
+    CELLS_PER_MODULE,
+    CONF_BATTERY_MODULE_COUNT,
+    DEFAULT_BATTERY_MODULE_COUNT,
+    DOMAIN,
+)
 from .coordinator import FemsDataUpdateCoordinator
 from .entity import FemsCoordinatorEntity
 
@@ -85,7 +90,7 @@ def _module_cell_voltages(
     """Return all available cell voltages for one module."""
     values: list[float] = []
 
-    for cell in range(14):
+    for cell in range(CELLS_PER_MODULE):
         value = _scaled_rest_value(
             coordinator,
             _cell_voltage_rest_key(module, cell),
@@ -119,20 +124,13 @@ def _battery_cell_voltage_spread(
     min_voltage = _scaled_rest_value(coordinator, "battery0/MinCellVoltage", 1000, 3)
     max_voltage = _scaled_rest_value(coordinator, "battery0/MaxCellVoltage", 1000, 3)
 
-    if min_voltage is not None and max_voltage is not None:
-        return round(max_voltage - min_voltage, 3)
-
-    values: list[float] = []
-    for module in range(7):
-        values.extend(_module_cell_voltages(coordinator, module))
-
-    if len(values) < 2:
+    if min_voltage is None or max_voltage is None:
         return None
 
-    return round(max(values) - min(values), 3)
+    return round(max_voltage - min_voltage, 3)
 
 
-_SENSOR_LIST: list[FemsSensorDescription] = [
+BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
     FemsSensorDescription(
         key="battery_soc",
         translation_key="battery_soc",
@@ -145,6 +143,7 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         key="battery_soh",
         translation_key="battery_soh",
         native_unit_of_measurement=PERCENTAGE,
+        device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Soh"),
     ),
@@ -154,7 +153,7 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "battery0/Current"),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Current", 10, 1),
     ),
     FemsSensorDescription(
         key="battery_voltage_dc",
@@ -162,7 +161,7 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "battery0/Voltage"),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Voltage", 10, 1),
     ),
     FemsSensorDescription(
         key="battery_pack_voltage",
@@ -175,13 +174,14 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_cycles",
         translation_key="battery_cycles",
-        state_class=SensorStateClass.MEASUREMENT,
+        state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0NoOfCycles"),
     ),
     FemsSensorDescription(
         key="battery_capacity",
         translation_key="battery_capacity",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Capacity"),
     ),
@@ -634,36 +634,48 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: c.data.modbus.get("ess_dc_discharge_energy"),
     ),
-]
+)
 
-for module in range(7):
-    _SENSOR_LIST.append(
-        FemsSensorDescription(
-            key=f"modul_{module}_spread",
-            translation_key=f"modul_{module}_spread",
-            native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-            device_class=SensorDeviceClass.VOLTAGE,
-            state_class=SensorStateClass.MEASUREMENT,
-            value_fn=_module_spread_value_fn(module),
-        )
-    )
 
-for module in range(7):
-    for cell in range(14):
-        _SENSOR_LIST.append(
+def _build_module_spread_sensors(module_count: int) -> list[FemsSensorDescription]:
+    """Build module spread sensors dynamically."""
+    sensors: list[FemsSensorDescription] = []
+
+    for module in range(module_count):
+        sensors.append(
             FemsSensorDescription(
-                key=f"tower0_module{module}_cell{cell:03d}_voltage",
-                translation_key=f"tower0_module{module}_cell{cell:03d}_voltage",
+                key=f"modul_{module}_spread",
+                translation_key=f"modul_{module}_spread",
                 native_unit_of_measurement=UnitOfElectricPotential.VOLT,
                 device_class=SensorDeviceClass.VOLTAGE,
-                entity_category=EntityCategory.DIAGNOSTIC,
-                entity_registry_enabled_default=False,
                 state_class=SensorStateClass.MEASUREMENT,
-                value_fn=_cell_voltage_value_fn(module, cell),
+                value_fn=_module_spread_value_fn(module),
             )
         )
 
-SENSORS: tuple[FemsSensorDescription, ...] = tuple(_SENSOR_LIST)
+    return sensors
+
+
+def _build_cell_voltage_sensors(module_count: int) -> list[FemsSensorDescription]:
+    """Build cell voltage sensors dynamically."""
+    sensors: list[FemsSensorDescription] = []
+
+    for module in range(module_count):
+        for cell in range(CELLS_PER_MODULE):
+            sensors.append(
+                FemsSensorDescription(
+                    key=f"tower0_module{module}_cell{cell:03d}_voltage",
+                    translation_key=f"tower0_module{module}_cell{cell:03d}_voltage",
+                    native_unit_of_measurement=UnitOfElectricPotential.VOLT,
+                    device_class=SensorDeviceClass.VOLTAGE,
+                    state_class=SensorStateClass.MEASUREMENT,
+                    entity_category=EntityCategory.DIAGNOSTIC,
+                    entity_registry_enabled_default=False,
+                    value_fn=_cell_voltage_value_fn(module, cell),
+                )
+            )
+
+    return sensors
 
 
 async def async_setup_entry(
@@ -673,8 +685,21 @@ async def async_setup_entry(
 ) -> None:
     """Set up FEMS sensors."""
     coordinator: FemsDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+
+    module_count = entry.data.get(
+        CONF_BATTERY_MODULE_COUNT,
+        DEFAULT_BATTERY_MODULE_COUNT,
+    )
+
+    descriptions = [
+        *BASE_SENSORS,
+        *_build_module_spread_sensors(module_count),
+        *_build_cell_voltage_sensors(module_count),
+    ]
+
     async_add_entities(
-        FemsSensorEntity(coordinator, description) for description in SENSORS
+        FemsSensorEntity(coordinator, description)
+        for description in descriptions
     )
 
 
@@ -688,16 +713,12 @@ class FemsSensorEntity(FemsCoordinatorEntity, SensorEntity):
         coordinator: FemsDataUpdateCoordinator,
         description: FemsSensorDescription,
     ) -> None:
+        """Initialize the sensor."""
         super().__init__(coordinator)
         self.entity_description = description
         self._attr_unique_id = f"{DOMAIN}_{description.key}"
 
     @property
     def native_value(self) -> Any:
-        """Return the native sensor value."""
+        """Return the native value of the sensor."""
         return self.entity_description.value_fn(self.coordinator)
-
-    @property
-    def available(self) -> bool:
-        """Return availability."""
-        return self.native_value is not None
