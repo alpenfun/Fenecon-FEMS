@@ -92,7 +92,9 @@ def _module_cell_voltages(
     return values
 
 
-def _module_spread_value_fn(module: int) -> Callable[[FemsDataUpdateCoordinator], float | None]:
+def _module_spread_value_fn(
+    module: int,
+) -> Callable[[FemsDataUpdateCoordinator], float | None]:
     """Create value function for one module spread."""
 
     def value_fn(coordinator: FemsDataUpdateCoordinator) -> float | None:
@@ -187,7 +189,7 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     FemsSensorDescription(
         key="battery_state",
         translation_key="battery_state",
-        name="Batterie Status",
+        name="Batteriestatus",
         value_fn=lambda c: _rest_value(c, "battery0/State"),
     ),
     FemsSensorDescription(
@@ -222,6 +224,7 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     ),
     FemsSensorDescription(
         key="cell_voltage_spread",
+        translation_key="cell_voltage_spread",
         name="Zellspannungsdifferenz",
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
@@ -338,90 +341,105 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
     ),
     FemsSensorDescription(
         key="battery_run_failed",
-        name="Batterie Run Failed",
+        translation_key="battery_run_failed",
+        name="Batterie Lauf fehlgeschlagen",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/RunFailed"),
     ),
     FemsSensorDescription(
         key="battery_modbus_communication_failed",
-        name="Batterie Modbus Communication Failed",
+        translation_key="battery_modbus_communication_failed",
+        name="Batterie Modbus-Kommunikation fehlgeschlagen",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/ModbusCommunicationFailed"),
     ),
     FemsSensorDescription(
         key="low_min_voltage_fault",
-        name="Low Min Voltage Fault",
+        translation_key="low_min_voltage_fault",
+        name="Fehler: Mindestspannung zu niedrig",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/LowMinVoltageFault"),
     ),
     FemsSensorDescription(
         key="low_min_voltage_warning",
-        name="Low Min Voltage Warning",
+        translation_key="low_min_voltage_warning",
+        name="Warnung: Mindestspannung zu niedrig",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/LowMinVoltageWarning"),
     ),
     FemsSensorDescription(
         key="low_min_voltage_fault_battery_stopped",
-        name="Low Min Voltage Fault Battery Stopped",
+        translation_key="low_min_voltage_fault_battery_stopped",
+        name="Fehler Mindestspannung: Batterie gestoppt",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/LowMinVoltageFaultBatteryStopped"),
     ),
     FemsSensorDescription(
         key="level1_cell_under_voltage",
-        name="Level1 Cell Under Voltage",
+        translation_key="level1_cell_under_voltage",
+        name="Unterspannung Zelle Stufe 1",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Level1CellUnderVoltage"),
     ),
     FemsSensorDescription(
         key="level2_cell_under_voltage",
-        name="Level2 Cell Under Voltage",
+        translation_key="level2_cell_under_voltage",
+        name="Unterspannung Zelle Stufe 2",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Level2CellUnderVoltage"),
     ),
     FemsSensorDescription(
         key="tower0_level1_cell_under_voltage",
-        name="Tower0 Level1 Cell Under Voltage",
+        translation_key="tower0_level1_cell_under_voltage",
+        name="Tower0 Unterspannung Zelle Stufe 1",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0Level1CellUnderVoltage"),
     ),
     FemsSensorDescription(
         key="tower0_level2_cell_under_voltage",
-        name="Tower0 Level2 Cell Under Voltage",
+        translation_key="tower0_level2_cell_under_voltage",
+        name="Tower0 Unterspannung Zelle Stufe 2",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0Level2CellUnderVoltage"),
     ),
     FemsSensorDescription(
         key="status_fault",
-        name="Status Fault",
+        translation_key="status_fault",
+        name="Status Fehler",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/StatusFault"),
     ),
     FemsSensorDescription(
         key="status_warning",
-        name="Status Warning",
+        translation_key="status_warning",
+        name="Status Warnung",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/StatusWarning"),
     ),
     FemsSensorDescription(
         key="status_alarm",
+        translation_key="status_alarm",
         name="Status Alarm",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/StatusAlarm"),
     ),
     FemsSensorDescription(
         key="tower0_status_fault",
-        name="Tower0 Status Fault",
+        translation_key="tower0_status_fault",
+        name="Tower0 Status Fehler",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0StatusFault"),
     ),
     FemsSensorDescription(
         key="tower0_status_warning",
-        name="Tower0 Status Warning",
+        translation_key="tower0_status_warning",
+        name="Tower0 Status Warnung",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0StatusWarning"),
     ),
     FemsSensorDescription(
         key="tower0_status_alarm",
+        translation_key="tower0_status_alarm",
         name="Tower0 Status Alarm",
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0StatusAlarm"),
@@ -639,6 +657,7 @@ for module in range(7):
     _SENSOR_LIST.append(
         FemsSensorDescription(
             key=f"modul_{module}_spread",
+            translation_key=f"modul_{module}_spread",
             name=f"Modul {module} Spannungsdifferenz",
             native_unit_of_measurement=UnitOfElectricPotential.VOLT,
             device_class=SensorDeviceClass.VOLTAGE,
