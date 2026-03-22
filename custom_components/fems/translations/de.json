@@ -10,6 +10,7 @@
           "modbus_host": "Modbus-Host",
           "modbus_port": "Modbus-Port",
           "modbus_slave": "Modbus-Slave",
+          "battery_module_count": "Anzahl Batteriemodule",
           "username": "Benutzername",
           "password": "Passwort"
         }
@@ -18,530 +19,247 @@
   },
   "entity": {
     "sensor": {
-      "battery_soc": {
-        "name": "Ladezustand"
-      },
-      "battery_soh": {
-        "name": "Gesundheitszustand"
-      },
-      "battery_current": {
-        "name": "Batteriestrom"
-      },
-      "battery_voltage_dc": {
-        "name": "Batteriespannung DC"
-      },
-      "battery_pack_voltage": {
-        "name": "Batterie-Packspannung"
-      },
-      "battery_cycles": {
-        "name": "Ladezyklen"
-      },
-      "battery_capacity": {
-        "name": "Batteriekapazität"
-      },
-      "battery_state": {
-        "name": "Batteriezustand"
-      },
-      "battery_state_machine": {
-        "name": "Batterie-Statusmaschine"
-      },
-      "battery_start_stop": {
-        "name": "Start/Stop"
-      },
-      "battery_min_cell_voltage": {
-        "name": "Min. Zellspannung"
-      },
-      "battery_max_cell_voltage": {
-        "name": "Max. Zellspannung"
-      },
-      "cell_voltage_spread": {
-        "name": "Zellspannungsdifferenz"
-      },
-      "battery_min_cell_temperature": {
-        "name": "Min. Zelltemperatur"
-      },
-      "battery_max_cell_temperature": {
-        "name": "Max. Zelltemperatur"
-      },
-      "tower0_min_cell_voltage": {
-        "name": "Tower 0 Min. Zellspannung"
-      },
-      "tower0_max_cell_voltage": {
-        "name": "Tower 0 Max. Zellspannung"
-      },
-      "tower0_min_temperature": {
-        "name": "Tower 0 Min. Temperatur"
-      },
-      "tower0_max_temperature": {
-        "name": "Tower 0 Max. Temperatur"
-      },
-      "charger0_power": {
-        "name": "Leistung"
-      },
-      "charger0_voltage": {
-        "name": "Spannung"
-      },
-      "charger0_current": {
-        "name": "Strom"
-      },
-      "charger1_power": {
-        "name": "Leistung"
-      },
-      "charger1_voltage": {
-        "name": "Spannung"
-      },
-      "charger1_current": {
-        "name": "Strom"
-      },
-      "battery_run_failed": {
-        "name": "Batteriestart fehlgeschlagen"
-      },
-      "battery_modbus_communication_failed": {
-        "name": "Modbus-Kommunikation fehlgeschlagen"
-      },
-      "low_min_voltage_fault": {
-        "name": "Unterspannungsfehler"
-      },
-      "low_min_voltage_warning": {
-        "name": "Unterspannungswarnung"
-      },
-      "low_min_voltage_fault_battery_stopped": {
-        "name": "Batterie wegen Unterspannung gestoppt"
-      },
-      "level1_cell_under_voltage": {
-        "name": "Zellunterspannung Stufe 1"
-      },
-      "level2_cell_under_voltage": {
-        "name": "Zellunterspannung Stufe 2"
-      },
-      "tower0_level1_cell_under_voltage": {
-        "name": "Tower 0 Zellunterspannung Stufe 1"
-      },
-      "tower0_level2_cell_under_voltage": {
-        "name": "Tower 0 Zellunterspannung Stufe 2"
-      },
-      "status_fault": {
-        "name": "Fehlerstatus"
-      },
-      "status_warning": {
-        "name": "Warnstatus"
-      },
-      "status_alarm": {
-        "name": "Alarmstatus"
-      },
-      "tower0_status_fault": {
-        "name": "Tower 0 Fehlerstatus"
-      },
-      "tower0_status_warning": {
-        "name": "Tower 0 Warnstatus"
-      },
-      "tower0_status_alarm": {
-        "name": "Tower 0 Alarmstatus"
-      },
-      "ess_soc_modbus": {
-        "name": "Ladezustand (Modbus)"
-      },
-      "ess_power": {
-        "name": "Batterieleistung"
-      },
-      "pv_power": {
-        "name": "PV-Leistung"
-      },
-      "grid_power": {
-        "name": "Netzleistung"
-      },
-      "house_power": {
-        "name": "Hausverbrauch"
-      },
-      "ess_power_l1": {
-        "name": "Batterieleistung L1"
-      },
-      "ess_power_l2": {
-        "name": "Batterieleistung L2"
-      },
-      "ess_power_l3": {
-        "name": "Batterieleistung L3"
-      },
-      "grid_power_l1": {
-        "name": "Netzleistung L1"
-      },
-      "grid_power_l2": {
-        "name": "Netzleistung L2"
-      },
-      "grid_power_l3": {
-        "name": "Netzleistung L3"
-      },
-      "house_power_l1": {
-        "name": "Hausverbrauch L1"
-      },
-      "house_power_l2": {
-        "name": "Hausverbrauch L2"
-      },
-      "house_power_l3": {
-        "name": "Hausverbrauch L3"
-      },
-      "ess_discharge_power": {
-        "name": "Entladeleistung"
-      },
-      "ess_active_charge_energy": {
-        "name": "AC-Ladeenergie"
-      },
-      "ess_active_discharge_energy": {
-        "name": "AC-Entladeenergie"
-      },
-      "grid_buy_energy": {
-        "name": "Netzbezug"
-      },
-      "grid_sell_energy": {
-        "name": "Netzeinspeisung"
-      },
-      "pv_energy": {
-        "name": "PV-Ertrag"
-      },
-      "house_energy": {
-        "name": "Hausverbrauch Energie"
-      },
-      "battery_charge_energy": {
-        "name": "Batterie-Ladeenergie"
-      },
-      "battery_discharge_energy": {
-        "name": "Batterie-Entladeenergie"
-      },
-      "modul_0_spread": {
-        "name": "Modul 0 ΔU"
-      },
-      "modul_1_spread": {
-        "name": "Modul 1 ΔU"
-      },
-      "modul_2_spread": {
-        "name": "Modul 2 ΔU"
-      },
-      "modul_3_spread": {
-        "name": "Modul 3 ΔU"
-      },
-      "modul_4_spread": {
-        "name": "Modul 4 ΔU"
-      },
-      "modul_5_spread": {
-        "name": "Modul 5 ΔU"
-      },
-      "modul_6_spread": {
-        "name": "Modul 6 ΔU"
-      },
-      "tower0_module0_cell000_voltage": {
-        "name": "Modul 0 Zelle 000"
-      },
-      "tower0_module0_cell001_voltage": {
-        "name": "Modul 0 Zelle 001"
-      },
-      "tower0_module0_cell002_voltage": {
-        "name": "Modul 0 Zelle 002"
-      },
-      "tower0_module0_cell003_voltage": {
-        "name": "Modul 0 Zelle 003"
-      },
-      "tower0_module0_cell004_voltage": {
-        "name": "Modul 0 Zelle 004"
-      },
-      "tower0_module0_cell005_voltage": {
-        "name": "Modul 0 Zelle 005"
-      },
-      "tower0_module0_cell006_voltage": {
-        "name": "Modul 0 Zelle 006"
-      },
-      "tower0_module0_cell007_voltage": {
-        "name": "Modul 0 Zelle 007"
-      },
-      "tower0_module0_cell008_voltage": {
-        "name": "Modul 0 Zelle 008"
-      },
-      "tower0_module0_cell009_voltage": {
-        "name": "Modul 0 Zelle 009"
-      },
-      "tower0_module0_cell010_voltage": {
-        "name": "Modul 0 Zelle 010"
-      },
-      "tower0_module0_cell011_voltage": {
-        "name": "Modul 0 Zelle 011"
-      },
-      "tower0_module0_cell012_voltage": {
-        "name": "Modul 0 Zelle 012"
-      },
-      "tower0_module0_cell013_voltage": {
-        "name": "Modul 0 Zelle 013"
-      },
-      "tower0_module1_cell000_voltage": {
-        "name": "Modul 1 Zelle 000"
-      },
-      "tower0_module1_cell001_voltage": {
-        "name": "Modul 1 Zelle 001"
-      },
-      "tower0_module1_cell002_voltage": {
-        "name": "Modul 1 Zelle 002"
-      },
-      "tower0_module1_cell003_voltage": {
-        "name": "Modul 1 Zelle 003"
-      },
-      "tower0_module1_cell004_voltage": {
-        "name": "Modul 1 Zelle 004"
-      },
-      "tower0_module1_cell005_voltage": {
-        "name": "Modul 1 Zelle 005"
-      },
-      "tower0_module1_cell006_voltage": {
-        "name": "Modul 1 Zelle 006"
-      },
-      "tower0_module1_cell007_voltage": {
-        "name": "Modul 1 Zelle 007"
-      },
-      "tower0_module1_cell008_voltage": {
-        "name": "Modul 1 Zelle 008"
-      },
-      "tower0_module1_cell009_voltage": {
-        "name": "Modul 1 Zelle 009"
-      },
-      "tower0_module1_cell010_voltage": {
-        "name": "Modul 1 Zelle 010"
-      },
-      "tower0_module1_cell011_voltage": {
-        "name": "Modul 1 Zelle 011"
-      },
-      "tower0_module1_cell012_voltage": {
-        "name": "Modul 1 Zelle 012"
-      },
-      "tower0_module1_cell013_voltage": {
-        "name": "Modul 1 Zelle 013"
-      },
-      "tower0_module2_cell000_voltage": {
-        "name": "Modul 2 Zelle 000"
-      },
-      "tower0_module2_cell001_voltage": {
-        "name": "Modul 2 Zelle 001"
-      },
-      "tower0_module2_cell002_voltage": {
-        "name": "Modul 2 Zelle 002"
-      },
-      "tower0_module2_cell003_voltage": {
-        "name": "Modul 2 Zelle 003"
-      },
-      "tower0_module2_cell004_voltage": {
-        "name": "Modul 2 Zelle 004"
-      },
-      "tower0_module2_cell005_voltage": {
-        "name": "Modul 2 Zelle 005"
-      },
-      "tower0_module2_cell006_voltage": {
-        "name": "Modul 2 Zelle 006"
-      },
-      "tower0_module2_cell007_voltage": {
-        "name": "Modul 2 Zelle 007"
-      },
-      "tower0_module2_cell008_voltage": {
-        "name": "Modul 2 Zelle 008"
-      },
-      "tower0_module2_cell009_voltage": {
-        "name": "Modul 2 Zelle 009"
-      },
-      "tower0_module2_cell010_voltage": {
-        "name": "Modul 2 Zelle 010"
-      },
-      "tower0_module2_cell011_voltage": {
-        "name": "Modul 2 Zelle 011"
-      },
-      "tower0_module2_cell012_voltage": {
-        "name": "Modul 2 Zelle 012"
-      },
-      "tower0_module2_cell013_voltage": {
-        "name": "Modul 2 Zelle 013"
-      },
-      "tower0_module3_cell000_voltage": {
-        "name": "Modul 3 Zelle 000"
-      },
-      "tower0_module3_cell001_voltage": {
-        "name": "Modul 3 Zelle 001"
-      },
-      "tower0_module3_cell002_voltage": {
-        "name": "Modul 3 Zelle 002"
-      },
-      "tower0_module3_cell003_voltage": {
-        "name": "Modul 3 Zelle 003"
-      },
-      "tower0_module3_cell004_voltage": {
-        "name": "Modul 3 Zelle 004"
-      },
-      "tower0_module3_cell005_voltage": {
-        "name": "Modul 3 Zelle 005"
-      },
-      "tower0_module3_cell006_voltage": {
-        "name": "Modul 3 Zelle 006"
-      },
-      "tower0_module3_cell007_voltage": {
-        "name": "Modul 3 Zelle 007"
-      },
-      "tower0_module3_cell008_voltage": {
-        "name": "Modul 3 Zelle 008"
-      },
-      "tower0_module3_cell009_voltage": {
-        "name": "Modul 3 Zelle 009"
-      },
-      "tower0_module3_cell010_voltage": {
-        "name": "Modul 3 Zelle 010"
-      },
-      "tower0_module3_cell011_voltage": {
-        "name": "Modul 3 Zelle 011"
-      },
-      "tower0_module3_cell012_voltage": {
-        "name": "Modul 3 Zelle 012"
-      },
-      "tower0_module3_cell013_voltage": {
-        "name": "Modul 3 Zelle 013"
-      },
-      "tower0_module4_cell000_voltage": {
-        "name": "Modul 4 Zelle 000"
-      },
-      "tower0_module4_cell001_voltage": {
-        "name": "Modul 4 Zelle 001"
-      },
-      "tower0_module4_cell002_voltage": {
-        "name": "Modul 4 Zelle 002"
-      },
-      "tower0_module4_cell003_voltage": {
-        "name": "Modul 4 Zelle 003"
-      },
-      "tower0_module4_cell004_voltage": {
-        "name": "Modul 4 Zelle 004"
-      },
-      "tower0_module4_cell005_voltage": {
-        "name": "Modul 4 Zelle 005"
-      },
-      "tower0_module4_cell006_voltage": {
-        "name": "Modul 4 Zelle 006"
-      },
-      "tower0_module4_cell007_voltage": {
-        "name": "Modul 4 Zelle 007"
-      },
-      "tower0_module4_cell008_voltage": {
-        "name": "Modul 4 Zelle 008"
-      },
-      "tower0_module4_cell009_voltage": {
-        "name": "Modul 4 Zelle 009"
-      },
-      "tower0_module4_cell010_voltage": {
-        "name": "Modul 4 Zelle 010"
-      },
-      "tower0_module4_cell011_voltage": {
-        "name": "Modul 4 Zelle 011"
-      },
-      "tower0_module4_cell012_voltage": {
-        "name": "Modul 4 Zelle 012"
-      },
-      "tower0_module4_cell013_voltage": {
-        "name": "Modul 4 Zelle 013"
-      },
-      "tower0_module5_cell000_voltage": {
-        "name": "Modul 5 Zelle 000"
-      },
-      "tower0_module5_cell001_voltage": {
-        "name": "Modul 5 Zelle 001"
-      },
-      "tower0_module5_cell002_voltage": {
-        "name": "Modul 5 Zelle 002"
-      },
-      "tower0_module5_cell003_voltage": {
-        "name": "Modul 5 Zelle 003"
-      },
-      "tower0_module5_cell004_voltage": {
-        "name": "Modul 5 Zelle 004"
-      },
-      "tower0_module5_cell005_voltage": {
-        "name": "Modul 5 Zelle 005"
-      },
-      "tower0_module5_cell006_voltage": {
-        "name": "Modul 5 Zelle 006"
-      },
-      "tower0_module5_cell007_voltage": {
-        "name": "Modul 5 Zelle 007"
-      },
-      "tower0_module5_cell008_voltage": {
-        "name": "Modul 5 Zelle 008"
-      },
-      "tower0_module5_cell009_voltage": {
-        "name": "Modul 5 Zelle 009"
-      },
-      "tower0_module5_cell010_voltage": {
-        "name": "Modul 5 Zelle 010"
-      },
-      "tower0_module5_cell011_voltage": {
-        "name": "Modul 5 Zelle 011"
-      },
-      "tower0_module5_cell012_voltage": {
-        "name": "Modul 5 Zelle 012"
-      },
-      "tower0_module5_cell013_voltage": {
-        "name": "Modul 5 Zelle 013"
-      },
-      "tower0_module6_cell000_voltage": {
-        "name": "Modul 6 Zelle 000"
-      },
-      "tower0_module6_cell001_voltage": {
-        "name": "Modul 6 Zelle 001"
-      },
-      "tower0_module6_cell002_voltage": {
-        "name": "Modul 6 Zelle 002"
-      },
-      "tower0_module6_cell003_voltage": {
-        "name": "Modul 6 Zelle 003"
-      },
-      "tower0_module6_cell004_voltage": {
-        "name": "Modul 6 Zelle 004"
-      },
-      "tower0_module6_cell005_voltage": {
-        "name": "Modul 6 Zelle 005"
-      },
-      "tower0_module6_cell006_voltage": {
-        "name": "Modul 6 Zelle 006"
-      },
-      "tower0_module6_cell007_voltage": {
-        "name": "Modul 6 Zelle 007"
-      },
-      "tower0_module6_cell008_voltage": {
-        "name": "Modul 6 Zelle 008"
-      },
-      "tower0_module6_cell009_voltage": {
-        "name": "Modul 6 Zelle 009"
-      },
-      "tower0_module6_cell010_voltage": {
-        "name": "Modul 6 Zelle 010"
-      },
-      "tower0_module6_cell011_voltage": {
-        "name": "Modul 6 Zelle 011"
-      },
-      "tower0_module6_cell012_voltage": {
-        "name": "Modul 6 Zelle 012"
-      },
-      "tower0_module6_cell013_voltage": {
-        "name": "Modul 6 Zelle 013"
-      }
+      "battery_soc": { "name": "Ladezustand" },
+      "battery_soh": { "name": "Gesundheitszustand" },
+      "battery_current": { "name": "Batteriestrom" },
+      "battery_voltage_dc": { "name": "Batteriespannung DC" },
+      "battery_pack_voltage": { "name": "Batterie-Packspannung" },
+      "battery_cycles": { "name": "Ladezyklen" },
+      "battery_capacity": { "name": "Batteriekapazität" },
+      "battery_state": { "name": "Batteriezustand" },
+      "battery_state_machine": { "name": "Batterie-Statusmaschine" },
+      "battery_start_stop": { "name": "Start/Stop" },
+      "battery_min_cell_voltage": { "name": "Min. Zellspannung" },
+      "battery_max_cell_voltage": { "name": "Max. Zellspannung" },
+      "cell_voltage_spread": { "name": "Zellspannungsdifferenz" },
+      "battery_min_cell_temperature": { "name": "Min. Zelltemperatur" },
+      "battery_max_cell_temperature": { "name": "Max. Zelltemperatur" },
+      "tower0_min_cell_voltage": { "name": "Tower 0 Min. Zellspannung" },
+      "tower0_max_cell_voltage": { "name": "Tower 0 Max. Zellspannung" },
+      "tower0_min_temperature": { "name": "Tower 0 Min. Temperatur" },
+      "tower0_max_temperature": { "name": "Tower 0 Max. Temperatur" },
+
+      "charger0_power": { "name": "Leistung" },
+      "charger0_voltage": { "name": "Spannung" },
+      "charger0_current": { "name": "Strom" },
+      "charger1_power": { "name": "Leistung" },
+      "charger1_voltage": { "name": "Spannung" },
+      "charger1_current": { "name": "Strom" },
+
+      "battery_run_failed": { "name": "Batteriestart fehlgeschlagen" },
+      "battery_modbus_communication_failed": { "name": "Modbus-Kommunikation fehlgeschlagen" },
+      "low_min_voltage_fault": { "name": "Unterspannungsfehler" },
+      "low_min_voltage_warning": { "name": "Unterspannungswarnung" },
+      "low_min_voltage_fault_battery_stopped": { "name": "Batterie wegen Unterspannung gestoppt" },
+
+      "level1_cell_under_voltage": { "name": "Zellunterspannung Stufe 1" },
+      "level2_cell_under_voltage": { "name": "Zellunterspannung Stufe 2" },
+      "tower0_level1_cell_under_voltage": { "name": "Tower 0 Zellunterspannung Stufe 1" },
+      "tower0_level2_cell_under_voltage": { "name": "Tower 0 Zellunterspannung Stufe 2" },
+
+      "status_fault": { "name": "Fehlerstatus" },
+      "status_warning": { "name": "Warnstatus" },
+      "status_alarm": { "name": "Alarmstatus" },
+      "tower0_status_fault": { "name": "Tower 0 Fehlerstatus" },
+      "tower0_status_warning": { "name": "Tower 0 Warnstatus" },
+      "tower0_status_alarm": { "name": "Tower 0 Alarmstatus" },
+
+      "ess_soc_modbus": { "name": "Ladezustand (Modbus)" },
+      "ess_power": { "name": "Batterieleistung" },
+      "pv_power": { "name": "PV-Leistung" },
+      "grid_power": { "name": "Netzleistung" },
+      "house_power": { "name": "Hausverbrauch" },
+
+      "ess_power_l1": { "name": "Batterieleistung L1" },
+      "ess_power_l2": { "name": "Batterieleistung L2" },
+      "ess_power_l3": { "name": "Batterieleistung L3" },
+
+      "grid_power_l1": { "name": "Netzleistung L1" },
+      "grid_power_l2": { "name": "Netzleistung L2" },
+      "grid_power_l3": { "name": "Netzleistung L3" },
+
+      "house_power_l1": { "name": "Hausverbrauch L1" },
+      "house_power_l2": { "name": "Hausverbrauch L2" },
+      "house_power_l3": { "name": "Hausverbrauch L3" },
+
+      "ess_discharge_power": { "name": "Entladeleistung" },
+      "ess_active_charge_energy": { "name": "AC-Ladeenergie" },
+      "ess_active_discharge_energy": { "name": "AC-Entladeenergie" },
+      "grid_buy_energy": { "name": "Netzbezug" },
+      "grid_sell_energy": { "name": "Netzeinspeisung" },
+      "pv_energy": { "name": "PV-Ertrag" },
+      "house_energy": { "name": "Hausverbrauch Energie" },
+      "battery_charge_energy": { "name": "Batterie-Ladeenergie" },
+      "battery_discharge_energy": { "name": "Batterie-Entladeenergie" },
+
+      "modul_0_spread": { "name": "Modul 0 ΔU" },
+      "modul_1_spread": { "name": "Modul 1 ΔU" },
+      "modul_2_spread": { "name": "Modul 2 ΔU" },
+      "modul_3_spread": { "name": "Modul 3 ΔU" },
+      "modul_4_spread": { "name": "Modul 4 ΔU" },
+      "modul_5_spread": { "name": "Modul 5 ΔU" },
+      "modul_6_spread": { "name": "Modul 6 ΔU" },
+      "modul_7_spread": { "name": "Modul 7 ΔU" },
+      "modul_8_spread": { "name": "Modul 8 ΔU" },
+      "modul_9_spread": { "name": "Modul 9 ΔU" },
+
+      "tower0_module0_cell000_voltage": { "name": "Modul 0 Zelle 000" },
+      "tower0_module0_cell001_voltage": { "name": "Modul 0 Zelle 001" },
+      "tower0_module0_cell002_voltage": { "name": "Modul 0 Zelle 002" },
+      "tower0_module0_cell003_voltage": { "name": "Modul 0 Zelle 003" },
+      "tower0_module0_cell004_voltage": { "name": "Modul 0 Zelle 004" },
+      "tower0_module0_cell005_voltage": { "name": "Modul 0 Zelle 005" },
+      "tower0_module0_cell006_voltage": { "name": "Modul 0 Zelle 006" },
+      "tower0_module0_cell007_voltage": { "name": "Modul 0 Zelle 007" },
+      "tower0_module0_cell008_voltage": { "name": "Modul 0 Zelle 008" },
+      "tower0_module0_cell009_voltage": { "name": "Modul 0 Zelle 009" },
+      "tower0_module0_cell010_voltage": { "name": "Modul 0 Zelle 010" },
+      "tower0_module0_cell011_voltage": { "name": "Modul 0 Zelle 011" },
+      "tower0_module0_cell012_voltage": { "name": "Modul 0 Zelle 012" },
+      "tower0_module0_cell013_voltage": { "name": "Modul 0 Zelle 013" },
+
+      "tower0_module1_cell000_voltage": { "name": "Modul 1 Zelle 000" },
+      "tower0_module1_cell001_voltage": { "name": "Modul 1 Zelle 001" },
+      "tower0_module1_cell002_voltage": { "name": "Modul 1 Zelle 002" },
+      "tower0_module1_cell003_voltage": { "name": "Modul 1 Zelle 003" },
+      "tower0_module1_cell004_voltage": { "name": "Modul 1 Zelle 004" },
+      "tower0_module1_cell005_voltage": { "name": "Modul 1 Zelle 005" },
+      "tower0_module1_cell006_voltage": { "name": "Modul 1 Zelle 006" },
+      "tower0_module1_cell007_voltage": { "name": "Modul 1 Zelle 007" },
+      "tower0_module1_cell008_voltage": { "name": "Modul 1 Zelle 008" },
+      "tower0_module1_cell009_voltage": { "name": "Modul 1 Zelle 009" },
+      "tower0_module1_cell010_voltage": { "name": "Modul 1 Zelle 010" },
+      "tower0_module1_cell011_voltage": { "name": "Modul 1 Zelle 011" },
+      "tower0_module1_cell012_voltage": { "name": "Modul 1 Zelle 012" },
+      "tower0_module1_cell013_voltage": { "name": "Modul 1 Zelle 013" },
+
+      "tower0_module2_cell000_voltage": { "name": "Modul 2 Zelle 000" },
+      "tower0_module2_cell001_voltage": { "name": "Modul 2 Zelle 001" },
+      "tower0_module2_cell002_voltage": { "name": "Modul 2 Zelle 002" },
+      "tower0_module2_cell003_voltage": { "name": "Modul 2 Zelle 003" },
+      "tower0_module2_cell004_voltage": { "name": "Modul 2 Zelle 004" },
+      "tower0_module2_cell005_voltage": { "name": "Modul 2 Zelle 005" },
+      "tower0_module2_cell006_voltage": { "name": "Modul 2 Zelle 006" },
+      "tower0_module2_cell007_voltage": { "name": "Modul 2 Zelle 007" },
+      "tower0_module2_cell008_voltage": { "name": "Modul 2 Zelle 008" },
+      "tower0_module2_cell009_voltage": { "name": "Modul 2 Zelle 009" },
+      "tower0_module2_cell010_voltage": { "name": "Modul 2 Zelle 010" },
+      "tower0_module2_cell011_voltage": { "name": "Modul 2 Zelle 011" },
+      "tower0_module2_cell012_voltage": { "name": "Modul 2 Zelle 012" },
+      "tower0_module2_cell013_voltage": { "name": "Modul 2 Zelle 013" },
+
+      "tower0_module3_cell000_voltage": { "name": "Modul 3 Zelle 000" },
+      "tower0_module3_cell001_voltage": { "name": "Modul 3 Zelle 001" },
+      "tower0_module3_cell002_voltage": { "name": "Modul 3 Zelle 002" },
+      "tower0_module3_cell003_voltage": { "name": "Modul 3 Zelle 003" },
+      "tower0_module3_cell004_voltage": { "name": "Modul 3 Zelle 004" },
+      "tower0_module3_cell005_voltage": { "name": "Modul 3 Zelle 005" },
+      "tower0_module3_cell006_voltage": { "name": "Modul 3 Zelle 006" },
+      "tower0_module3_cell007_voltage": { "name": "Modul 3 Zelle 007" },
+      "tower0_module3_cell008_voltage": { "name": "Modul 3 Zelle 008" },
+      "tower0_module3_cell009_voltage": { "name": "Modul 3 Zelle 009" },
+      "tower0_module3_cell010_voltage": { "name": "Modul 3 Zelle 010" },
+      "tower0_module3_cell011_voltage": { "name": "Modul 3 Zelle 011" },
+      "tower0_module3_cell012_voltage": { "name": "Modul 3 Zelle 012" },
+      "tower0_module3_cell013_voltage": { "name": "Modul 3 Zelle 013" },
+
+      "tower0_module4_cell000_voltage": { "name": "Modul 4 Zelle 000" },
+      "tower0_module4_cell001_voltage": { "name": "Modul 4 Zelle 001" },
+      "tower0_module4_cell002_voltage": { "name": "Modul 4 Zelle 002" },
+      "tower0_module4_cell003_voltage": { "name": "Modul 4 Zelle 003" },
+      "tower0_module4_cell004_voltage": { "name": "Modul 4 Zelle 004" },
+      "tower0_module4_cell005_voltage": { "name": "Modul 4 Zelle 005" },
+      "tower0_module4_cell006_voltage": { "name": "Modul 4 Zelle 006" },
+      "tower0_module4_cell007_voltage": { "name": "Modul 4 Zelle 007" },
+      "tower0_module4_cell008_voltage": { "name": "Modul 4 Zelle 008" },
+      "tower0_module4_cell009_voltage": { "name": "Modul 4 Zelle 009" },
+      "tower0_module4_cell010_voltage": { "name": "Modul 4 Zelle 010" },
+      "tower0_module4_cell011_voltage": { "name": "Modul 4 Zelle 011" },
+      "tower0_module4_cell012_voltage": { "name": "Modul 4 Zelle 012" },
+      "tower0_module4_cell013_voltage": { "name": "Modul 4 Zelle 013" },
+
+      "tower0_module5_cell000_voltage": { "name": "Modul 5 Zelle 000" },
+      "tower0_module5_cell001_voltage": { "name": "Modul 5 Zelle 001" },
+      "tower0_module5_cell002_voltage": { "name": "Modul 5 Zelle 002" },
+      "tower0_module5_cell003_voltage": { "name": "Modul 5 Zelle 003" },
+      "tower0_module5_cell004_voltage": { "name": "Modul 5 Zelle 004" },
+      "tower0_module5_cell005_voltage": { "name": "Modul 5 Zelle 005" },
+      "tower0_module5_cell006_voltage": { "name": "Modul 5 Zelle 006" },
+      "tower0_module5_cell007_voltage": { "name": "Modul 5 Zelle 007" },
+      "tower0_module5_cell008_voltage": { "name": "Modul 5 Zelle 008" },
+      "tower0_module5_cell009_voltage": { "name": "Modul 5 Zelle 009" },
+      "tower0_module5_cell010_voltage": { "name": "Modul 5 Zelle 010" },
+      "tower0_module5_cell011_voltage": { "name": "Modul 5 Zelle 011" },
+      "tower0_module5_cell012_voltage": { "name": "Modul 5 Zelle 012" },
+      "tower0_module5_cell013_voltage": { "name": "Modul 5 Zelle 013" },
+
+      "tower0_module6_cell000_voltage": { "name": "Modul 6 Zelle 000" },
+      "tower0_module6_cell001_voltage": { "name": "Modul 6 Zelle 001" },
+      "tower0_module6_cell002_voltage": { "name": "Modul 6 Zelle 002" },
+      "tower0_module6_cell003_voltage": { "name": "Modul 6 Zelle 003" },
+      "tower0_module6_cell004_voltage": { "name": "Modul 6 Zelle 004" },
+      "tower0_module6_cell005_voltage": { "name": "Modul 6 Zelle 005" },
+      "tower0_module6_cell006_voltage": { "name": "Modul 6 Zelle 006" },
+      "tower0_module6_cell007_voltage": { "name": "Modul 6 Zelle 007" },
+      "tower0_module6_cell008_voltage": { "name": "Modul 6 Zelle 008" },
+      "tower0_module6_cell009_voltage": { "name": "Modul 6 Zelle 009" },
+      "tower0_module6_cell010_voltage": { "name": "Modul 6 Zelle 010" },
+      "tower0_module6_cell011_voltage": { "name": "Modul 6 Zelle 011" },
+      "tower0_module6_cell012_voltage": { "name": "Modul 6 Zelle 012" },
+      "tower0_module6_cell013_voltage": { "name": "Modul 6 Zelle 013" },
+
+      "tower0_module7_cell000_voltage": { "name": "Modul 7 Zelle 000" },
+      "tower0_module7_cell001_voltage": { "name": "Modul 7 Zelle 001" },
+      "tower0_module7_cell002_voltage": { "name": "Modul 7 Zelle 002" },
+      "tower0_module7_cell003_voltage": { "name": "Modul 7 Zelle 003" },
+      "tower0_module7_cell004_voltage": { "name": "Modul 7 Zelle 004" },
+      "tower0_module7_cell005_voltage": { "name": "Modul 7 Zelle 005" },
+      "tower0_module7_cell006_voltage": { "name": "Modul 7 Zelle 006" },
+      "tower0_module7_cell007_voltage": { "name": "Modul 7 Zelle 007" },
+      "tower0_module7_cell008_voltage": { "name": "Modul 7 Zelle 008" },
+      "tower0_module7_cell009_voltage": { "name": "Modul 7 Zelle 009" },
+      "tower0_module7_cell010_voltage": { "name": "Modul 7 Zelle 010" },
+      "tower0_module7_cell011_voltage": { "name": "Modul 7 Zelle 011" },
+      "tower0_module7_cell012_voltage": { "name": "Modul 7 Zelle 012" },
+      "tower0_module7_cell013_voltage": { "name": "Modul 7 Zelle 013" },
+
+      "tower0_module8_cell000_voltage": { "name": "Modul 8 Zelle 000" },
+      "tower0_module8_cell001_voltage": { "name": "Modul 8 Zelle 001" },
+      "tower0_module8_cell002_voltage": { "name": "Modul 8 Zelle 002" },
+      "tower0_module8_cell003_voltage": { "name": "Modul 8 Zelle 003" },
+      "tower0_module8_cell004_voltage": { "name": "Modul 8 Zelle 004" },
+      "tower0_module8_cell005_voltage": { "name": "Modul 8 Zelle 005" },
+      "tower0_module8_cell006_voltage": { "name": "Modul 8 Zelle 006" },
+      "tower0_module8_cell007_voltage": { "name": "Modul 8 Zelle 007" },
+      "tower0_module8_cell008_voltage": { "name": "Modul 8 Zelle 008" },
+      "tower0_module8_cell009_voltage": { "name": "Modul 8 Zelle 009" },
+      "tower0_module8_cell010_voltage": { "name": "Modul 8 Zelle 010" },
+      "tower0_module8_cell011_voltage": { "name": "Modul 8 Zelle 011" },
+      "tower0_module8_cell012_voltage": { "name": "Modul 8 Zelle 012" },
+      "tower0_module8_cell013_voltage": { "name": "Modul 8 Zelle 013" },
+
+      "tower0_module9_cell000_voltage": { "name": "Modul 9 Zelle 000" },
+      "tower0_module9_cell001_voltage": { "name": "Modul 9 Zelle 001" },
+      "tower0_module9_cell002_voltage": { "name": "Modul 9 Zelle 002" },
+      "tower0_module9_cell003_voltage": { "name": "Modul 9 Zelle 003" },
+      "tower0_module9_cell004_voltage": { "name": "Modul 9 Zelle 004" },
+      "tower0_module9_cell005_voltage": { "name": "Modul 9 Zelle 005" },
+      "tower0_module9_cell006_voltage": { "name": "Modul 9 Zelle 006" },
+      "tower0_module9_cell007_voltage": { "name": "Modul 9 Zelle 007" },
+      "tower0_module9_cell008_voltage": { "name": "Modul 9 Zelle 008" },
+      "tower0_module9_cell009_voltage": { "name": "Modul 9 Zelle 009" },
+      "tower0_module9_cell010_voltage": { "name": "Modul 9 Zelle 010" },
+      "tower0_module9_cell011_voltage": { "name": "Modul 9 Zelle 011" },
+      "tower0_module9_cell012_voltage": { "name": "Modul 9 Zelle 012" },
+      "tower0_module9_cell013_voltage": { "name": "Modul 9 Zelle 013" }
     },
     "binary_sensor": {
-      "fault_status": {
-        "name": "Fehler aktiv"
-      },
-      "rest_communication": {
-        "name": "REST verbunden"
-      },
-      "modbus_communication": {
-        "name": "Modbus verbunden"
-      },
-      "system_ok": {
-        "name": "System in Ordnung"
-      },
-      "system_warning": {
-        "name": "Systemwarnung"
-      },
-      "system_error": {
-        "name": "Systemfehler"
-      }
+      "fault_status": { "name": "Fehler aktiv" },
+      "rest_communication": { "name": "REST verbunden" },
+      "modbus_communication": { "name": "Modbus verbunden" },
+      "system_ok": { "name": "System in Ordnung" },
+      "system_warning": { "name": "Systemwarnung" },
+      "system_error": { "name": "Systemfehler" }
     }
   }
 }
