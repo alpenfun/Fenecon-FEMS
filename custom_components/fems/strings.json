@@ -9,7 +9,7 @@
           "rest_port": "REST Port",
           "modbus_host": "Modbus Host",
           "modbus_port": "Modbus Port",
-          "modbus_slave": "Modbus Slave",
+          "modbus_slave": "Modbus slave",
           "username": "Username",
           "password": "Password"
         }
@@ -49,28 +49,31 @@
         "name": "Battery Start/Stop"
       },
       "battery_min_cell_voltage": {
-        "name": "Battery min cell voltage"
+        "name": "Min. cell voltage"
       },
       "battery_max_cell_voltage": {
-        "name": "Battery max cell voltage"
+        "name": "Max. cell voltage"
+      },
+      "cell_voltage_spread": {
+        "name": "Cell voltage spread"
       },
       "battery_min_cell_temperature": {
-        "name": "Battery min cell temperature"
+        "name": "Min. cell temperature"
       },
       "battery_max_cell_temperature": {
-        "name": "Battery max cell temperature"
+        "name": "Max. cell temperature"
       },
       "tower0_min_cell_voltage": {
-        "name": "Tower0 min cell voltage"
+        "name": "Tower0 min. cell voltage"
       },
       "tower0_max_cell_voltage": {
-        "name": "Tower0 max cell voltage"
+        "name": "Tower0 max. cell voltage"
       },
       "tower0_min_temperature": {
-        "name": "Tower0 min temperature"
+        "name": "Tower0 min. temperature"
       },
       "tower0_max_temperature": {
-        "name": "Tower0 max temperature"
+        "name": "Tower0 max. temperature"
       },
       "charger0_power": {
         "name": "Charger 0 power"
@@ -89,6 +92,51 @@
       },
       "charger1_current": {
         "name": "Charger 1 current"
+      },
+      "battery_run_failed": {
+        "name": "Battery run failed"
+      },
+      "battery_modbus_communication_failed": {
+        "name": "Battery Modbus communication failed"
+      },
+      "low_min_voltage_fault": {
+        "name": "Low min voltage fault"
+      },
+      "low_min_voltage_warning": {
+        "name": "Low min voltage warning"
+      },
+      "low_min_voltage_fault_battery_stopped": {
+        "name": "Low min voltage fault battery stopped"
+      },
+      "level1_cell_under_voltage": {
+        "name": "Level 1 cell undervoltage"
+      },
+      "level2_cell_under_voltage": {
+        "name": "Level 2 cell undervoltage"
+      },
+      "tower0_level1_cell_under_voltage": {
+        "name": "Tower0 level 1 cell undervoltage"
+      },
+      "tower0_level2_cell_under_voltage": {
+        "name": "Tower0 level 2 cell undervoltage"
+      },
+      "status_fault": {
+        "name": "Status fault"
+      },
+      "status_warning": {
+        "name": "Status warning"
+      },
+      "status_alarm": {
+        "name": "Status alarm"
+      },
+      "tower0_status_fault": {
+        "name": "Tower0 status fault"
+      },
+      "tower0_status_warning": {
+        "name": "Tower0 status warning"
+      },
+      "tower0_status_alarm": {
+        "name": "Tower0 status alarm"
       },
       "ess_soc_modbus": {
         "name": "Battery SoC (Modbus)"
@@ -158,6 +206,27 @@
       },
       "battery_discharge_energy": {
         "name": "Battery discharge energy"
+      },
+      "modul_0_spread": {
+        "name": "Module 0 voltage spread"
+      },
+      "modul_1_spread": {
+        "name": "Module 1 voltage spread"
+      },
+      "modul_2_spread": {
+        "name": "Module 2 voltage spread"
+      },
+      "modul_3_spread": {
+        "name": "Module 3 voltage spread"
+      },
+      "modul_4_spread": {
+        "name": "Module 4 voltage spread"
+      },
+      "modul_5_spread": {
+        "name": "Module 5 voltage spread"
+      },
+      "modul_6_spread": {
+        "name": "Module 6 voltage spread"
       }
     },
     "binary_sensor": {
