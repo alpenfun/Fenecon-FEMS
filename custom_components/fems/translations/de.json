@@ -19,31 +19,31 @@
   "entity": {
     "sensor": {
       "battery_soc": {
-        "name": "SOC"
+        "name": "Ladezustand"
       },
       "battery_soh": {
-        "name": "SOH"
+        "name": "Gesundheitszustand"
       },
       "battery_current": {
         "name": "Batteriestrom"
       },
       "battery_voltage_dc": {
-        "name": "DC-Spannung"
+        "name": "Batteriespannung DC"
       },
       "battery_pack_voltage": {
-        "name": "Packspannung"
+        "name": "Batterie-Packspannung"
       },
       "battery_cycles": {
         "name": "Ladezyklen"
       },
       "battery_capacity": {
-        "name": "Kapazität"
+        "name": "Batteriekapazität"
       },
       "battery_state": {
-        "name": "State"
+        "name": "Batteriezustand"
       },
       "battery_state_machine": {
-        "name": "State Machine"
+        "name": "Batterie-Statusmaschine"
       },
       "battery_start_stop": {
         "name": "Start/Stop"
@@ -94,52 +94,52 @@
         "name": "Strom"
       },
       "battery_run_failed": {
-        "name": "Run fehlgeschlagen"
+        "name": "Batteriestart fehlgeschlagen"
       },
       "battery_modbus_communication_failed": {
-        "name": "Modbus-Fehler"
+        "name": "Modbus-Kommunikation fehlgeschlagen"
       },
       "low_min_voltage_fault": {
-        "name": "Unterspannung Fehler"
+        "name": "Unterspannungsfehler"
       },
       "low_min_voltage_warning": {
-        "name": "Unterspannung Warnung"
+        "name": "Unterspannungswarnung"
       },
       "low_min_voltage_fault_battery_stopped": {
-        "name": "Batterie abgeschaltet"
+        "name": "Batterie wegen Unterspannung gestoppt"
       },
       "level1_cell_under_voltage": {
-        "name": "Zell-Unterspannung Stufe 1"
+        "name": "Zellunterspannung Stufe 1"
       },
       "level2_cell_under_voltage": {
-        "name": "Zell-Unterspannung Stufe 2"
+        "name": "Zellunterspannung Stufe 2"
       },
       "tower0_level1_cell_under_voltage": {
-        "name": "Tower 0 Zell-Unterspannung Stufe 1"
+        "name": "Tower 0 Zellunterspannung Stufe 1"
       },
       "tower0_level2_cell_under_voltage": {
-        "name": "Tower 0 Zell-Unterspannung Stufe 2"
+        "name": "Tower 0 Zellunterspannung Stufe 2"
       },
       "status_fault": {
-        "name": "Fault"
+        "name": "Fehlerstatus"
       },
       "status_warning": {
-        "name": "Warning"
+        "name": "Warnstatus"
       },
       "status_alarm": {
-        "name": "Alarm"
+        "name": "Alarmstatus"
       },
       "tower0_status_fault": {
-        "name": "Tower 0 Fault"
+        "name": "Tower 0 Fehlerstatus"
       },
       "tower0_status_warning": {
-        "name": "Tower 0 Warning"
+        "name": "Tower 0 Warnstatus"
       },
       "tower0_status_alarm": {
-        "name": "Tower 0 Alarm"
+        "name": "Tower 0 Alarmstatus"
       },
       "ess_soc_modbus": {
-        "name": "SOC (Modbus)"
+        "name": "Ladezustand (Modbus)"
       },
       "ess_power": {
         "name": "Batterieleistung"
@@ -154,58 +154,58 @@
         "name": "Hausverbrauch"
       },
       "ess_power_l1": {
-        "name": "Batterie L1"
+        "name": "Batterieleistung L1"
       },
       "ess_power_l2": {
-        "name": "Batterie L2"
+        "name": "Batterieleistung L2"
       },
       "ess_power_l3": {
-        "name": "Batterie L3"
+        "name": "Batterieleistung L3"
       },
       "grid_power_l1": {
-        "name": "Netz L1"
+        "name": "Netzleistung L1"
       },
       "grid_power_l2": {
-        "name": "Netz L2"
+        "name": "Netzleistung L2"
       },
       "grid_power_l3": {
-        "name": "Netz L3"
+        "name": "Netzleistung L3"
       },
       "house_power_l1": {
-        "name": "Haus L1"
+        "name": "Hausverbrauch L1"
       },
       "house_power_l2": {
-        "name": "Haus L2"
+        "name": "Hausverbrauch L2"
       },
       "house_power_l3": {
-        "name": "Haus L3"
+        "name": "Hausverbrauch L3"
       },
       "ess_discharge_power": {
         "name": "Entladeleistung"
       },
       "ess_active_charge_energy": {
-        "name": "Ladeenergie AC"
+        "name": "AC-Ladeenergie"
       },
       "ess_active_discharge_energy": {
-        "name": "Entladeenergie AC"
+        "name": "AC-Entladeenergie"
       },
       "grid_buy_energy": {
         "name": "Netzbezug"
       },
       "grid_sell_energy": {
-        "name": "Einspeisung"
+        "name": "Netzeinspeisung"
       },
       "pv_energy": {
         "name": "PV-Ertrag"
       },
       "house_energy": {
-        "name": "Verbrauch"
+        "name": "Hausverbrauch Energie"
       },
       "battery_charge_energy": {
-        "name": "Batterie Laden"
+        "name": "Batterie-Ladeenergie"
       },
       "battery_discharge_energy": {
-        "name": "Batterie Entladen"
+        "name": "Batterie-Entladeenergie"
       },
       "modul_0_spread": {
         "name": "Modul 0 ΔU"
@@ -525,7 +525,7 @@
     },
     "binary_sensor": {
       "fault_status": {
-        "name": "Fault aktiv"
+        "name": "Fehler aktiv"
       },
       "rest_communication": {
         "name": "REST verbunden"
@@ -534,13 +534,13 @@
         "name": "Modbus verbunden"
       },
       "system_ok": {
-        "name": "System OK"
+        "name": "System in Ordnung"
       },
       "system_warning": {
-        "name": "Warnung"
+        "name": "Systemwarnung"
       },
       "system_error": {
-        "name": "Fehler"
+        "name": "Systemfehler"
       }
     }
   }
