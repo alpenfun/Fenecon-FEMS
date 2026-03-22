@@ -29,6 +29,20 @@ from .coordinator import FemsDataUpdateCoordinator
 from .entity import FemsCoordinatorEntity
 
 
+# NOTE:
+# The exact semantic mapping for battery0/State and battery0/StateMachine
+# is not present in the uploaded YAML/Git files. Therefore this file
+# implements a safe fallback:
+# - known values can be mapped below
+# - unknown values are shown as e.g. "Unbekannt (11)"
+#
+# Once you have verified the exact enum meanings from FEMS/OpenEMS,
+# these dictionaries can be extended without changing the rest of the file.
+BATTERY_STATE_MAP: dict[int, str] = {}
+
+BATTERY_STATE_MACHINE_MAP: dict[int, str] = {}
+
+
 @dataclass(frozen=True, kw_only=True)
 class FemsSensorDescription(SensorEntityDescription):
     """Describe a FEMS sensor."""
@@ -52,6 +66,39 @@ def _scaled_rest_value(
     if value is None:
         return None
     return round(value / divisor, precision)
+
+
+def _format_enum_value(
+    value: Any,
+    mapping: dict[int, str],
+    unknown_prefix: str = "Unbekannt",
+) -> str | None:
+    """Format numeric enum values with safe fallback."""
+    if value is None:
+        return None
+
+    try:
+        numeric_value = int(value)
+    except (TypeError, ValueError):
+        return str(value)
+
+    return mapping.get(numeric_value, f"{unknown_prefix} ({numeric_value})")
+
+
+def _battery_state_value(coordinator: FemsDataUpdateCoordinator) -> str | None:
+    """Return formatted battery state."""
+    return _format_enum_value(
+        coordinator.data.rest.get("battery0/State"),
+        BATTERY_STATE_MAP,
+    )
+
+
+def _battery_state_machine_value(coordinator: FemsDataUpdateCoordinator) -> str | None:
+    """Return formatted battery state machine."""
+    return _format_enum_value(
+        coordinator.data.rest.get("battery0/StateMachine"),
+        BATTERY_STATE_MACHINE_MAP,
+    )
 
 
 def _cell_voltage_rest_key(module: int, cell: int) -> str:
@@ -190,13 +237,13 @@ _SENSOR_LIST: list[FemsSensorDescription] = [
         key="battery_state",
         translation_key="battery_state",
         name="Batteriestatus",
-        value_fn=lambda c: _rest_value(c, "battery0/State"),
+        value_fn=_battery_state_value,
     ),
     FemsSensorDescription(
         key="battery_state_machine",
         translation_key="battery_state_machine",
         name="Batterie Zustandsmaschine",
-        value_fn=lambda c: _rest_value(c, "battery0/StateMachine"),
+        value_fn=_battery_state_machine_value,
     ),
     FemsSensorDescription(
         key="battery_start_stop",
