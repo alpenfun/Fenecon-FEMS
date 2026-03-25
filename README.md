@@ -1,216 +1,155 @@
-# 🔋 Fenecon FEMS Integration for Home Assistant
+# 🔋 FEMS Integration for Home Assistant
 
-A custom Home Assistant integration for **Fenecon FEMS (Energy Management System)**
-providing **real-time data**, **battery diagnostics**, and **energy flow insights** via REST and Modbus.
+Custom Home Assistant integration for **FENECON FEMS** systems.  
+Provides detailed battery, inverter, and diagnostic data via **Modbus** and **REST API**.
 
 ---
 
 ## ✨ Features
 
-* 🔌 REST + Modbus integration
-* 🔋 Full battery monitoring (SOC, SOH, voltage, current, cycles)
-* ⚡ Real-time power data (PV, grid, house, battery)
-* 📊 Energy counters (charge, discharge, consumption, feed-in)
-* 🧠 Advanced diagnostics (cell voltage spread, fault states)
-* 🧱 Clean architecture using `DataUpdateCoordinator`
-* 🌍 Full localization support (`en` / `de`)
-* 🧩 HACS compatible
+- 🔌 Modbus + REST integration
+- 🔄 Central DataUpdateCoordinator architecture
+- 🔋 Battery monitoring
+  - State of charge (SoC)
+  - Voltage, current, power
+  - Cycle count and health (SoH)
+- ⚡ Inverter / charger data
+- 🧠 System status (OK / Warning / Error)
+- 📊 Diagnostic sensors
+- 🔍 Cell-level monitoring
+  - Per-cell voltage (up to 14 cells per module)
+- 📈 Battery module monitoring (configurable)
+  - Per-module voltage spread (ΔV)
+
+---
+
+## ⚙️ Configuration
+
+During setup, the following parameters are required:
+
+- **REST Host / Port**
+- **Modbus Host / Port**
+- **Modbus Slave ID**
+- **Battery module count**
+  - Range: **1–10 modules**
+  - Default: **7 modules**
+
+---
+
+## 🔋 Battery Module Configuration
+
+The integration dynamically adapts to your system based on the configured module count.
+
+This setting controls:
+
+- Number of **module spread sensors (ΔV)**
+- Number of **cell voltage sensors**
+
+Example:
+
+| Modules | Sensors (approx.) |
+|--------|------------------|
+| 1      | ~20              |
+| 5      | ~80              |
+| 7      | ~110             |
+| 10     | ~150+            |
+
+⚠️ **Important:**  
+Make sure the configured module count matches your actual system.
+
+---
+
+## 🧠 Architecture
+
+- `coordinator.py` → Central data aggregation
+- `fems_modbus.py` → Modbus communication
+- `fems_rest.py` → REST communication
+- `sensor.py` → Sensor entities (dynamic)
+- `binary_sensor.py` → Status sensors
+
+---
+
+## 📊 Provided Sensors
+
+### 🔋 Battery
+- Voltage
+- Current
+- Power
+- SoC
+- SoH
+- Cycle count
+
+### ⚡ Charger / Inverter
+- Power
+- Voltage
+- Current
+- Energy
+
+### 🧠 System
+- Status (OK / Warning / Error)
+- Fault
+- Communication status
+
+### 📈 Module Diagnostics
+- Voltage spread (ΔV) per module
+
+### 🔬 Cell Diagnostics
+- Voltage per cell (Module × 14 cells)
+
+---
+
+## ⚡ Performance Notes
+
+The number of entities scales with the number of battery modules.
+
+- More modules → more sensors → higher system load
+- Cell voltage sensors are the largest contributor
+
+💡 Recommendation:
+- Use only the required module count
+- Disable diagnostic sensors if not needed
+
+---
+
+## 🔄 Migration Notes (0.2.3)
+
+- Existing installations are automatically migrated
+- Missing `battery_module_count` is set to default (**7 modules**)
+- No manual action required
 
 ---
 
 ## 📦 Installation
 
 ### HACS (recommended)
+1. Add custom repository
+2. Search for **FEMS**
+3. Install
+4. Restart Home Assistant
 
-1. Open HACS
-2. Go to **Integrations**
-3. Click **⋮ → Custom repositories**
-4. Add your repository URL
-5. Select category: **Integration**
-6. Install **FEMS**
-7. Restart Home Assistant
-
----
-
-## ⚙️ Configuration
-
-After installation:
-
-1. Go to **Settings → Devices & Services**
-2. Click **Add Integration**
-3. Search for **FEMS**
-4. Enter:
-
-   * REST host / port
-   * Modbus host / port / slave
-   * Credentials (if required)
-
----
-
-## 🧠 Dashboard Recommendation
-
-This integration is designed with a **clean, user-focused dashboard structure**.
-
-👉 Important:
-
-* Entity IDs may vary depending on language and system setup
-* Use **names (not IDs)** when building your dashboard
-
----
-
-### 🟢 1. System Status
-
-**Goal:** Instant system health overview
-
-**Entities:**
-
-* System OK
-* System Warning
-* System Error
-* REST Connected
-* Modbus Connected
-* Fault Active
-
-**Recommended card:**
-
-* Tile cards (color-coded)
-
----
-
-### ⚡ 2. Live Power
-
-**Goal:** Understand current energy flow
-
-**Entities:**
-
-* PV Power
-* House Load
-* Grid Power
-* Battery Power
-
-**Recommended card:**
-
-* Gauge or Tile
-
----
-
-### 🔋 3. Battery Overview
-
-**Goal:** Monitor battery condition
-
-**Entities:**
-
-* State of Charge (SOC)
-* State of Health (SOH)
-* Battery Current
-* Battery Voltage (DC)
-* Battery Pack Voltage
-* Charge Cycles
-* Battery State
-* Battery State Machine
-
----
-
-### 🔌 4. Energy Counters
-
-**Goal:** Long-term energy tracking
-
-**Entities:**
-
-* PV Yield
-* House Consumption
-* Grid Import
-* Grid Export
-* Battery Charge Energy
-* Battery Discharge Energy
-* AC Charge Energy
-* AC Discharge Energy
-
----
-
-### 🔁 5. Phase Values (optional)
-
-**Goal:** Analyze load distribution
-
-**Entities:**
-
-* Battery L1 / L2 / L3
-* Grid L1 / L2 / L3
-* House L1 / L2 / L3
-
----
-
-### 🧪 6. Cell Health (Recommended)
-
-**Goal:** Detect battery issues early
-
-**Entities:**
-
-* Cell Voltage Spread (overall)
-* Module 0–6 ΔV
-
-👉 This replaces the need to display all individual cell voltages.
-
----
-
-### 🔧 7. Diagnostics (optional)
-
-**Goal:** Debugging and deep analysis
-
-**Includes:**
-
-* Tower temperatures
-* Cell voltage min/max
-* Undervoltage levels
-* Internal fault flags
-
-👉 These entities are:
-
-* marked as **diagnostic**
-* **disabled by default**
-
----
-
-## 🎯 Design Philosophy
-
-* Clean default dashboard (no sensor overload)
-* Diagnostics separated from daily use
-* Focus on meaningful indicators (e.g. Δ cell voltage)
-* Scalable for large battery systems
-
----
-
-## ⚠️ Notes
-
-* Cell voltages are available but **disabled by default**
-* Diagnostic sensors return **0/1 values** for stability
-* Entity IDs may differ depending on language settings
+### Manual
+1. Copy `custom_components/fems` to your HA config directory
+2. Restart Home Assistant
 
 ---
 
 ## 🚀 Roadmap
 
-* [ ] Stable entity IDs for universal dashboards
-* [ ] Energy Flow Card example
-* [ ] Advanced statistics dashboard
-* [ ] Alarm aggregation sensor
-* [ ] HACS default dashboard blueprint
+- [ ] Options Flow (change module count after setup)
+- [ ] Energy dashboard integration
+- [ ] Optimized default dashboards
+- [ ] Sensor grouping / categories
+- [ ] Performance optimization for large systems
 
 ---
 
-## 🤝 Contributing
+## ⚠️ Disclaimer
 
-Contributions, ideas and feedback are welcome!
-
----
-
-## 📄 License
-
-MIT License
+This is an unofficial integration.  
+Use at your own risk.
 
 ---
 
-## 🙌 Acknowledgements
+## 👨‍💻 Author
 
-* Home Assistant Community
-* Fenecon ecosystem
+Developed by **alpenfun**
