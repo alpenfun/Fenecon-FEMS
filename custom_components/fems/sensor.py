@@ -65,6 +65,19 @@ def _scaled_rest_value(
     return round(value / divisor, precision)
 
 
+def _scaled_modbus_value(
+    coordinator: FemsDataUpdateCoordinator,
+    key: str,
+    divisor: float,
+    precision: int,
+) -> float | None:
+    """Return scaled Modbus value."""
+    value = coordinator.data.modbus.get(key)
+    if value is None:
+        return None
+    return round(value / divisor, precision)
+
+
 def _cell_voltage_rest_key(module: int, cell: int) -> str:
     """Return REST key for one cell voltage."""
     return f"battery0/Tower0Module{module}Cell{cell:03d}Voltage"
@@ -179,9 +192,10 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
     FemsSensorDescription(
         key="battery_capacity",
         translation_key="battery_capacity",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "battery0/Capacity"),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Capacity", 1000, 3),
     ),
     FemsSensorDescription(
         key="battery_state",
@@ -288,7 +302,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "charger0/Voltage"),
+        value_fn=lambda c: _scaled_rest_value(c, "charger0/Voltage", 1000, 1),
     ),
     FemsSensorDescription(
         key="charger0_current",
@@ -312,7 +326,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "charger1/Voltage"),
+        value_fn=lambda c: _scaled_rest_value(c, "charger1/Voltage", 1000, 1),
     ),
     FemsSensorDescription(
         key="charger1_current",
@@ -571,66 +585,74 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
     FemsSensorDescription(
         key="ess_active_charge_energy",
         translation_key="ess_active_charge_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("ess_active_charge_energy"),
+        value_fn=lambda c: _scaled_modbus_value(
+            c, "ess_active_charge_energy", 1000, 3
+        ),
     ),
     FemsSensorDescription(
         key="ess_active_discharge_energy",
         translation_key="ess_active_discharge_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("ess_active_discharge_energy"),
+        value_fn=lambda c: _scaled_modbus_value(
+            c, "ess_active_discharge_energy", 1000, 3
+        ),
     ),
     FemsSensorDescription(
         key="grid_buy_energy",
         translation_key="grid_buy_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("grid_buy_active_energy"),
+        value_fn=lambda c: _scaled_modbus_value(c, "grid_buy_active_energy", 1000, 3),
     ),
     FemsSensorDescription(
         key="grid_sell_energy",
         translation_key="grid_sell_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("grid_sell_active_energy"),
+        value_fn=lambda c: _scaled_modbus_value(c, "grid_sell_active_energy", 1000, 3),
     ),
     FemsSensorDescription(
         key="pv_energy",
         translation_key="pv_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("production_active_energy"),
+        value_fn=lambda c: _scaled_modbus_value(c, "production_active_energy", 1000, 3),
     ),
     FemsSensorDescription(
         key="house_energy",
         translation_key="house_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("consumption_active_energy"),
+        value_fn=lambda c: _scaled_modbus_value(
+            c, "consumption_active_energy", 1000, 3
+        ),
     ),
     FemsSensorDescription(
         key="battery_charge_energy",
         translation_key="battery_charge_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("ess_dc_charge_energy"),
+        value_fn=lambda c: _scaled_modbus_value(c, "ess_dc_charge_energy", 1000, 3),
     ),
     FemsSensorDescription(
         key="battery_discharge_energy",
         translation_key="battery_discharge_energy",
-        native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
-        value_fn=lambda c: c.data.modbus.get("ess_dc_discharge_energy"),
+        value_fn=lambda c: _scaled_modbus_value(
+            c, "ess_dc_discharge_energy", 1000, 3
+        ),
     ),
 )
 
