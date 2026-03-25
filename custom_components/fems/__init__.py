@@ -18,8 +18,6 @@ from .coordinator import FemsDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-type FemsConfigEntry = ConfigEntry
-
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the FEMS component."""
@@ -28,27 +26,30 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate old config entries."""
-    version = entry.version
+    if entry.version == 1:
+        _LOGGER.info("Migrating FEMS config entry %s from version 1 to 2", entry.entry_id)
 
-    if version == 1:
         new_data = dict(entry.data)
 
         if CONF_BATTERY_MODULE_COUNT not in new_data:
             new_data[CONF_BATTERY_MODULE_COUNT] = DEFAULT_BATTERY_MODULE_COUNT
             _LOGGER.info(
-                "Migrating FEMS config entry %s: set %s=%s",
-                entry.entry_id,
+                "Added missing %s=%s to config entry %s",
                 CONF_BATTERY_MODULE_COUNT,
                 DEFAULT_BATTERY_MODULE_COUNT,
+                entry.entry_id,
             )
 
-        hass.config_entries.async_update_entry(entry, data=new_data, version=2)
-        _LOGGER.info("FEMS config entry %s migrated from version 1 to 2", entry.entry_id)
+        hass.config_entries.async_update_entry(
+            entry,
+            data=new_data,
+            version=2,
+        )
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: FemsConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up FEMS from a config entry."""
     coordinator = FemsDataUpdateCoordinator(hass, entry)
 
@@ -64,11 +65,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: FemsConfigEntry) -> bool
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: FemsConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
+        hass.data[DOMAIN].pop(entry.entry_id, None)
 
     return unload_ok
