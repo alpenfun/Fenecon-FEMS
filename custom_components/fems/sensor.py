@@ -143,7 +143,6 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         key="battery_soh",
         translation_key="battery_soh",
         native_unit_of_measurement=PERCENTAGE,
-        device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Soh"),
     ),
@@ -153,7 +152,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _scaled_rest_value(c, "battery0/Current", 10, 1),
+        value_fn=lambda c: _rest_value(c, "battery0/Current"),
     ),
     FemsSensorDescription(
         key="battery_voltage_dc",
@@ -161,7 +160,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _scaled_rest_value(c, "battery0/Voltage", 10, 1),
+        value_fn=lambda c: _rest_value(c, "battery0/Voltage"),
     ),
     FemsSensorDescription(
         key="battery_pack_voltage",
@@ -174,14 +173,13 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
     FemsSensorDescription(
         key="battery_cycles",
         translation_key="battery_cycles",
-        state_class=SensorStateClass.TOTAL_INCREASING,
+        state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0NoOfCycles"),
     ),
     FemsSensorDescription(
         key="battery_capacity",
         translation_key="battery_capacity",
         native_unit_of_measurement=UnitOfEnergy.WATT_HOUR,
-        device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Capacity"),
     ),
