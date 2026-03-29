@@ -14,6 +14,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    CELLS_PER_MODULE,
     CONF_BATTERY_MODULE_COUNT,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
@@ -27,7 +28,9 @@ from .const import (
     DOMAIN,
     MODBUS_FLOAT32_HOLDING_REGISTERS,
     MODBUS_FLOAT64_HOLDING_REGISTERS,
+    MODBUS_TIMEOUT,
     MODBUS_UINT16_INPUT_REGISTERS,
+    REST_TIMEOUT,
 )
 from .fems_modbus import FemsModbusApi
 from .fems_rest import FemsRestApi
@@ -76,8 +79,8 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             always_update=False,
         )
 
-    async def _async_fetch_rest_data(self) -> dict[str, Any]:
-        """Fetch all REST data."""
+    async def _async_fetch_rest_data_internal(self) -> dict[str, Any]:
+        """Fetch all REST data without timeout wrapper."""
         battery_group = (
             "battery0/("
             "Soc|"
@@ -118,41 +121,60 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
         charger0_group = "charger0/(ActualPower|Voltage|Current)"
         charger1_group = "charger1/(ActualPower|Voltage|Current)"
 
-        battery_task = self.rest_api.async_fetch_group(battery_group)
-        charger0_task = self.rest_api.async_fetch_group(charger0_group)
-        charger1_task = self.rest_api.async_fetch_group(charger1_group)
+        tasks = [
+            self.rest_api.async_fetch_group(battery_group),
+            self.rest_api.async_fetch_group(charger0_group),
+            self.rest_api.async_fetch_group(charger1_group),
+        ]
 
-        cell_tasks = []
         for module in range(self.battery_module_count):
             cell_group = (
                 "battery0/("
                 + "|".join(
                     f"Tower0Module{module}Cell{cell:03d}Voltage"
-                    for cell in range(14)
+                    for cell in range(CELLS_PER_MODULE)
                 )
                 + ")"
             )
-            cell_tasks.append(self.rest_api.async_fetch_group(cell_group))
+            tasks.append(self.rest_api.async_fetch_group(cell_group))
 
-        battery, charger0, charger1, *cell_groups = await asyncio.gather(
-            battery_task,
-            charger0_task,
-            charger1_task,
-            *cell_tasks,
-        )
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
         rest: dict[str, Any] = {}
-        rest.update(battery)
-        rest.update(charger0)
-        rest.update(charger1)
+        errors: list[Exception] = []
 
-        for module_data in cell_groups:
-            rest.update(module_data)
+        for result in results:
+            if isinstance(result, Exception):
+                errors.append(result)
+                continue
+            rest.update(result)
+
+        if errors:
+            first_error = errors[0]
+            raise UpdateFailed(
+                f"REST group fetch failed ({len(errors)} request(s) failed): {first_error}"
+            ) from first_error
 
         return rest
 
-    async def _async_fetch_modbus_data(self) -> dict[str, Any]:
-        """Fetch all Modbus data."""
+    async def _async_fetch_rest_data(self) -> dict[str, Any]:
+        """Fetch all REST data with timeout handling."""
+        try:
+            return await asyncio.wait_for(
+                self._async_fetch_rest_data_internal(),
+                timeout=REST_TIMEOUT,
+            )
+        except asyncio.TimeoutError as err:
+            raise UpdateFailed("REST update timed out") from err
+        except ClientError as err:
+            raise UpdateFailed(f"REST communication failed: {err}") from err
+        except UpdateFailed:
+            raise
+        except Exception as err:  # noqa: BLE001
+            raise UpdateFailed(f"REST update failed: {err}") from err
+
+    async def _async_fetch_modbus_data_internal(self) -> dict[str, Any]:
+        """Fetch all Modbus data without timeout wrapper."""
         await self.modbus_api.async_connect()
 
         modbus_uint16_task = self.modbus_api.async_read_many_uint16_input(
@@ -177,6 +199,22 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
         modbus.update(modbus_float64)
         return modbus
 
+    async def _async_fetch_modbus_data(self) -> dict[str, Any]:
+        """Fetch all Modbus data with timeout handling."""
+        try:
+            return await asyncio.wait_for(
+                self._async_fetch_modbus_data_internal(),
+                timeout=MODBUS_TIMEOUT,
+            )
+        except asyncio.TimeoutError as err:
+            raise UpdateFailed("Modbus update timed out") from err
+        except UpdateFailed:
+            raise
+        except Exception as err:  # noqa: BLE001
+            raise UpdateFailed(f"Modbus update failed: {err}") from err
+        finally:
+            await self.modbus_api.async_close()
+
     async def _async_update_data(self) -> FemsData:
         """Fetch data from REST and Modbus."""
         rest: dict[str, Any] = {}
@@ -187,22 +225,30 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
 
         try:
             rest = await self._async_fetch_rest_data()
-        except ClientError as err:
-            rest_error = err
-            _LOGGER.warning("REST communication failed: %s", err)
         except Exception as err:  # noqa: BLE001
             rest_error = err
-            _LOGGER.warning("REST update failed: %s", err)
+            _LOGGER.debug("REST update failed: %s", err)
 
         try:
             modbus = await self._async_fetch_modbus_data()
         except Exception as err:  # noqa: BLE001
             modbus_error = err
-            _LOGGER.warning("Modbus update failed: %s", err)
+            _LOGGER.debug("Modbus update failed: %s", err)
 
         if rest_error and modbus_error:
+            _LOGGER.warning(
+                "FEMS update failed completely: REST=%s; Modbus=%s",
+                rest_error,
+                modbus_error,
+            )
             raise UpdateFailed(
                 f"REST and Modbus update failed: REST={rest_error}; Modbus={modbus_error}"
             ) from modbus_error
+
+        if rest_error:
+            _LOGGER.debug("Using partial data: REST unavailable, Modbus available")
+
+        if modbus_error:
+            _LOGGER.debug("Using partial data: Modbus unavailable, REST available")
 
         return FemsData(rest=rest, modbus=modbus)
