@@ -1,4 +1,4 @@
-"""Data update coordinator for FEMS."""
+"""Data update coordinator for fems-diagnostics"""
 
 from __future__ import annotations
 
