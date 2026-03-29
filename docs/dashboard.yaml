@@ -8,64 +8,76 @@ views:
         alignment: justify
         chips:
           - type: template
-            content: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            content: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 Systemfehler
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 Systemwarnung
               {% else %}
                 System OK
               {% endif %}
-            icon: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            icon: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 mdi:alert-circle
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 mdi:alert
               {% else %}
                 mdi:check-circle
               {% endif %}
-            icon_color: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            icon_color: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 red
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 amber
               {% else %}
                 green
               {% endif %}
           - type: entity
-            entity: binary_sensor.fems_rest_kommunikation
+            entity: binary_sensor.battery_diagnostics_rest_verbunden
             content_info: state
             icon_color: green
           - type: entity
-            entity: binary_sensor.fems_modbus_kommunikation
+            entity: binary_sensor.battery_diagnostics_modbus_verbunden
             content_info: state
             icon_color: green
           - type: template
-            content: |-
-              {% if is_state('binary_sensor.fems_fehlerstatus', 'on') %}
+            content: >-
+              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv',
+              'on') %}
                 Fault aktiv
               {% else %}
                 Kein Fault
               {% endif %}
-            icon: |-
-              {% if is_state('binary_sensor.fems_fehlerstatus', 'on') %}
+            icon: >-
+              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv',
+              'on') %}
                 mdi:alert-octagon
               {% else %}
                 mdi:shield-check
               {% endif %}
-            icon_color: |-
-              {% if is_state('binary_sensor.fems_fehlerstatus', 'on') %}
+            icon_color: >-
+              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv',
+              'on') %}
                 red
               {% else %}
                 green
               {% endif %}
           - type: template
-            content: ΔU {{ states('sensor.fems_zellspannungsdifferenz') }} V
+            content: ΔU {{ states('sensor.battery_zellspannungsdifferenz') }} V
             icon: mdi:sine-wave
             icon_color: >-
-              {% set v = states('sensor.fems_zellspannungsdifferenz') | float(0)
-              %} {% if v >= 0.05 %}red {% elif v >= 0.02 %}amber {% else %}green
-              {% endif %}
+              {% set v = states('sensor.battery_zellspannungsdifferenz') |
+              float(0) %} {% if v >= 0.05 %}red {% elif v >= 0.02 %}amber {%
+              else %}green {% endif %}
     sections:
       - type: grid
         column_span: 4
@@ -75,85 +87,85 @@ views:
             columns: 5
             cards:
               - type: custom:mushroom-template-card
-                entity: sensor.fems_batterie_soh
+                entity: sensor.battery_gesundheitszustand
                 primary: SoH
-                secondary: '{{ states(''sensor.fems_batterie_soh'') }} %'
+                secondary: '{{ states(''sensor.battery_gesundheitszustand'') }} %'
                 icon: mdi:heart-pulse
                 icon_color: >-
-                  {% set v = states('sensor.fems_batterie_soh') | float(0) %} {%
-                  if v < 70 %}red {% elif v < 85 %}amber {% else %}green {%
-                  endif %}
+                  {% set v = states('sensor.battery_gesundheitszustand') |
+                  float(0) %} {% if v < 70 %}red {% elif v < 85 %}amber {% else
+                  %}green {% endif %}
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_batteriespannung
+                entity: sensor.battery_batterie_packspannung
                 primary: Packspannung
-                secondary: '{{ states(''sensor.fems_batteriespannung'') }} V'
+                secondary: '{{ states(''sensor.battery_batterie_packspannung'') }} V'
                 icon: mdi:car-battery
                 icon_color: blue
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_pv_leistung
+                entity: sensor.energy_management_pv_leistung
                 primary: PV
-                secondary: '{{ states(''sensor.fems_pv_leistung'') }} W'
+                secondary: '{{ states(''sensor.energy_management_pv_leistung'') }} W'
                 icon: mdi:solar-power
                 icon_color: yellow
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.grid_power
+                entity: sensor.energy_management_netzleistung
                 primary: Netz
-                secondary: '{{ states(''sensor.grid_power'') }} W'
+                secondary: '{{ states(''sensor.energy_management_netzleistung'') }} W'
                 icon: mdi:transmission-tower
                 icon_color: blue
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_hausverbrauch
+                entity: sensor.energy_management_hausverbrauch
                 primary: Haus
-                secondary: '{{ states(''sensor.fems_hausverbrauch'') }} W'
+                secondary: '{{ states(''sensor.energy_management_hausverbrauch'') }} W'
                 icon: mdi:home-lightning-bolt
                 icon_color: orange
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_batteriestrom
+                entity: sensor.battery_batteriestrom
                 primary: Batteriestrom
-                secondary: '{{ states(''sensor.fems_batteriestrom'') }} A'
+                secondary: '{{ states(''sensor.battery_batteriestrom'') }} A'
                 icon: mdi:current-dc
                 icon_color: cyan
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_ess_leistung
+                entity: sensor.energy_management_batterieleistung
                 primary: ESS-Leistung
-                secondary: '{{ states(''sensor.fems_ess_leistung'') }} W'
+                secondary: '{{ states(''sensor.energy_management_batterieleistung'') }} W'
                 icon: mdi:flash
                 icon_color: >-
-                  {% set v = states('sensor.fems_ess_leistung') | float(0) %} {%
-                  if v > 0 %}green {% elif v < 0 %}red {% else %}grey {% endif
-                  %}
+                  {% set v = states('sensor.energy_management_batterieleistung')
+                  | float(0) %} {% if v > 0 %}green {% elif v < 0 %}red {% else
+                  %}grey {% endif %}
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_batterie_entladeleistung
+                entity: sensor.energy_management_entladeleistung
                 primary: Entladung
-                secondary: '{{ states(''sensor.fems_batterie_entladeleistung'') }} W'
+                secondary: '{{ states(''sensor.energy_management_entladeleistung'') }} W'
                 icon: mdi:battery-arrow-down
                 icon_color: green
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_ladegerat_0_leistung
+                entity: sensor.charger_0_leistung
                 primary: Charger 0
                 secondary: >-
-                  {{ states('sensor.fems_ladegerat_0_leistung') }} W · {{
-                  states('sensor.fems_ladegerat_0_spannung') }} V · {{
-                  states('sensor.fems_ladegerat_0_strom') }} A
+                  {{ states('sensor.charger_0_leistung') }} W · {{
+                  states('sensor.charger_0_spannung') }} V · {{
+                  states('sensor.charger_0_strom') }} A
                 icon: mdi:ev-station
                 icon_color: blue
                 multiline_secondary: true
                 fill_container: true
               - type: custom:mushroom-template-card
-                entity: sensor.fems_ladegerat_1_leistung
+                entity: sensor.charger_1_leistung
                 primary: Charger 1
                 secondary: >-
-                  {{ states('sensor.fems_ladegerat_1_leistung') }} W · {{
-                  states('sensor.fems_ladegerat_1_spannung') }} V · {{
-                  states('sensor.fems_ladegerat_1_strom') }} A
+                  {{ states('sensor.charger_1_leistung') }} W · {{
+                  states('sensor.charger_1_spannung') }} V · {{
+                  states('sensor.charger_1_strom') }} A
                 icon: mdi:ev-station
                 icon_color: blue
                 multiline_secondary: true
@@ -162,36 +174,49 @@ views:
               columns: 24
               rows: auto
       - type: grid
+        column_span: 4
         cards:
           - type: custom:mushroom-template-card
-            primary: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            primary: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 Kritischer Systemzustand erkannt
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 Warnungen aktiv
               {% else %}
                 Keine aktiven Fehler oder Warnungen
               {% endif %}
-            secondary: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            secondary: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 Bitte kritische Diagnose sofort prüfen
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 Warnstatus und Zellunterspannungen prüfen
               {% else %}
                 System arbeitet aktuell ohne aktive Fehler- oder Warnmeldungen
               {% endif %}
-            icon: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            icon: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 mdi:alert-circle
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 mdi:alert
               {% else %}
                 mdi:check-circle
               {% endif %}
-            icon_color: |-
-              {% if is_state('binary_sensor.fems_system_fehler', 'on') %}
+            icon_color: >-
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
+              'on') %}
                 red
-              {% elif is_state('binary_sensor.fems_system_warnung', 'on') %}
+              {% elif
+              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
+              %}
                 amber
               {% else %}
                 green
@@ -202,7 +227,6 @@ views:
             grid_options:
               columns: 24
               rows: auto
-        column_span: 4
       - type: grid
         column_span: 4
         cards:
@@ -214,7 +238,7 @@ views:
             columns: 7
             cards:
               - type: custom:button-card
-                entity: sensor.fems_modul_0_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_0_du
                 name: M0
                 show_state: true
                 state_display: |
@@ -238,24 +262,8 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
               - type: custom:button-card
-                entity: sensor.fems_modul_1_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_1_du
                 name: M1
                 show_state: true
                 state_display: |
@@ -279,24 +287,8 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
               - type: custom:button-card
-                entity: sensor.fems_modul_2_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_2_du
                 name: M2
                 show_state: true
                 state_display: |
@@ -320,24 +312,8 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
               - type: custom:button-card
-                entity: sensor.fems_modul_3_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_3_du
                 name: M3
                 show_state: true
                 state_display: |
@@ -361,24 +337,8 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
               - type: custom:button-card
-                entity: sensor.fems_modul_4_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_4_du
                 name: M4
                 show_state: true
                 state_display: |
@@ -402,24 +362,8 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
               - type: custom:button-card
-                entity: sensor.fems_modul_5_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_5_du
                 name: M5
                 show_state: true
                 state_display: |
@@ -443,24 +387,8 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
               - type: custom:button-card
-                entity: sensor.fems_modul_6_spannungsdifferenz
+                entity: sensor.cell_diagnostics_modul_6_du
                 name: M6
                 show_state: true
                 state_display: |
@@ -484,22 +412,9 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-                styles:
-                  card:
-                    - height: 52px
-                    - border-radius: 10px
-                    - padding: 6px
-                  grid:
-                    - grid-template-areas: '"i n" "i s"'
-                    - grid-template-columns: 18px 1fr
-                    - grid-template-rows: min-content min-content
-                  name:
-                    - justify-self: start
-                    - font-size: 11px
-                    - font-weight: 600
-                  state:
-                    - justify-self: start
-                    - font-size: 10px
+            grid_options:
+              columns: 18
+              rows: auto
       - type: grid
         column_span: 4
         cards:
@@ -511,61 +426,65 @@ views:
                 title: Zellgesundheit kompakt
                 show_header_toggle: false
                 entities:
-                  - entity: sensor.fems_min_zellspannung
+                  - entity: sensor.battery_min_zellspannung
                     name: Min. Zellspannung
-                  - entity: sensor.fems_max_zellspannung
+                  - entity: sensor.battery_max_zellspannung
                     name: Max. Zellspannung
-                  - entity: sensor.fems_zellspannungsdifferenz
+                  - entity: sensor.battery_zellspannungsdifferenz
                     name: Zellspannungsdifferenz
-                  - entity: sensor.fems_min_zelltemperatur
+                  - entity: sensor.battery_min_zelltemperatur
                     name: Min. Zelltemperatur
-                  - entity: sensor.fems_max_zelltemperatur
+                  - entity: sensor.battery_max_zelltemperatur
                     name: Max. Zelltemperatur
-                  - entity: sensor.fems_tower0_min_zellspannung
+                  - entity: sensor.battery_tower_0_min_zellspannung
                     name: Tower 0 Min. Zellspannung
-                  - entity: sensor.fems_tower0_max_zellspannung
+                  - entity: sensor.battery_tower_0_max_zellspannung
                     name: Tower 0 Max. Zellspannung
-                  - entity: sensor.fems_tower0_min_temperatur
+                  - entity: sensor.battery_tower_0_min_temperatur
                     name: Tower 0 Min. Temperatur
-                  - entity: sensor.fems_tower0_max_temperatur
+                  - entity: sensor.battery_tower_0_max_temperatur
                     name: Tower 0 Max. Temperatur
               - type: entities
                 title: Kritische Diagnose
                 show_header_toggle: false
                 entities:
-                  - entity: sensor.fems_status_alarm
+                  - entity: sensor.battery_diagnostics_alarmstatus
                     name: Alarmstatus
-                  - entity: sensor.fems_status_fehler
+                  - entity: sensor.battery_diagnostics_fehlerstatus
                     name: Fehlerstatus
-                  - entity: sensor.fems_tower0_status_alarm
+                  - entity: sensor.battery_diagnostics_tower_0_alarmstatus
                     name: Tower 0 Alarmstatus
-                  - entity: sensor.fems_tower0_status_fehler
+                  - entity: sensor.battery_diagnostics_tower_0_fehlerstatus
                     name: Tower 0 Fehlerstatus
-                  - entity: sensor.fems_fehler_mindestspannung_zu_niedrig
+                  - entity: sensor.battery_diagnostics_unterspannungsfehler
                     name: Unterspannungsfehler
-                  - entity: sensor.fems_fehler_mindestspannung_batterie_gestoppt
+                  - entity: >-
+                      sensor.battery_diagnostics_batterie_wegen_unterspannung_gestoppt
                     name: Batterie wegen Unterspannung gestoppt
-                  - entity: sensor.fems_batterie_lauf_fehlgeschlagen
+                  - entity: sensor.battery_diagnostics_batteriestart_fehlgeschlagen
                     name: Batteriestart fehlgeschlagen
-                  - entity: sensor.fems_batterie_modbus_kommunikation_fehlgeschlagen
+                  - entity: >-
+                      sensor.battery_diagnostics_modbus_kommunikation_fehlgeschlagen
                     name: Modbus-Kommunikation fehlgeschlagen
               - type: entities
                 title: Warnungen aktiv
                 show_header_toggle: false
                 entities:
-                  - entity: sensor.fems_status_warnung
+                  - entity: sensor.battery_diagnostics_warnstatus
                     name: Warnstatus
-                  - entity: sensor.fems_tower0_status_warnung
+                  - entity: sensor.battery_diagnostics_tower_0_warnstatus
                     name: Tower 0 Warnstatus
-                  - entity: sensor.fems_unterspannung_zelle_stufe_1
+                  - entity: sensor.battery_diagnostics_zellunterspannung_stufe_1
                     name: Zellunterspannung Stufe 1
-                  - entity: sensor.fems_unterspannung_zelle_stufe_2
+                  - entity: sensor.battery_diagnostics_zellunterspannung_stufe_2
                     name: Zellunterspannung Stufe 2
-                  - entity: sensor.fems_tower0_unterspannung_zelle_stufe_1
+                  - entity: >-
+                      sensor.battery_diagnostics_tower_0_zellunterspannung_stufe_1
                     name: Tower 0 Zellunterspannung Stufe 1
-                  - entity: sensor.fems_tower0_unterspannung_zelle_stufe_2
+                  - entity: >-
+                      sensor.battery_diagnostics_tower_0_zellunterspannung_stufe_2
                     name: Tower 0 Zellunterspannung Stufe 2
-                  - entity: sensor.fems_warnung_mindestspannung_zu_niedrig
+                  - entity: sensor.battery_diagnostics_unterspannungswarnung
                     name: Unterspannungswarnung
             grid_options:
               columns: 24
@@ -578,43 +497,43 @@ views:
                 title: Phasenwerte / Leistung
                 show_header_toggle: false
                 entities:
-                  - entity: sensor.fems_ess_leistung_l1
+                  - entity: sensor.energy_management_batterieleistung_l1
                     name: Batterieleistung L1
-                  - entity: sensor.fems_ess_leistung_l2
+                  - entity: sensor.energy_management_batterieleistung_l2
                     name: Batterieleistung L2
-                  - entity: sensor.fems_ess_leistung_l3
+                  - entity: sensor.energy_management_batterieleistung_l3
                     name: Batterieleistung L3
-                  - entity: sensor.fems_netzleistung_l1
+                  - entity: sensor.energy_management_netzleistung_l1
                     name: Netzleistung L1
-                  - entity: sensor.fems_netzleistung_l2
+                  - entity: sensor.energy_management_netzleistung_l2
                     name: Netzleistung L2
-                  - entity: sensor.fems_netzleistung_l3
+                  - entity: sensor.energy_management_netzleistung_l3
                     name: Netzleistung L3
-                  - entity: sensor.fems_hausverbrauch_l1
+                  - entity: sensor.energy_management_hausverbrauch_l1
                     name: Hausverbrauch L1
-                  - entity: sensor.fems_hausverbrauch_l2
+                  - entity: sensor.energy_management_hausverbrauch_l2
                     name: Hausverbrauch L2
-                  - entity: sensor.fems_hausverbrauch_l3
+                  - entity: sensor.energy_management_hausverbrauch_l3
                     name: Hausverbrauch L3
               - type: entities
                 title: Energiezähler
                 show_header_toggle: false
                 entities:
-                  - entity: sensor.fems_pv_energie
+                  - entity: sensor.energy_management_pv_ertrag
                     name: PV-Ertrag
-                  - entity: sensor.fems_hausverbrauch_energie
+                  - entity: sensor.energy_management_hausverbrauch_energie
                     name: Hausverbrauch Energie
-                  - entity: sensor.fems_netzbezug_energie
+                  - entity: sensor.energy_management_netzbezug
                     name: Netzbezug
-                  - entity: sensor.fems_netzeinspeisung_energie
+                  - entity: sensor.energy_management_netzeinspeisung
                     name: Netzeinspeisung
-                  - entity: sensor.fems_ess_ac_ladeenergie
+                  - entity: sensor.energy_management_ac_ladeenergie
                     name: AC-Ladeenergie
-                  - entity: sensor.fems_ess_ac_entladeenergie
+                  - entity: sensor.energy_management_ac_entladeenergie
                     name: AC-Entladeenergie
-                  - entity: sensor.fems_batterie_ladeenergie
+                  - entity: sensor.energy_management_batterie_ladeenergie
                     name: Batterie-Ladeenergie
-                  - entity: sensor.fems_batterie_entladeenergie
+                  - entity: sensor.energy_management_batterie_entladeenergie
                     name: Batterie-Entladeenergie
             grid_options:
               columns: 15
