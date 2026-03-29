@@ -32,11 +32,17 @@ from .const import (
     DOMAIN,
 )
 from .coordinator import FemsDataUpdateCoordinator
+from .diagnostics_coordinator import FemsDiagnosticsCoordinator
 from .entity import FemsCoordinatorEntity
 
 
-def _rest_available(coordinator: FemsDataUpdateCoordinator) -> bool:
+def _rest_available(coordinator: Any) -> bool:
     """Return True if REST data is available."""
+    return bool(coordinator.data.rest)
+
+
+def _diagnostics_rest_available(coordinator: Any) -> bool:
+    """Return True if diagnostics REST data is available."""
     return bool(coordinator.data.rest)
 
 
@@ -49,23 +55,23 @@ def _modbus_available(coordinator: FemsDataUpdateCoordinator) -> bool:
 class FemsSensorDescription(SensorEntityDescription):
     """Describe a FEMS sensor."""
 
-    value_fn: Callable[[FemsDataUpdateCoordinator], Any]
-    available_fn: Callable[[FemsDataUpdateCoordinator], bool] | None = None
+    value_fn: Callable[[Any], Any]
+    available_fn: Callable[[Any], bool] | None = None
 
 
-def _rest_value(coordinator: FemsDataUpdateCoordinator, key: str) -> Any:
+def _rest_value(coordinator: Any, key: str) -> Any:
     """Return raw REST value."""
     return coordinator.data.rest.get(key)
 
 
-def _rest_bool_value(coordinator: FemsDataUpdateCoordinator, key: str) -> int:
+def _rest_bool_value(coordinator: Any, key: str) -> int:
     """Return REST diagnostic flag as 0/1 instead of None."""
     value = coordinator.data.rest.get(key)
     return 1 if value in (True, 1, "1", "true", "True", "ON", "on") else 0
 
 
 def _scaled_rest_value(
-    coordinator: FemsDataUpdateCoordinator,
+    coordinator: Any,
     key: str,
     divisor: float,
     precision: int,
@@ -98,18 +104,18 @@ def _cell_voltage_rest_key(module: int, cell: int) -> str:
 def _cell_voltage_value_fn(
     module: int,
     cell: int,
-) -> Callable[[FemsDataUpdateCoordinator], float | None]:
+) -> Callable[[Any], float | None]:
     """Create value function for one cell voltage."""
     rest_key = _cell_voltage_rest_key(module, cell)
 
-    def value_fn(coordinator: FemsDataUpdateCoordinator) -> float | None:
+    def value_fn(coordinator: Any) -> float | None:
         return _scaled_rest_value(coordinator, rest_key, 1000, 3)
 
     return value_fn
 
 
 def _module_cell_voltages(
-    coordinator: FemsDataUpdateCoordinator,
+    coordinator: Any,
     module: int,
 ) -> list[float]:
     """Return all available cell voltages for one module."""
@@ -130,10 +136,10 @@ def _module_cell_voltages(
 
 def _module_spread_value_fn(
     module: int,
-) -> Callable[[FemsDataUpdateCoordinator], float | None]:
+) -> Callable[[Any], float | None]:
     """Create value function for one module spread."""
 
-    def value_fn(coordinator: FemsDataUpdateCoordinator) -> float | None:
+    def value_fn(coordinator: Any) -> float | None:
         values = _module_cell_voltages(coordinator, module)
         if len(values) < 2:
             return None
@@ -143,7 +149,7 @@ def _module_spread_value_fn(
 
 
 def _battery_cell_voltage_spread(
-    coordinator: FemsDataUpdateCoordinator,
+    coordinator: Any,
 ) -> float | None:
     """Return overall battery cell voltage spread."""
     min_voltage = _scaled_rest_value(coordinator, "battery0/MinCellVoltage", 1000, 3)
@@ -750,7 +756,7 @@ def _build_module_spread_sensors(module_count: int) -> list[FemsSensorDescriptio
                 state_class=SensorStateClass.MEASUREMENT,
                 entity_category=EntityCategory.DIAGNOSTIC,
                 value_fn=_module_spread_value_fn(module),
-                available_fn=_rest_available,
+                available_fn=_diagnostics_rest_available,
             )
         )
 
@@ -773,7 +779,7 @@ def _build_cell_voltage_sensors(module_count: int) -> list[FemsSensorDescription
                     entity_category=EntityCategory.DIAGNOSTIC,
                     entity_registry_enabled_default=False,
                     value_fn=_cell_voltage_value_fn(module, cell),
-                    available_fn=_rest_available,
+                    available_fn=_diagnostics_rest_available,
                 )
             )
 
@@ -787,22 +793,29 @@ async def async_setup_entry(
 ) -> None:
     """Set up FEMS sensors."""
     coordinator: FemsDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
+    diagnostics_coordinator: FemsDiagnosticsCoordinator = hass.data[DOMAIN][
+        f"{entry.entry_id}_diagnostics"
+    ]
 
     module_count = entry.data.get(
         CONF_BATTERY_MODULE_COUNT,
         DEFAULT_BATTERY_MODULE_COUNT,
     )
 
-    descriptions = [
-        *BASE_SENSORS,
-        *_build_module_spread_sensors(module_count),
-        *_build_cell_voltage_sensors(module_count),
+    base_entities = [
+        FemsSensorEntity(coordinator, description)
+        for description in BASE_SENSORS
     ]
 
-    async_add_entities(
-        FemsSensorEntity(coordinator, description)
-        for description in descriptions
-    )
+    diagnostics_entities = [
+        FemsSensorEntity(diagnostics_coordinator, description)
+        for description in (
+            *_build_module_spread_sensors(module_count),
+            *_build_cell_voltage_sensors(module_count),
+        )
+    ]
+
+    async_add_entities([*base_entities, *diagnostics_entities])
 
 
 class FemsSensorEntity(FemsCoordinatorEntity, SensorEntity):
@@ -812,7 +825,7 @@ class FemsSensorEntity(FemsCoordinatorEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator: FemsDataUpdateCoordinator,
+        coordinator: FemsDataUpdateCoordinator | FemsDiagnosticsCoordinator,
         description: FemsSensorDescription,
     ) -> None:
         """Initialize the sensor."""
