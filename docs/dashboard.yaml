@@ -624,11 +624,9 @@ views:
       card:
         type: markdown
         text_only: true
-        content: >-
+        content: |-
           # FEMS Diagnose-Dashboard
-
-          Fokus: **Zellgesundheit, Kommunikation, Fehlerbilder und
-          Modulauffälligkeiten**
+          **Diagnose, Zellüberwachung und Systemstatus für FENECON FEMS.**
       layout: start
       badges_position: bottom
       badges_wrap: wrap
