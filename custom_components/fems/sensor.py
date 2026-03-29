@@ -34,11 +34,22 @@ from .coordinator import FemsDataUpdateCoordinator
 from .entity import FemsCoordinatorEntity
 
 
+def _rest_available(coordinator: FemsDataUpdateCoordinator) -> bool:
+    """Return True if REST data is available."""
+    return bool(coordinator.data.rest)
+
+
+def _modbus_available(coordinator: FemsDataUpdateCoordinator) -> bool:
+    """Return True if Modbus data is available."""
+    return bool(coordinator.data.modbus)
+
+
 @dataclass(frozen=True, kw_only=True)
 class FemsSensorDescription(SensorEntityDescription):
     """Describe a FEMS sensor."""
 
     value_fn: Callable[[FemsDataUpdateCoordinator], Any]
+    available_fn: Callable[[FemsDataUpdateCoordinator], bool] | None = None
 
 
 def _rest_value(coordinator: FemsDataUpdateCoordinator, key: str) -> Any:
@@ -151,6 +162,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Soc"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_soh",
@@ -158,6 +170,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Soh"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_current",
@@ -166,6 +179,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Current"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_voltage_dc",
@@ -174,6 +188,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Voltage"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_pack_voltage",
@@ -182,12 +197,14 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0PackVoltage", 10, 1),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_cycles",
         translation_key="battery_cycles",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/Tower0NoOfCycles"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_capacity",
@@ -196,21 +213,25 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/Capacity", 1000, 3),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_state",
         translation_key="battery_state",
         value_fn=lambda c: _rest_value(c, "battery0/State"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_state_machine",
         translation_key="battery_state_machine",
         value_fn=lambda c: _rest_value(c, "battery0/StateMachine"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_start_stop",
         translation_key="battery_start_stop",
         value_fn=lambda c: _rest_value(c, "battery0/StartStop"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_min_cell_voltage",
@@ -219,6 +240,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/MinCellVoltage", 1000, 3),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_max_cell_voltage",
@@ -227,6 +249,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/MaxCellVoltage", 1000, 3),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="cell_voltage_spread",
@@ -234,7 +257,9 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_battery_cell_voltage_spread,
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_min_cell_temperature",
@@ -243,6 +268,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/MinCellTemperature"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_max_cell_temperature",
@@ -251,6 +277,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "battery0/MaxCellTemperature"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_min_cell_voltage",
@@ -258,9 +285,11 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _scaled_rest_value(
             c, "battery0/Tower0MinCellVoltage", 1000, 3
         ),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_max_cell_voltage",
@@ -268,9 +297,11 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricPotential.VOLT,
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _scaled_rest_value(
             c, "battery0/Tower0MaxCellVoltage", 1000, 3
         ),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_min_temperature",
@@ -278,7 +309,9 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MinTemperature", 10, 1),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_max_temperature",
@@ -286,7 +319,9 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MaxTemperature", 10, 1),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="charger0_power",
@@ -295,6 +330,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "charger0/ActualPower"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="charger0_voltage",
@@ -303,6 +339,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "charger0/Voltage", 1000, 1),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="charger0_current",
@@ -311,6 +348,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "charger0/Current"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="charger1_power",
@@ -319,6 +357,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "charger1/ActualPower"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="charger1_voltage",
@@ -327,6 +366,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.VOLTAGE,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "charger1/Voltage", 1000, 1),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="charger1_current",
@@ -335,6 +375,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_value(c, "charger1/Current"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_run_failed",
@@ -343,6 +384,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/RunFailed"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_modbus_communication_failed",
@@ -351,6 +393,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/ModbusCommunicationFailed"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="low_min_voltage_fault",
@@ -359,6 +402,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageFault"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="low_min_voltage_warning",
@@ -367,6 +411,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageWarning"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="low_min_voltage_fault_battery_stopped",
@@ -377,6 +422,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _rest_bool_value(
             c, "battery0/LowMinVoltageFaultBatteryStopped"
         ),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="level1_cell_under_voltage",
@@ -385,6 +431,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Level1CellUnderVoltage"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="level2_cell_under_voltage",
@@ -393,6 +440,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Level2CellUnderVoltage"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_level1_cell_under_voltage",
@@ -403,6 +451,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _rest_bool_value(
             c, "battery0/Tower0Level1CellUnderVoltage"
         ),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_level2_cell_under_voltage",
@@ -413,6 +462,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _rest_bool_value(
             c, "battery0/Tower0Level2CellUnderVoltage"
         ),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="status_fault",
@@ -421,6 +471,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusFault"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="status_warning",
@@ -429,6 +480,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusWarning"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="status_alarm",
@@ -437,6 +489,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusAlarm"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_status_fault",
@@ -445,6 +498,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusFault"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_status_warning",
@@ -453,6 +507,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusWarning"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_status_alarm",
@@ -461,6 +516,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         entity_registry_enabled_default=False,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusAlarm"),
+        available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="ess_soc_modbus",
@@ -469,6 +525,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.BATTERY,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("ess_soc"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_power",
@@ -477,6 +534,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("ess_active_power"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="pv_power",
@@ -485,6 +543,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("production_dc_actual_power"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="grid_power",
@@ -493,6 +552,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("grid_active_power"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="house_power",
@@ -501,6 +561,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("consumption_active_power"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_power_l1",
@@ -509,6 +570,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("ess_active_power_l1"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_power_l2",
@@ -517,6 +579,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("ess_active_power_l2"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_power_l3",
@@ -525,6 +588,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("ess_active_power_l3"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="grid_power_l1",
@@ -533,6 +597,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("grid_active_power_l1"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="grid_power_l2",
@@ -541,6 +606,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("grid_active_power_l2"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="grid_power_l3",
@@ -549,6 +615,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("grid_active_power_l3"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="house_power_l1",
@@ -557,6 +624,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("consumption_active_power_l1"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="house_power_l2",
@@ -565,6 +633,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("consumption_active_power_l2"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="house_power_l3",
@@ -573,6 +642,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("consumption_active_power_l3"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_discharge_power",
@@ -581,6 +651,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.POWER,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: c.data.modbus.get("ess_discharge_power"),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_active_charge_energy",
@@ -591,6 +662,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _scaled_modbus_value(
             c, "ess_active_charge_energy", 1000, 3
         ),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="ess_active_discharge_energy",
@@ -601,6 +673,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _scaled_modbus_value(
             c, "ess_active_discharge_energy", 1000, 3
         ),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="grid_buy_energy",
@@ -609,6 +682,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: _scaled_modbus_value(c, "grid_buy_active_energy", 1000, 3),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="grid_sell_energy",
@@ -617,6 +691,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: _scaled_modbus_value(c, "grid_sell_active_energy", 1000, 3),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="pv_energy",
@@ -625,6 +700,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: _scaled_modbus_value(c, "production_active_energy", 1000, 3),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="house_energy",
@@ -635,6 +711,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _scaled_modbus_value(
             c, "consumption_active_energy", 1000, 3
         ),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="battery_charge_energy",
@@ -643,6 +720,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
         value_fn=lambda c: _scaled_modbus_value(c, "ess_dc_charge_energy", 1000, 3),
+        available_fn=_modbus_available,
     ),
     FemsSensorDescription(
         key="battery_discharge_energy",
@@ -653,6 +731,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         value_fn=lambda c: _scaled_modbus_value(
             c, "ess_dc_discharge_energy", 1000, 3
         ),
+        available_fn=_modbus_available,
     ),
 )
 
@@ -669,7 +748,9 @@ def _build_module_spread_sensors(module_count: int) -> list[FemsSensorDescriptio
                 native_unit_of_measurement=UnitOfElectricPotential.VOLT,
                 device_class=SensorDeviceClass.VOLTAGE,
                 state_class=SensorStateClass.MEASUREMENT,
+                entity_category=EntityCategory.DIAGNOSTIC,
                 value_fn=_module_spread_value_fn(module),
+                available_fn=_rest_available,
             )
         )
 
@@ -692,6 +773,7 @@ def _build_cell_voltage_sensors(module_count: int) -> list[FemsSensorDescription
                     entity_category=EntityCategory.DIAGNOSTIC,
                     entity_registry_enabled_default=False,
                     value_fn=_cell_voltage_value_fn(module, cell),
+                    available_fn=_rest_available,
                 )
             )
 
@@ -736,9 +818,16 @@ class FemsSensorEntity(FemsCoordinatorEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.entity_description = description
-        self._attr_unique_id = f"{DOMAIN}_{description.key}"
+        self._attr_unique_id = f"{coordinator.entry.entry_id}_{description.key}"
 
     @property
     def native_value(self) -> Any:
         """Return the native value of the sensor."""
         return self.entity_description.value_fn(self.coordinator)
+
+    @property
+    def available(self) -> bool:
+        """Return sensor availability."""
+        if self.entity_description.available_fn is not None:
+            return self.entity_description.available_fn(self.coordinator)
+        return super().available
