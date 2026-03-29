@@ -1,4 +1,4 @@
-"""Config flow for FEMS."""
+"""Config flow for FEMS Diagnostics."""
 
 from __future__ import annotations
 
