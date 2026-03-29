@@ -9,75 +9,84 @@ views:
         chips:
           - type: template
             content: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 Systemfehler
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 Systemwarnung
               {% else %}
                 System OK
               {% endif %}
             icon: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 mdi:alert-circle
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 mdi:alert
               {% else %}
                 mdi:check-circle
               {% endif %}
             icon_color: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 red
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 amber
               {% else %}
                 green
               {% endif %}
+
           - type: entity
             entity: binary_sensor.battery_diagnostics_rest_verbunden
             content_info: state
             icon_color: green
+
           - type: entity
             entity: binary_sensor.battery_diagnostics_modbus_verbunden
             content_info: state
             icon_color: green
+
           - type: template
             content: >-
-              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv', 'on') %}
                 Fault aktiv
               {% else %}
                 Kein Fault
               {% endif %}
             icon: >-
-              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv', 'on') %}
                 mdi:alert-octagon
               {% else %}
                 mdi:shield-check
               {% endif %}
             icon_color: >-
-              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_fehler_aktiv', 'on') %}
                 red
               {% else %}
                 green
               {% endif %}
+
           - type: template
-            content: ΔU {{ states('sensor.battery_zellspannungsdifferenz') }} V
+            content: "ΔU {{ states('sensor.battery_zellspannungsdifferenz') }} V"
             icon: mdi:sine-wave
             icon_color: >-
-              {% set v = states('sensor.battery_zellspannungsdifferenz') |
-              float(0) %} {% if v >= 0.05 %}red {% elif v >= 0.02 %}amber {%
-              else %}green {% endif %}
+              {% set v = states('sensor.battery_zellspannungsdifferenz') | float(0) %}
+              {% if v >= 0.05 %}
+                red
+              {% elif v >= 0.02 %}
+                amber
+              {% else %}
+                green
+              {% endif %}
+
+    header:
+      card:
+        type: markdown
+        text_only: true
+        content: |-
+          # FEMS Diagnose-Dashboard
+          **Diagnose, Zellüberwachung und Systemstatus für FENECON FEMS.**
+      layout: start
+      badges_position: bottom
+      badges_wrap: wrap
+
     sections:
       - type: grid
         column_span: 4
@@ -89,83 +98,102 @@ views:
               - type: custom:mushroom-template-card
                 entity: sensor.battery_gesundheitszustand
                 primary: SoH
-                secondary: '{{ states(''sensor.battery_gesundheitszustand'') }} %'
+                secondary: "{{ states('sensor.battery_gesundheitszustand') }} %"
                 icon: mdi:heart-pulse
                 icon_color: >-
-                  {% set v = states('sensor.battery_gesundheitszustand') |
-                  float(0) %} {% if v < 70 %}red {% elif v < 85 %}amber {% else
-                  %}green {% endif %}
+                  {% set v = states('sensor.battery_gesundheitszustand') | float(0) %}
+                  {% if v < 70 %}
+                    red
+                  {% elif v < 85 %}
+                    amber
+                  {% else %}
+                    green
+                  {% endif %}
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.battery_batterie_packspannung
                 primary: Packspannung
-                secondary: '{{ states(''sensor.battery_batterie_packspannung'') }} V'
+                secondary: "{{ states('sensor.battery_batterie_packspannung') }} V"
                 icon: mdi:car-battery
                 icon_color: blue
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.energy_management_pv_leistung
                 primary: PV
-                secondary: '{{ states(''sensor.energy_management_pv_leistung'') }} W'
+                secondary: "{{ states('sensor.energy_management_pv_leistung') }} W"
                 icon: mdi:solar-power
                 icon_color: yellow
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.energy_management_netzleistung
                 primary: Netz
-                secondary: '{{ states(''sensor.energy_management_netzleistung'') }} W'
+                secondary: "{{ states('sensor.energy_management_netzleistung') }} W"
                 icon: mdi:transmission-tower
                 icon_color: blue
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.energy_management_hausverbrauch
                 primary: Haus
-                secondary: '{{ states(''sensor.energy_management_hausverbrauch'') }} W'
+                secondary: "{{ states('sensor.energy_management_hausverbrauch') }} W"
                 icon: mdi:home-lightning-bolt
                 icon_color: orange
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.battery_batteriestrom
                 primary: Batteriestrom
-                secondary: '{{ states(''sensor.battery_batteriestrom'') }} A'
+                secondary: "{{ states('sensor.battery_batteriestrom') }} A"
                 icon: mdi:current-dc
                 icon_color: cyan
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.energy_management_batterieleistung
                 primary: ESS-Leistung
-                secondary: '{{ states(''sensor.energy_management_batterieleistung'') }} W'
+                secondary: "{{ states('sensor.energy_management_batterieleistung') }} W"
                 icon: mdi:flash
                 icon_color: >-
-                  {% set v = states('sensor.energy_management_batterieleistung')
-                  | float(0) %} {% if v > 0 %}green {% elif v < 0 %}red {% else
-                  %}grey {% endif %}
+                  {% set v = states('sensor.energy_management_batterieleistung') | float(0) %}
+                  {% if v > 0 %}
+                    green
+                  {% elif v < 0 %}
+                    red
+                  {% else %}
+                    grey
+                  {% endif %}
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.energy_management_entladeleistung
                 primary: Entladung
-                secondary: '{{ states(''sensor.energy_management_entladeleistung'') }} W'
+                secondary: "{{ states('sensor.energy_management_entladeleistung') }} W"
                 icon: mdi:battery-arrow-down
                 icon_color: green
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.charger_0_leistung
                 primary: Charger 0
                 secondary: >-
-                  {{ states('sensor.charger_0_leistung') }} W · {{
-                  states('sensor.charger_0_spannung') }} V · {{
-                  states('sensor.charger_0_strom') }} A
+                  {{ states('sensor.charger_0_leistung') }} W ·
+                  {{ states('sensor.charger_0_spannung') }} V ·
+                  {{ states('sensor.charger_0_strom') }} A
                 icon: mdi:ev-station
                 icon_color: blue
                 multiline_secondary: true
                 fill_container: true
+
               - type: custom:mushroom-template-card
                 entity: sensor.charger_1_leistung
                 primary: Charger 1
                 secondary: >-
-                  {{ states('sensor.charger_1_leistung') }} W · {{
-                  states('sensor.charger_1_spannung') }} V · {{
-                  states('sensor.charger_1_strom') }} A
+                  {{ states('sensor.charger_1_leistung') }} W ·
+                  {{ states('sensor.charger_1_spannung') }} V ·
+                  {{ states('sensor.charger_1_strom') }} A
                 icon: mdi:ev-station
                 icon_color: blue
                 multiline_secondary: true
@@ -173,50 +201,39 @@ views:
             grid_options:
               columns: 24
               rows: auto
+
       - type: grid
         column_span: 4
         cards:
           - type: custom:mushroom-template-card
             primary: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 Kritischer Systemzustand erkannt
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 Warnungen aktiv
               {% else %}
                 Keine aktiven Fehler oder Warnungen
               {% endif %}
             secondary: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 Bitte kritische Diagnose sofort prüfen
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 Warnstatus und Zellunterspannungen prüfen
               {% else %}
                 System arbeitet aktuell ohne aktive Fehler- oder Warnmeldungen
               {% endif %}
             icon: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 mdi:alert-circle
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 mdi:alert
               {% else %}
                 mdi:check-circle
               {% endif %}
             icon_color: >-
-              {% if is_state('binary_sensor.battery_diagnostics_systemfehler',
-              'on') %}
+              {% if is_state('binary_sensor.battery_diagnostics_systemfehler', 'on') %}
                 red
-              {% elif
-              is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on')
-              %}
+              {% elif is_state('binary_sensor.battery_diagnostics_systemwarnung', 'on') %}
                 amber
               {% else %}
                 green
@@ -227,12 +244,14 @@ views:
             grid_options:
               columns: 24
               rows: auto
+
       - type: grid
         column_span: 4
         cards:
           - type: heading
             heading: Moduldiagnose (ΔU)
             heading_style: title
+
           - type: grid
             square: false
             columns: 7
@@ -262,6 +281,23 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
               - type: custom:button-card
                 entity: sensor.cell_diagnostics_modul_1_du
                 name: M1
@@ -287,6 +323,23 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
               - type: custom:button-card
                 entity: sensor.cell_diagnostics_modul_2_du
                 name: M2
@@ -312,6 +365,23 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
               - type: custom:button-card
                 entity: sensor.cell_diagnostics_modul_3_du
                 name: M3
@@ -337,6 +407,23 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
               - type: custom:button-card
                 entity: sensor.cell_diagnostics_modul_4_du
                 name: M4
@@ -362,6 +449,23 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
               - type: custom:button-card
                 entity: sensor.cell_diagnostics_modul_5_du
                 name: M5
@@ -387,6 +491,23 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
               - type: custom:button-card
                 entity: sensor.cell_diagnostics_modul_6_du
                 name: M6
@@ -412,15 +533,29 @@ views:
                   - operator: default
                     color: rgb(46, 125, 50)
                     icon: mdi:check-circle
-            grid_options:
-              columns: 18
-              rows: auto
+                styles:
+                  card:
+                    - height: 52px
+                    - border-radius: 10px
+                    - padding: 6px
+                  grid:
+                    - grid-template-areas: '"i n" "i s"'
+                    - grid-template-columns: 18px 1fr
+                    - grid-template-rows: min-content min-content
+                  name:
+                    - justify-self: start
+                    - font-size: 11px
+                    - font-weight: 600
+                  state:
+                    - justify-self: start
+                    - font-size: 10px
+
       - type: grid
         column_span: 4
         cards:
           - type: grid
             square: false
-            columns: 3
+            columns: 5
             cards:
               - type: entities
                 title: Zellgesundheit kompakt
@@ -444,6 +579,7 @@ views:
                     name: Tower 0 Min. Temperatur
                   - entity: sensor.battery_tower_0_max_temperatur
                     name: Tower 0 Max. Temperatur
+
               - type: entities
                 title: Kritische Diagnose
                 show_header_toggle: false
@@ -458,14 +594,13 @@ views:
                     name: Tower 0 Fehlerstatus
                   - entity: sensor.battery_diagnostics_unterspannungsfehler
                     name: Unterspannungsfehler
-                  - entity: >-
-                      sensor.battery_diagnostics_batterie_wegen_unterspannung_gestoppt
+                  - entity: sensor.battery_diagnostics_batterie_wegen_unterspannung_gestoppt
                     name: Batterie wegen Unterspannung gestoppt
                   - entity: sensor.battery_diagnostics_batteriestart_fehlgeschlagen
                     name: Batteriestart fehlgeschlagen
-                  - entity: >-
-                      sensor.battery_diagnostics_modbus_kommunikation_fehlgeschlagen
+                  - entity: sensor.battery_diagnostics_modbus_kommunikation_fehlgeschlagen
                     name: Modbus-Kommunikation fehlgeschlagen
+
               - type: entities
                 title: Warnungen aktiv
                 show_header_toggle: false
@@ -478,21 +613,13 @@ views:
                     name: Zellunterspannung Stufe 1
                   - entity: sensor.battery_diagnostics_zellunterspannung_stufe_2
                     name: Zellunterspannung Stufe 2
-                  - entity: >-
-                      sensor.battery_diagnostics_tower_0_zellunterspannung_stufe_1
+                  - entity: sensor.battery_diagnostics_tower_0_zellunterspannung_stufe_1
                     name: Tower 0 Zellunterspannung Stufe 1
-                  - entity: >-
-                      sensor.battery_diagnostics_tower_0_zellunterspannung_stufe_2
+                  - entity: sensor.battery_diagnostics_tower_0_zellunterspannung_stufe_2
                     name: Tower 0 Zellunterspannung Stufe 2
                   - entity: sensor.battery_diagnostics_unterspannungswarnung
                     name: Unterspannungswarnung
-            grid_options:
-              columns: 24
-              rows: auto
-          - type: grid
-            square: false
-            columns: 2
-            cards:
+
               - type: entities
                 title: Phasenwerte / Leistung
                 show_header_toggle: false
@@ -515,6 +642,7 @@ views:
                     name: Hausverbrauch L2
                   - entity: sensor.energy_management_hausverbrauch_l3
                     name: Hausverbrauch L3
+
               - type: entities
                 title: Energiezähler
                 show_header_toggle: false
@@ -536,16 +664,5 @@ views:
                   - entity: sensor.energy_management_batterie_entladeenergie
                     name: Batterie-Entladeenergie
             grid_options:
-              columns: 15
+              columns: 24
               rows: auto
-    cards: []
-    header:
-      card:
-        type: markdown
-        text_only: true
-        content: |-
-          # FEMS Diagnose-Dashboard
-          **Diagnose, Zellüberwachung und Systemstatus für FENECON FEMS.**
-      layout: start
-      badges_position: bottom
-      badges_wrap: wrap
