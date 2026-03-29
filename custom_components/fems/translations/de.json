@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "FEMS einrichten",
-        "description": "Verbindung zu FEMS konfigurieren",
+        "title": "FEMS Diagnostics einrichten",
+        "description": "Verbindung zu FEMS Diagnostics konfigurieren",
         "data": {
           "rest_host": "REST-Host",
           "rest_port": "REST-Port",
