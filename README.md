@@ -1,155 +1,209 @@
-# 🔋 FEMS Integration for Home Assistant
+# 🔋 FEMS / Fenecon Integration für Home Assistant
 
-Custom Home Assistant integration for **FENECON FEMS** systems.  
-Provides detailed battery, inverter, and diagnostic data via **Modbus** and **REST API**.
+Diese Integration ermöglicht die vollständige Einbindung eines **FENECON FEMS Energiesystems** in Home Assistant.
+
+Sie kombiniert:
+
+* 🌐 REST API (System- & Statusdaten)
+* 🔌 Modbus (technische Echtzeitwerte)
 
 ---
 
 ## ✨ Features
 
-- 🔌 Modbus + REST integration
-- 🔄 Central DataUpdateCoordinator architecture
-- 🔋 Battery monitoring
-  - State of charge (SoC)
-  - Voltage, current, power
-  - Cycle count and health (SoH)
-- ⚡ Inverter / charger data
-- 🧠 System status (OK / Warning / Error)
-- 📊 Diagnostic sensors
-- 🔍 Cell-level monitoring
-  - Per-cell voltage (up to 14 cells per module)
-- 📈 Battery module monitoring (configurable)
-  - Per-module voltage spread (ΔV)
+* 📡 REST + Modbus Integration
+* 🔋 Batterie- & Zellüberwachung
+* ⚡ Energieflüsse & Leistungsdaten
+* 🚨 Fehler- und Warnanalyse
+* 📊 Energiezähler (kWh)
+* 🧠 Diagnose-Logik (OK / Warnung / Fehler)
+* 🔧 Konfigurierbare Anzahl Batteriemodule
 
 ---
 
-## ⚙️ Configuration
+## 🧪 Diagnose-Fokus
 
-During setup, the following parameters are required:
+Diese Integration ist **kein klassisches User-Dashboard**, sondern ein:
 
-- **REST Host / Port**
-- **Modbus Host / Port**
-- **Modbus Slave ID**
-- **Battery module count**
-  - Range: **1–10 modules**
-  - Default: **7 modules**
+👉 **Diagnose- & Analyse-Tool**
 
----
+Fokus auf:
 
-## 🔋 Battery Module Configuration
-
-The integration dynamically adapts to your system based on the configured module count.
-
-This setting controls:
-
-- Number of **module spread sensors (ΔV)**
-- Number of **cell voltage sensors**
-
-Example:
-
-| Modules | Sensors (approx.) |
-|--------|------------------|
-| 1      | ~20              |
-| 5      | ~80              |
-| 7      | ~110             |
-| 10     | ~150+            |
-
-⚠️ **Important:**  
-Make sure the configured module count matches your actual system.
+* Zellgesundheit
+* Spannungsabweichungen (ΔU)
+* Fehlerbilder
+* Kommunikationsstatus
 
 ---
 
-## 🧠 Architecture
+## 🖼️ Dashboard (Beispiel)
 
-- `coordinator.py` → Central data aggregation
-- `fems_modbus.py` → Modbus communication
-- `fems_rest.py` → REST communication
-- `sensor.py` → Sensor entities (dynamic)
-- `binary_sensor.py` → Status sensors
+![Dashboard](docs/images/dashboard.jpg)
 
----
+👉 Ein fertiges Dashboard liegt im Repository:
 
-## 📊 Provided Sensors
-
-### 🔋 Battery
-- Voltage
-- Current
-- Power
-- SoC
-- SoH
-- Cycle count
-
-### ⚡ Charger / Inverter
-- Power
-- Voltage
-- Current
-- Energy
-
-### 🧠 System
-- Status (OK / Warning / Error)
-- Fault
-- Communication status
-
-### 📈 Module Diagnostics
-- Voltage spread (ΔV) per module
-
-### 🔬 Cell Diagnostics
-- Voltage per cell (Module × 14 cells)
+📄 
 
 ---
 
-## ⚡ Performance Notes
+## 🎯 Designentscheidung
 
-The number of entities scales with the number of battery modules.
+👉 **Einzelzellwerte sind bewusst NICHT im Dashboard enthalten**
 
-- More modules → more sensors → higher system load
-- Cell voltage sensors are the largest contributor
+Warum?
 
-💡 Recommendation:
-- Use only the required module count
-- Disable diagnostic sensors if not needed
+* Zu viele Daten
+* Keine schnelle Diagnose möglich
 
----
+Stattdessen:
 
-## 🔄 Migration Notes (0.2.3)
+* ΔU (Spannungsdifferenz)
+* Min / Max Werte
 
-- Existing installations are automatically migrated
-- Missing `battery_module_count` is set to default (**7 modules**)
-- No manual action required
+👉 Einzelzellen sind weiterhin als Sensoren verfügbar!
 
 ---
 
-## 📦 Installation
+## 🟢 Statuslogik
 
-### HACS (recommended)
-1. Add custom repository
-2. Search for **FEMS**
-3. Install
-4. Restart Home Assistant
-
-### Manual
-1. Copy `custom_components/fems` to your HA config directory
-2. Restart Home Assistant
+| Zustand | Bedeutung |
+| ------- | --------- |
+| 🟢 Grün | System OK |
+| 🟡 Gelb | Warnungen |
+| 🔴 Rot  | Fehler    |
 
 ---
 
-## 🚀 Roadmap
+## 🔋 Moduldiagnose (ΔU)
 
-- [ ] Options Flow (change module count after setup)
-- [ ] Energy dashboard integration
-- [ ] Optimized default dashboards
-- [ ] Sensor grouping / categories
-- [ ] Performance optimization for large systems
-
----
-
-## ⚠️ Disclaimer
-
-This is an unofficial integration.  
-Use at your own risk.
+| ΔU            | Bewertung     |
+| ------------- | ------------- |
+| < 0.02 V      | 🟢 unkritisch |
+| 0.02 – 0.05 V | 🟡 beobachten |
+| > 0.05 V      | 🔴 kritisch   |
 
 ---
 
-## 👨‍💻 Author
+# 📦 Installation
 
-Developed by **alpenfun**
+## 1. HACS installieren (falls noch nicht vorhanden)
+
+👉 https://hacs.xyz/
+
+---
+
+## 2. Repository hinzufügen
+
+![HACS Installation](docs/images/hacs_installation.jpg)
+
+* HACS öffnen
+* „Custom Repositories“
+* URL einfügen:
+
+```
+https://github.com/alpenfun/Fenecon-FEMS
+```
+
+* Typ: **Integration**
+
+---
+
+## 3. Integration suchen & installieren
+
+![HACS Suche](docs/images/hacs_search.jpg)
+
+---
+
+## 4. Integration konfigurieren
+
+![Config](docs/images/config_flow.jpg)
+
+Benötigte Daten:
+
+* REST Host (IP)
+* REST Port (Standard: 8084)
+* Modbus Host
+* Modbus Port (502)
+* Modbus Slave (meist 1)
+* Anzahl Batteriemodule
+
+---
+
+# ⚙️ Geräte-Struktur
+
+Die Integration legt folgende Geräte an:
+
+* 🔋 Batterie
+* ⚡ Charger 0
+* ⚡ Charger 1
+* 🧠 Diagnose
+* 📊 Energiemanagement
+* 🔬 Zellen
+
+---
+
+# 📊 Dashboard einrichten
+
+## YAML importieren
+
+Datei:
+
+```
+docs/dashboard/dashboard.yaml
+```
+
+👉 in Home Assistant:
+
+* Dashboard → bearbeiten
+* YAML Modus aktivieren
+* Inhalt einfügen
+
+---
+
+## 🔧 Voraussetzungen (WICHTIG)
+
+Dieses Dashboard nutzt Custom Cards:
+
+### Pflicht:
+
+* HACS
+* 🍄 Mushroom Cards
+* 🔘 Button Card (by RomRider)
+
+Installation über HACS:
+
+* „Mushroom“
+* „button-card“
+
+---
+
+# ⚡ Hinweise
+
+* Erststart kann 30–60 Sekunden dauern
+* REST ist langsamer als Modbus
+* Sensoren werden dynamisch erzeugt
+
+---
+
+# 🛠️ Entwicklung
+
+Status:
+👉 aktiv
+
+Geplant:
+
+* automatische Modulerkennung
+* erweiterte Diagnose
+* Health Score
+
+---
+
+# 🤝 Mitwirken
+
+Feedback & Pull Requests willkommen!
+
+---
+
+# 📜 Lizenz
+
+MIT License
