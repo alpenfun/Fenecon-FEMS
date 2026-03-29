@@ -72,10 +72,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator
     
     diagnostics_coordinator = FemsDiagnosticsCoordinator(
-        hass,
-        coordinator.rest_api,
-        coordinator.battery_module_count,
-    )
+    hass,
+    entry,
+    coordinator.rest_api,
+    coordinator.battery_module_count,
+)
 
     await diagnostics_coordinator.async_config_entry_first_refresh()
 
