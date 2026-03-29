@@ -6,7 +6,6 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, MANUFACTURER, MODEL
-from .coordinator import FemsDataUpdateCoordinator
 
 
 _DEVICE_DEFINITIONS: dict[str, dict[str, str]] = {
@@ -133,7 +132,7 @@ def _device_key_from_entity_key(entity_key: str) -> str:
     return "battery"
 
 
-class FemsCoordinatorEntity(CoordinatorEntity[FemsDataUpdateCoordinator]):
+class FemsCoordinatorEntity(CoordinatorEntity):
     """Base FEMS entity."""
 
     _attr_has_entity_name = True
@@ -154,13 +153,13 @@ class FemsCoordinatorEntity(CoordinatorEntity[FemsDataUpdateCoordinator]):
         """Return device info."""
         entry_id = self.coordinator.entry.entry_id
 
-        # Root system device
         system_identifier = (DOMAIN, f"{entry_id}_system")
+        battery_identifier = (DOMAIN, f"{entry_id}_battery")
 
         device_key = self._fems_device_key
         device_def = _DEVICE_DEFINITIONS[device_key]
+        device_identifier = (DOMAIN, f"{entry_id}_{device_def['suffix']}")
 
-        # System device itself
         if device_key == "system":
             return DeviceInfo(
                 identifiers={system_identifier},
@@ -169,9 +168,26 @@ class FemsCoordinatorEntity(CoordinatorEntity[FemsDataUpdateCoordinator]):
                 model=MODEL,
             )
 
-        # All other devices linked to system
+        if device_key == "battery":
+            return DeviceInfo(
+                identifiers={battery_identifier},
+                name=_DEVICE_DEFINITIONS["battery"]["name"],
+                manufacturer=MANUFACTURER,
+                model=MODEL,
+                via_device=system_identifier,
+            )
+
+        if device_key in {"battery_diagnose", "cell_diagnose"}:
+            return DeviceInfo(
+                identifiers={device_identifier},
+                name=device_def["name"],
+                manufacturer=MANUFACTURER,
+                model=MODEL,
+                via_device=battery_identifier,
+            )
+
         return DeviceInfo(
-            identifiers={(DOMAIN, f"{entry_id}_{device_def['suffix']}")},
+            identifiers={device_identifier},
             name=device_def["name"],
             manufacturer=MANUFACTURER,
             model=MODEL,
