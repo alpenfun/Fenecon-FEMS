@@ -1,4 +1,5 @@
-"""Sensor platform for fems-diagnostics"""
+# custom_components/fems/sensor.py
+"""Sensor platform for fems-diagnostics."""
 
 from __future__ import annotations
 
@@ -211,7 +212,6 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         translation_key="battery_capacity",
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
-        state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda c: _scaled_rest_value(c, "battery0/Capacity", 1000, 3),
         available_fn=_rest_available,
     ),
