@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="docs/images/logo.png" width="250">
+</p>
+
+<p align="center">
   <img src="docs/images/logo.png" width="300">
 </p>
 
