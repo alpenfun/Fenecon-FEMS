@@ -1,17 +1,11 @@
-"""Config flow for fems-diagnostics"""
+"""Config flow for FEMS Diagnostics."""
 
 from __future__ import annotations
 
-import asyncio
-import logging
-
 import voluptuous as vol
-from aiohttp import ClientError
-from aiohttp.client_exceptions import ClientResponseError
 
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
@@ -30,43 +24,36 @@ from .const import (
     MAX_BATTERY_MODULE_COUNT,
     MIN_BATTERY_MODULE_COUNT,
 )
-from .fems_rest import FemsRestApi
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for fems-diagnostics"""
+    """Handle a config flow for FEMS."""
 
     VERSION = 2
 
-    async def async_step_user(
-        self, user_input: dict | None = None
-    ) -> FlowResult:
+    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            try:
-                await self._test_connection(user_input)
-            except CannotConnect:
-                errors["base"] = "cannot_connect"
-            except InvalidAuth:
-                errors["base"] = "invalid_auth"
-            except Exception:  # noqa: BLE001
-                _LOGGER.exception("Unexpected exception during FEMS setup")
-                errors["base"] = "unknown"
+            await self.async_set_unique_id(
+                f"{user_input[CONF_REST_HOST]}:{user_input[CONF_REST_PORT]}"
+            )
+            self._abort_if_unique_id_configured()
 
-            if not errors:
-                await self.async_set_unique_id(
-                    f"{user_input[CONF_REST_HOST]}:{user_input[CONF_REST_PORT]}"
-                )
-                self._abort_if_unique_id_configured()
-
-                return self.async_create_entry(
-                    title=f"FEMS ({user_input[CONF_REST_HOST]})",
-                    data=user_input,
-                )
+            return self.async_create_entry(
+                title=f"FEMS ({user_input[CONF_REST_HOST]})",
+                data={
+                    CONF_REST_HOST: user_input[CONF_REST_HOST],
+                    CONF_REST_PORT: int(user_input[CONF_REST_PORT]),
+                    CONF_MODBUS_HOST: user_input[CONF_MODBUS_HOST],
+                    CONF_MODBUS_PORT: int(user_input[CONF_MODBUS_PORT]),
+                    CONF_MODBUS_SLAVE: int(user_input[CONF_MODBUS_SLAVE]),
+                    CONF_BATTERY_MODULE_COUNT: int(user_input[CONF_BATTERY_MODULE_COUNT]),
+                    CONF_USERNAME: user_input.get(CONF_USERNAME, "x"),
+                    CONF_PASSWORD: user_input.get(CONF_PASSWORD, "user"),
+                },
+            )
 
         schema = vol.Schema(
             {
@@ -95,37 +82,3 @@ class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=schema,
             errors=errors,
         )
-
-    async def _test_connection(self, data: dict) -> None:
-        """Test REST connection to FEMS."""
-        session = async_get_clientsession(self.hass)
-
-        api = FemsRestApi(
-            host=data[CONF_REST_HOST],
-            port=data[CONF_REST_PORT],
-            username=data.get(CONF_USERNAME, "x"),
-            password=data.get(CONF_PASSWORD, "user"),
-            session=session,
-        )
-
-        try:
-            await asyncio.wait_for(
-                api.async_fetch_group("battery0/(Soc)"),
-                timeout=5,
-            )
-        except asyncio.TimeoutError as err:
-            raise CannotConnect from err
-        except ClientResponseError as err:
-            if err.status in (401, 403):
-                raise InvalidAuth from err
-            raise CannotConnect from err
-        except ClientError as err:
-            raise CannotConnect from err
-
-
-class CannotConnect(Exception):
-    """Error to indicate we cannot connect."""
-
-
-class InvalidAuth(Exception):
-    """Error to indicate invalid authentication."""
