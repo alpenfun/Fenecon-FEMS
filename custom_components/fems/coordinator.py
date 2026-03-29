@@ -1,4 +1,4 @@
-"""Data update coordinator for fems-diagnostics"""
+"""Data update coordinator for fems-diagnostics."""
 
 from __future__ import annotations
 
@@ -14,7 +14,6 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
-    CELLS_PER_MODULE,
     CONF_BATTERY_MODULE_COUNT,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
@@ -36,6 +35,8 @@ from .fems_modbus import FemsModbusApi
 from .fems_rest import FemsRestApi
 
 _LOGGER = logging.getLogger(__name__)
+
+REST_COLLECTION_TIMEOUT = max(REST_TIMEOUT, 20)
 
 
 @dataclass
@@ -79,8 +80,8 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             always_update=False,
         )
 
-    async def _async_fetch_rest_data_internal(self) -> dict[str, Any]:
-        """Fetch all REST data without timeout wrapper."""
+    def _build_rest_groups(self) -> list[str]:
+        """Build REST groups for the main coordinator."""
         battery_group = (
             "battery0/("
             "Soc|"
@@ -121,57 +122,112 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
         charger0_group = "charger0/(ActualPower|Voltage|Current)"
         charger1_group = "charger1/(ActualPower|Voltage|Current)"
 
-        tasks = [
-            self.rest_api.async_fetch_group(battery_group),
-            self.rest_api.async_fetch_group(charger0_group),
-            self.rest_api.async_fetch_group(charger1_group),
+        groups: list[str] = [
+            battery_group,
+            charger0_group,
+            charger1_group,
         ]
 
-        for module in range(self.battery_module_count):
-            cell_group = (
-                "battery0/("
-                + "|".join(
-                    f"Tower0Module{module}Cell{cell:03d}Voltage"
-                    for cell in range(CELLS_PER_MODULE)
-                )
-                + ")"
-            )
-            tasks.append(self.rest_api.async_fetch_group(cell_group))
+        # Zellspannungen bewusst NICHT im Haupt-Coordinator laden,
+        # damit Initialisierung und normale Updates deutlich schneller sind.
+        # Diese können später optional in einen separaten Diagnose-Coordinator wandern.
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        return groups
 
+    async def _async_fetch_rest_group(
+        self,
+        group: str,
+    ) -> tuple[str, dict[str, Any] | Exception]:
+        """Fetch one REST group."""
+        try:
+            result = await self.rest_api.async_fetch_group(group)
+            return group, result
+        except Exception as err:  # noqa: BLE001
+            return group, err
+
+    async def _async_fetch_rest_data(self) -> dict[str, Any]:
+        """Fetch all REST data and keep partial results."""
+        groups = self._build_rest_groups()
         rest: dict[str, Any] = {}
-        errors: list[Exception] = []
+        errors: list[tuple[str, Exception]] = []
 
-        for result in results:
-            if isinstance(result, Exception):
-                errors.append(result)
-                continue
-            rest.update(result)
+        task_to_group: dict[asyncio.Task, str] = {}
+        tasks: list[asyncio.Task] = []
 
-        if errors:
-            first_error = errors[0]
+        for group in groups:
+            task = asyncio.create_task(self._async_fetch_rest_group(group))
+            task_to_group[task] = group
+            tasks.append(task)
+
+        try:
+            done, pending = await asyncio.wait(
+                tasks,
+                timeout=REST_COLLECTION_TIMEOUT,
+            )
+
+            for task in done:
+                group, result = await task
+                if isinstance(result, Exception):
+                    errors.append((group, result))
+                    _LOGGER.debug("FEMS REST group failed: %s | %r", group, result)
+                    continue
+                rest.update(result)
+
+            if pending:
+                pending_groups = [task_to_group[task] for task in pending]
+                _LOGGER.warning(
+                    "FEMS REST collection reached timeout after %ss; %s request(s) still pending: %s",
+                    REST_COLLECTION_TIMEOUT,
+                    len(pending_groups),
+                    pending_groups,
+                )
+
+                for task in pending:
+                    task.cancel()
+
+                cancelled = await asyncio.gather(*pending, return_exceptions=True)
+                for task, item in zip(pending, cancelled, strict=False):
+                    group = task_to_group[task]
+                    if isinstance(item, Exception) and not isinstance(
+                        item, asyncio.CancelledError
+                    ):
+                        _LOGGER.debug(
+                            "Cancelled REST task result for %s: %r",
+                            group,
+                            item,
+                        )
+
+                errors.append(
+                    (
+                        "REST_COLLECTION_TIMEOUT",
+                        TimeoutError(
+                            f"{len(pending_groups)} REST request(s) did not finish in time: {pending_groups}"
+                        ),
+                    )
+                )
+
+        finally:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+
+        if errors and rest:
+            _LOGGER.warning(
+                "FEMS REST partial data: %s request(s) failed or timed out; keeping %s value(s)",
+                len(errors),
+                len(rest),
+            )
+
+        if not rest:
+            first_group, first_error = errors[0] if errors else (
+                "unknown",
+                RuntimeError("No REST data received"),
+            )
             raise UpdateFailed(
-                f"REST group fetch failed ({len(errors)} request(s) failed): {first_error}"
+                f"REST update failed completely; first failing group: {first_group}; error: {first_error}"
             ) from first_error
 
         return rest
-
-    async def _async_fetch_rest_data(self) -> dict[str, Any]:
-        """Fetch all REST data with timeout handling."""
-        try:
-            return await asyncio.wait_for(
-                self._async_fetch_rest_data_internal(),
-                timeout=REST_TIMEOUT,
-            )
-        except asyncio.TimeoutError as err:
-            raise UpdateFailed("REST update timed out") from err
-        except ClientError as err:
-            raise UpdateFailed(f"REST communication failed: {err}") from err
-        except UpdateFailed:
-            raise
-        except Exception as err:  # noqa: BLE001
-            raise UpdateFailed(f"REST update failed: {err}") from err
 
     async def _async_fetch_modbus_data_internal(self) -> dict[str, Any]:
         """Fetch all Modbus data without timeout wrapper."""
@@ -227,13 +283,13 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             rest = await self._async_fetch_rest_data()
         except Exception as err:  # noqa: BLE001
             rest_error = err
-            _LOGGER.debug("REST update failed: %s", err)
+            _LOGGER.warning("REST update failed: %r", err)
 
         try:
             modbus = await self._async_fetch_modbus_data()
         except Exception as err:  # noqa: BLE001
             modbus_error = err
-            _LOGGER.debug("Modbus update failed: %s", err)
+            _LOGGER.warning("Modbus update failed: %r", err)
 
         if rest_error and modbus_error:
             _LOGGER.warning(
@@ -246,9 +302,9 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             ) from modbus_error
 
         if rest_error:
-            _LOGGER.debug("Using partial data: REST unavailable, Modbus available")
+            _LOGGER.warning("Using partial data: REST unavailable, Modbus available")
 
         if modbus_error:
-            _LOGGER.debug("Using partial data: Modbus unavailable, REST available")
+            _LOGGER.warning("Using partial data: Modbus unavailable, REST available")
 
         return FemsData(rest=rest, modbus=modbus)
