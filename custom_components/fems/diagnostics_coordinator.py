@@ -2,24 +2,21 @@
 
 from __future__ import annotations
 
-import asyncio
-import logging
 from dataclasses import dataclass
+from datetime import timedelta
+import logging
 from typing import Any
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import (
-    CONF_BATTERY_MODULE_COUNT,
-    DEFAULT_BATTERY_MODULE_COUNT,
-    DOMAIN,
-)
+from .const import CELLS_PER_MODULE, DOMAIN
 from .fems_rest import FemsRestApi
 
 _LOGGER = logging.getLogger(__name__)
 
-DIAGNOSTICS_UPDATE_INTERVAL = 60  # Sekunden
+DIAGNOSTICS_UPDATE_INTERVAL = timedelta(seconds=60)
 
 
 @dataclass
@@ -35,10 +32,12 @@ class FemsDiagnosticsCoordinator(DataUpdateCoordinator[FemsDiagnosticsData]):
     def __init__(
         self,
         hass: HomeAssistant,
+        entry: ConfigEntry,
         rest_api: FemsRestApi,
         battery_module_count: int,
     ) -> None:
         """Initialize diagnostics coordinator."""
+        self.entry = entry
         self.rest_api = rest_api
         self.battery_module_count = battery_module_count
 
@@ -46,17 +45,16 @@ class FemsDiagnosticsCoordinator(DataUpdateCoordinator[FemsDiagnosticsData]):
             hass,
             logger=_LOGGER,
             name=f"{DOMAIN}_diagnostics",
-            update_interval=None,  # wird unten gesteuert
+            update_interval=DIAGNOSTICS_UPDATE_INTERVAL,
+            always_update=False,
         )
 
-        self.update_interval = asyncio.timedelta(seconds=DIAGNOSTICS_UPDATE_INTERVAL)
-
     def _build_cell_group(self) -> str:
-        """Build REST group for all cell voltages."""
+        """Build REST group for all configured cell voltages."""
         parts: list[str] = []
 
         for module in range(self.battery_module_count):
-            for cell in range(14):  # CELLS_PER_MODULE
+            for cell in range(CELLS_PER_MODULE):
                 parts.append(f"Tower0Module{module}Cell{cell:03d}Voltage")
 
         return f"battery0/({'|'.join(parts)})"
@@ -68,6 +66,5 @@ class FemsDiagnosticsCoordinator(DataUpdateCoordinator[FemsDiagnosticsData]):
         try:
             data = await self.rest_api.async_fetch_group(group)
             return FemsDiagnosticsData(rest=data)
-
         except Exception as err:  # noqa: BLE001
             raise UpdateFailed(f"Diagnostics update failed: {err}") from err
