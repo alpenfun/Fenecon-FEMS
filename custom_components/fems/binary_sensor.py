@@ -1,4 +1,4 @@
-"""Binary sensor platform for FEMS."""
+"""Binary sensor platform for fems-diagnostics"""
 
 from __future__ import annotations
 
@@ -25,14 +25,24 @@ def _is_true(value: object) -> bool:
     return value in (True, 1, "1", "true", "True", "ON", "on")
 
 
-def _rest_available(coordinator: FemsDataUpdateCoordinator) -> bool:
+def _rest_data_available(coordinator: FemsDataUpdateCoordinator) -> bool:
     """Return True if REST data is currently present."""
-    return coordinator.last_update_success and bool(coordinator.data.rest)
+    return bool(coordinator.data.rest)
 
 
-def _modbus_available(coordinator: FemsDataUpdateCoordinator) -> bool:
+def _modbus_data_available(coordinator: FemsDataUpdateCoordinator) -> bool:
     """Return True if Modbus data is currently present."""
-    return coordinator.last_update_success and bool(coordinator.data.modbus)
+    return bool(coordinator.data.modbus)
+
+
+def _rest_communication_ok(coordinator: FemsDataUpdateCoordinator) -> bool:
+    """Return True if REST communication is available."""
+    return coordinator.last_update_success and _rest_data_available(coordinator)
+
+
+def _modbus_communication_ok(coordinator: FemsDataUpdateCoordinator) -> bool:
+    """Return True if Modbus communication is available."""
+    return coordinator.last_update_success and _modbus_data_available(coordinator)
 
 
 def _fault_active(coordinator: FemsDataUpdateCoordinator) -> bool:
@@ -78,8 +88,8 @@ def _alarm_active(coordinator: FemsDataUpdateCoordinator) -> bool:
 def _system_error(coordinator: FemsDataUpdateCoordinator) -> bool:
     """Return True if system is in error state."""
     return (
-        not _rest_available(coordinator)
-        or not _modbus_available(coordinator)
+        not _rest_communication_ok(coordinator)
+        or not _modbus_communication_ok(coordinator)
         or _fault_active(coordinator)
         or _alarm_active(coordinator)
     )
@@ -93,8 +103,8 @@ def _system_warning(coordinator: FemsDataUpdateCoordinator) -> bool:
 def _system_ok(coordinator: FemsDataUpdateCoordinator) -> bool:
     """Return True if system is OK."""
     return (
-        _rest_available(coordinator)
-        and _modbus_available(coordinator)
+        _rest_communication_ok(coordinator)
+        and _modbus_communication_ok(coordinator)
         and not _fault_active(coordinator)
         and not _alarm_active(coordinator)
         and not _warning_active(coordinator)
@@ -116,21 +126,21 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_fault_active,
-        available_fn=lambda c: bool(c.data.rest),
+        available_fn=_rest_data_available,
     ),
     FemsBinarySensorDescription(
         key="rest_communication",
         translation_key="rest_communication",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=_rest_available,
+        value_fn=_rest_communication_ok,
     ),
     FemsBinarySensorDescription(
         key="modbus_communication",
         translation_key="modbus_communication",
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=_modbus_available,
+        value_fn=_modbus_communication_ok,
     ),
     FemsBinarySensorDescription(
         key="system_ok",
@@ -144,7 +154,7 @@ BINARY_SENSORS: tuple[FemsBinarySensorDescription, ...] = (
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_system_warning,
-        available_fn=lambda c: bool(c.data.rest),
+        available_fn=_rest_data_available,
     ),
     FemsBinarySensorDescription(
         key="system_error",
@@ -179,9 +189,10 @@ class FemsBinarySensorEntity(FemsCoordinatorEntity, BinarySensorEntity):
         coordinator: FemsDataUpdateCoordinator,
         description: FemsBinarySensorDescription,
     ) -> None:
+        """Initialize the binary sensor."""
         super().__init__(coordinator)
         self.entity_description = description
-        self._attr_unique_id = f"{DOMAIN}_{description.key}"
+        self._attr_unique_id = f"{coordinator.entry.entry_id}_{description.key}"
 
     @property
     def is_on(self) -> bool:
@@ -193,4 +204,4 @@ class FemsBinarySensorEntity(FemsCoordinatorEntity, BinarySensorEntity):
         """Return availability."""
         if self.entity_description.available_fn is not None:
             return self.entity_description.available_fn(self.coordinator)
-        return self.coordinator.last_update_success
+        return super().available
