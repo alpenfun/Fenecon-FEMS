@@ -1,3 +1,13 @@
+<p align="center">
+  <img src="docs/images/logo.png" width="300">
+</p>
+
+<h1 align="center">FEMS Diagnostics</h1>
+<p align="center">
+  Advanced battery and system diagnostics for Home Assistant
+</p>
+
+
 # 🔋 FEMS Diagnostics for Home Assistant
 
 **FEMS Diagnostics** is an unofficial Home Assistant integration focused on **diagnostics, health monitoring, and technical visibility** for FEMS-based energy systems.
