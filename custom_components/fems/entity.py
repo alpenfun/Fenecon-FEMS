@@ -1,4 +1,4 @@
-"""Base entity for FEMS."""
+"""Base entity for fems-diagnostics"""
 
 from __future__ import annotations
 
@@ -10,17 +10,21 @@ from .coordinator import FemsDataUpdateCoordinator
 
 
 _DEVICE_DEFINITIONS: dict[str, dict[str, str]] = {
+    "system": {
+        "suffix": "system",
+        "name": "FEMS System",
+    },
     "battery": {
         "suffix": "battery",
-        "name": "Batterie",
+        "name": "Battery",
     },
     "battery_diagnose": {
         "suffix": "battery_diagnose",
-        "name": "Diagnose",
+        "name": "Battery Diagnostics",
     },
     "cell_diagnose": {
         "suffix": "cell_diagnose",
-        "name": "Zellen",
+        "name": "Cell Diagnostics",
     },
     "charger0": {
         "suffix": "charger0",
@@ -32,7 +36,7 @@ _DEVICE_DEFINITIONS: dict[str, dict[str, str]] = {
     },
     "energy_management": {
         "suffix": "energy_management",
-        "name": "Energiemanagement",
+        "name": "Energy Management",
     },
 }
 
@@ -136,25 +140,40 @@ class FemsCoordinatorEntity(CoordinatorEntity[FemsDataUpdateCoordinator]):
 
     @property
     def _fems_entity_key(self) -> str:
-        """Return the current entity key from entity_description if available."""
+        """Return entity key."""
         description = getattr(self, "entity_description", None)
         return getattr(description, "key", "")
 
     @property
     def _fems_device_key(self) -> str:
-        """Return logical device key for this entity."""
+        """Return logical device key."""
         return _device_key_from_entity_key(self._fems_entity_key)
 
     @property
     def device_info(self) -> DeviceInfo:
         """Return device info."""
-        device_key = self._fems_device_key
-        device_def = _DEVICE_DEFINITIONS[device_key]
         entry_id = self.coordinator.entry.entry_id
 
+        # Root system device
+        system_identifier = (DOMAIN, f"{entry_id}_system")
+
+        device_key = self._fems_device_key
+        device_def = _DEVICE_DEFINITIONS[device_key]
+
+        # System device itself
+        if device_key == "system":
+            return DeviceInfo(
+                identifiers={system_identifier},
+                name=_DEVICE_DEFINITIONS["system"]["name"],
+                manufacturer=MANUFACTURER,
+                model=MODEL,
+            )
+
+        # All other devices linked to system
         return DeviceInfo(
             identifiers={(DOMAIN, f"{entry_id}_{device_def['suffix']}")},
             name=device_def["name"],
             manufacturer=MANUFACTURER,
             model=MODEL,
+            via_device=system_identifier,
         )
