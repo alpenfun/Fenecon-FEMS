@@ -5,7 +5,7 @@
         "title": "FEMS Diagnostics einrichten",
         "description": "Verbindung zu FEMS Diagnostics konfigurieren",
         "data": {
-          "rest_host": "REST-Host (IP-Adresse des FEMS)",
+          "rest_host": "REST-Host (IP-Adresse des lokalen FEMS)",
           "rest_port": "REST-Port (Standard: 8084)",
           "modbus_host": "Modbus-Host (meist identisch mit REST-Host)",
           "modbus_port": "Modbus-Port (Standard: 502)",
