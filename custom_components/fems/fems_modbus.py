@@ -1,4 +1,4 @@
-"""Modbus client for FEMS."""
+"""Modbus client for fems-diagnostics"""
 
 from __future__ import annotations
 
