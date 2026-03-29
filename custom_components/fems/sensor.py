@@ -1,4 +1,4 @@
-"""Sensor platform for FEMS."""
+"""Sensor platform for fems-diagnostics"""
 
 from __future__ import annotations
 
