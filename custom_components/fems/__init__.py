@@ -8,6 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
+
 from .diagnostics_coordinator import FemsDiagnosticsCoordinator
 
 from .const import (
@@ -69,7 +70,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
+    
+    diagnostics_coordinator = FemsDiagnosticsCoordinator(
+        hass,
+        coordinator.rest_api,
+        coordinator.battery_module_count,
+    )
 
+    await diagnostics_coordinator.async_config_entry_first_refresh()
+
+    hass.data[DOMAIN][f"{entry.entry_id}_diagnostics"] = diagnostics_coordinator
     # 🔥 WICHTIG: Root Device (System) vor allen Entities registrieren
     device_registry = dr.async_get(hass)
 
