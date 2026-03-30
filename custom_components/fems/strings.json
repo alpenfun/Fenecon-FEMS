@@ -17,7 +17,8 @@
       }
     },
     "error": {
-      "cannot_connect": "Cannot connect to FEMS system",
+      "cannot_connect": "Cannot connect to REST endpoint",
+      "cannot_connect_modbus": "Cannot connect to Modbus endpoint",
       "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error occurred"
     }
