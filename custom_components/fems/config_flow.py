@@ -2,10 +2,18 @@
 
 from __future__ import annotations
 
+import asyncio
+import logging
+from typing import Any
+
+import aiohttp
 import voluptuous as vol
+from pymodbus.client import AsyncModbusTcpClient
 
 from homeassistant import config_entries
+from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
@@ -23,7 +31,140 @@ from .const import (
     DOMAIN,
     MAX_BATTERY_MODULE_COUNT,
     MIN_BATTERY_MODULE_COUNT,
+    MODBUS_TIMEOUT,
+    REST_TIMEOUT,
 )
+
+_LOGGER = logging.getLogger(__name__)
+
+
+class CannotConnect(Exception):
+    """Error to indicate we cannot connect."""
+
+
+class InvalidAuth(Exception):
+    """Error to indicate there is invalid auth."""
+
+
+class ModbusConnectionError(Exception):
+    """Error to indicate Modbus connection failure."""
+
+
+async def _validate_rest(
+    hass: HomeAssistant,
+    host: str,
+    port: int,
+    username: str,
+    password: str,
+) -> None:
+    """Validate REST connectivity and authentication."""
+    session = async_get_clientsession(hass)
+    url = (
+        f"http://{host}:{port}/rest/channel/"
+        "battery0/(Soc|Soh|State|StatusFault|StatusWarning|StatusAlarm)"
+    )
+
+    try:
+        async with asyncio.timeout(REST_TIMEOUT):
+            async with session.get(
+                url,
+                auth=aiohttp.BasicAuth(username, password),
+            ) as response:
+                text = await response.text()
+
+                _LOGGER.debug(
+                    "Config flow REST probe | status=%s | body=%s",
+                    response.status,
+                    text[:500],
+                )
+
+                if response.status in (401, 403):
+                    raise InvalidAuth
+
+                response.raise_for_status()
+
+                # FEMS liefert teils text/plain mit JSON-Inhalt.
+                try:
+                    payload = await response.json(content_type=None)
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.debug("REST probe JSON parsing failed: %r", err)
+                    raise CannotConnect from err
+
+                if not isinstance(payload, (list, dict)):
+                    raise CannotConnect
+
+    except InvalidAuth:
+        raise
+    except TimeoutError as err:
+        raise CannotConnect from err
+    except aiohttp.ClientResponseError as err:
+        if err.status in (401, 403):
+            raise InvalidAuth from err
+        raise CannotConnect from err
+    except aiohttp.ClientError as err:
+        raise CannotConnect from err
+
+
+async def _validate_modbus(
+    host: str,
+    port: int,
+    slave: int,
+) -> None:
+    """Validate Modbus connectivity."""
+    client: AsyncModbusTcpClient | None = None
+
+    try:
+        async with asyncio.timeout(MODBUS_TIMEOUT):
+            client = AsyncModbusTcpClient(
+                host=host,
+                port=port,
+                timeout=MODBUS_TIMEOUT,
+            )
+
+            connected = await client.connect()
+            if not connected:
+                raise ModbusConnectionError
+
+            # Kleiner harter Probe-Read:
+            # ess_soc liegt laut const.py auf Input Register 302.
+            result = await client.read_input_registers(
+                address=302,
+                count=1,
+                device_id=slave,
+            )
+
+            if result.isError():
+                raise ModbusConnectionError
+
+    except TimeoutError as err:
+        raise ModbusConnectionError from err
+    except Exception as err:  # noqa: BLE001
+        if isinstance(err, ModbusConnectionError):
+            raise
+        raise ModbusConnectionError from err
+    finally:
+        if client is not None:
+            await client.close()
+
+
+async def _validate_input(
+    hass: HomeAssistant,
+    data: dict[str, Any],
+) -> None:
+    """Validate the user input allows us to connect."""
+    await _validate_rest(
+        hass=hass,
+        host=data[CONF_REST_HOST],
+        port=int(data[CONF_REST_PORT]),
+        username=data.get(CONF_USERNAME, "x"),
+        password=data.get(CONF_PASSWORD, "user"),
+    )
+
+    await _validate_modbus(
+        host=data[CONF_MODBUS_HOST],
+        port=int(data[CONF_MODBUS_PORT]),
+        slave=int(data[CONF_MODBUS_SLAVE]),
+    )
 
 
 class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -31,29 +172,47 @@ class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 2
 
-    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
+    async def async_step_user(
+        self,
+        user_input: dict[str, Any] | None = None,
+    ) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            await self.async_set_unique_id(
-                f"{user_input[CONF_REST_HOST]}:{user_input[CONF_REST_PORT]}"
-            )
-            self._abort_if_unique_id_configured()
+            try:
+                await _validate_input(self.hass, user_input)
 
-            return self.async_create_entry(
-                title=f"FEMS ({user_input[CONF_REST_HOST]})",
-                data={
-                    CONF_REST_HOST: user_input[CONF_REST_HOST],
-                    CONF_REST_PORT: int(user_input[CONF_REST_PORT]),
-                    CONF_MODBUS_HOST: user_input[CONF_MODBUS_HOST],
-                    CONF_MODBUS_PORT: int(user_input[CONF_MODBUS_PORT]),
-                    CONF_MODBUS_SLAVE: int(user_input[CONF_MODBUS_SLAVE]),
-                    CONF_BATTERY_MODULE_COUNT: int(user_input[CONF_BATTERY_MODULE_COUNT]),
-                    CONF_USERNAME: user_input.get(CONF_USERNAME, "x"),
-                    CONF_PASSWORD: user_input.get(CONF_PASSWORD, "user"),
-                },
-            )
+                await self.async_set_unique_id(
+                    f"{user_input[CONF_REST_HOST]}:{user_input[CONF_REST_PORT]}"
+                )
+                self._abort_if_unique_id_configured()
+
+                return self.async_create_entry(
+                    title=f"FEMS ({user_input[CONF_REST_HOST]})",
+                    data={
+                        CONF_REST_HOST: user_input[CONF_REST_HOST],
+                        CONF_REST_PORT: int(user_input[CONF_REST_PORT]),
+                        CONF_MODBUS_HOST: user_input[CONF_MODBUS_HOST],
+                        CONF_MODBUS_PORT: int(user_input[CONF_MODBUS_PORT]),
+                        CONF_MODBUS_SLAVE: int(user_input[CONF_MODBUS_SLAVE]),
+                        CONF_BATTERY_MODULE_COUNT: int(
+                            user_input[CONF_BATTERY_MODULE_COUNT]
+                        ),
+                        CONF_USERNAME: user_input.get(CONF_USERNAME, "x"),
+                        CONF_PASSWORD: user_input.get(CONF_PASSWORD, "user"),
+                    },
+                )
+
+            except InvalidAuth:
+                errors["base"] = "invalid_auth"
+            except ModbusConnectionError:
+                errors["base"] = "cannot_connect_modbus"
+            except CannotConnect:
+                errors["base"] = "cannot_connect"
+            except Exception:  # noqa: BLE001
+                _LOGGER.exception("Unexpected exception during config flow")
+                errors["base"] = "unknown"
 
         schema = vol.Schema(
             {
