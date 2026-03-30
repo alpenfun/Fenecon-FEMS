@@ -73,7 +73,8 @@ async def _validate_rest(
                 text = await response.text()
 
                 _LOGGER.debug(
-                    "Config flow REST probe | status=%s | body=%s",
+                    "Config flow REST probe | url=%s | status=%s | body=%s",
+                    url,
                     response.status,
                     text[:500],
                 )
@@ -83,7 +84,6 @@ async def _validate_rest(
 
                 response.raise_for_status()
 
-                # FEMS liefert teils text/plain mit JSON-Inhalt.
                 try:
                     payload = await response.json(content_type=None)
                 except Exception as err:  # noqa: BLE001
@@ -91,17 +91,24 @@ async def _validate_rest(
                     raise CannotConnect from err
 
                 if not isinstance(payload, (list, dict)):
+                    _LOGGER.debug(
+                        "REST probe returned unexpected payload type: %s",
+                        type(payload).__name__,
+                    )
                     raise CannotConnect
 
     except InvalidAuth:
         raise
     except TimeoutError as err:
+        _LOGGER.debug("REST probe timeout: %r", err)
         raise CannotConnect from err
     except aiohttp.ClientResponseError as err:
+        _LOGGER.debug("REST probe response error: %r", err)
         if err.status in (401, 403):
             raise InvalidAuth from err
         raise CannotConnect from err
     except aiohttp.ClientError as err:
+        _LOGGER.debug("REST probe client error: %r", err)
         raise CannotConnect from err
 
 
@@ -122,29 +129,42 @@ async def _validate_modbus(
             )
 
             connected = await client.connect()
+            _LOGGER.debug(
+                "Config flow Modbus probe | host=%s | port=%s | slave=%s | connected=%s",
+                host,
+                port,
+                slave,
+                connected,
+            )
+
             if not connected:
                 raise ModbusConnectionError
 
-            # Kleiner harter Probe-Read:
-            # ess_soc liegt laut const.py auf Input Register 302.
             result = await client.read_input_registers(
                 address=302,
                 count=1,
                 device_id=slave,
             )
 
-            if result.isError():
+            _LOGGER.debug("Config flow Modbus probe result: %r", result)
+
+            if result is None or result.isError():
                 raise ModbusConnectionError
 
     except TimeoutError as err:
+        _LOGGER.debug("Modbus probe timeout: %r", err)
         raise ModbusConnectionError from err
+    except ModbusConnectionError:
+        raise
     except Exception as err:  # noqa: BLE001
-        if isinstance(err, ModbusConnectionError):
-            raise
+        _LOGGER.exception("Unexpected Modbus validation error")
         raise ModbusConnectionError from err
     finally:
         if client is not None:
-            await client.close()
+            try:
+                client.close()
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Ignoring Modbus client close error", exc_info=True)
 
 
 async def _validate_input(
