@@ -17,7 +17,8 @@
       }
     },
     "error": {
-      "cannot_connect": "Verbindung zum FEMS-System nicht möglich",
+      "cannot_connect": "Verbindung zum REST-Endpunkt nicht möglich",
+      "cannot_connect_modbus": "Verbindung zum Modbus-Endpunkt nicht möglich",
       "invalid_auth": "Ungültige Anmeldedaten",
       "unknown": "Unerwarteter Fehler aufgetreten"
     }
