@@ -1,0 +1,14 @@
+pytest
+pytest-asyncio
+pytest-cov
+pytest-sugar
+pytest-timeout
+pytest-xdist
+pytest-socket
+pytest-freezer
+pytest-homeassistant-custom-component
+respx
+requests-mock
+syrupy
+aiohttp
+github-actions-annotate-failures
