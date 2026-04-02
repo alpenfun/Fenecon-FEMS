@@ -11,3 +11,4 @@ respx
 requests-mock
 syrupy
 aiohttp
+pymodbus
