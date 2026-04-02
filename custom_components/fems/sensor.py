@@ -28,7 +28,9 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import (
     CELLS_PER_MODULE,
     CONF_BATTERY_MODULE_COUNT,
+    CONF_ENABLE_CELL_VOLTAGES,
     DEFAULT_BATTERY_MODULE_COUNT,
+    DEFAULT_ENABLE_CELL_VOLTAGES,
     DOMAIN,
 )
 from .coordinator import FemsDataUpdateCoordinator
@@ -788,9 +790,16 @@ async def async_setup_entry(
         f"{entry.entry_id}_diagnostics"
     ]
 
-    module_count = entry.data.get(
+    module_count = entry.options.get(
         CONF_BATTERY_MODULE_COUNT,
-        DEFAULT_BATTERY_MODULE_COUNT,
+        entry.data.get(
+            CONF_BATTERY_MODULE_COUNT,
+            DEFAULT_BATTERY_MODULE_COUNT,
+        ),
+    )
+    enable_cell_voltages = entry.options.get(
+        CONF_ENABLE_CELL_VOLTAGES,
+        DEFAULT_ENABLE_CELL_VOLTAGES,
     )
 
     base_entities = [
@@ -798,12 +807,18 @@ async def async_setup_entry(
         for description in BASE_SENSORS
     ]
 
+    diagnostics_descriptions = [
+        *_build_module_spread_sensors(module_count),
+    ]
+
+    if enable_cell_voltages:
+        diagnostics_descriptions.extend(
+            _build_cell_voltage_sensors(module_count)
+        )
+
     diagnostics_entities = [
         FemsSensorEntity(diagnostics_coordinator, description)
-        for description in (
-            *_build_module_spread_sensors(module_count),
-            *_build_cell_voltage_sensors(module_count),
-        )
+        for description in diagnostics_descriptions
     ]
 
     async_add_entities([*base_entities, *diagnostics_entities])

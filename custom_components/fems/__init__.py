@@ -1,6 +1,5 @@
 """The FEMS integration."""
 
-
 from __future__ import annotations
 
 import logging
@@ -9,8 +8,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
-
-from .diagnostics_coordinator import FemsDiagnosticsCoordinator
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
@@ -21,6 +18,7 @@ from .const import (
     PLATFORMS,
 )
 from .coordinator import FemsDataUpdateCoordinator
+from .diagnostics_coordinator import FemsDiagnosticsCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -58,6 +56,11 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
+async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Handle options update."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up FEMS from a config entry."""
     coordinator = FemsDataUpdateCoordinator(hass, entry)
@@ -69,22 +72,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             f"Initial FEMS refresh failed: {err}"
         ) from err
 
+    diagnostics_coordinator = FemsDiagnosticsCoordinator(
+        hass,
+        entry,
+        coordinator.rest_api,
+    )
+
+    try:
+        await diagnostics_coordinator.async_config_entry_first_refresh()
+    except Exception as err:
+        raise ConfigEntryNotReady(
+            f"Initial FEMS diagnostics refresh failed: {err}"
+        ) from err
+
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
-    
-    diagnostics_coordinator = FemsDiagnosticsCoordinator(
-    hass,
-    entry,
-    coordinator.rest_api,
-    coordinator.battery_module_count,
-)
-
-    await diagnostics_coordinator.async_config_entry_first_refresh()
-
     hass.data[DOMAIN][f"{entry.entry_id}_diagnostics"] = diagnostics_coordinator
-    # 🔥 WICHTIG: Root Device (System) vor allen Entities registrieren
-    device_registry = dr.async_get(hass)
 
+    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
+
+    device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, f"{entry.entry_id}_system")},
@@ -93,7 +100,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         name="FEMS System",
     )
 
-    # Plattformen laden (Sensoren etc.)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
@@ -107,5 +113,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id, None)
+        hass.data[DOMAIN].pop(f"{entry.entry_id}_diagnostics", None)
 
     return unload_ok

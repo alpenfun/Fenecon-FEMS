@@ -5,9 +5,9 @@ from __future__ import annotations
 import asyncio
 import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from typing import Any
 
-from aiohttp import ClientError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -15,15 +15,17 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
+    CONF_DIAGNOSTICS_INTERVAL,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
     CONF_MODBUS_SLAVE,
     CONF_PASSWORD,
     CONF_REST_HOST,
     CONF_REST_PORT,
+    CONF_SCAN_INTERVAL,
     CONF_USERNAME,
-    COORDINATOR_UPDATE_INTERVAL,
     DEFAULT_BATTERY_MODULE_COUNT,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MODBUS_FLOAT32_HOLDING_REGISTERS,
     MODBUS_FLOAT64_HOLDING_REGISTERS,
@@ -53,9 +55,16 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize coordinator."""
         self.entry = entry
-        self.battery_module_count = entry.data.get(
+        self.battery_module_count = entry.options.get(
             CONF_BATTERY_MODULE_COUNT,
-            DEFAULT_BATTERY_MODULE_COUNT,
+            entry.data.get(
+                CONF_BATTERY_MODULE_COUNT,
+                DEFAULT_BATTERY_MODULE_COUNT,
+            ),
+        )
+        self.scan_interval = entry.options.get(
+            CONF_SCAN_INTERVAL,
+            DEFAULT_SCAN_INTERVAL,
         )
 
         session = async_get_clientsession(hass)
@@ -76,7 +85,7 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
             hass,
             logger=_LOGGER,
             name=DOMAIN,
-            update_interval=COORDINATOR_UPDATE_INTERVAL,
+            update_interval=timedelta(seconds=self.scan_interval),
             always_update=False,
         )
 
@@ -122,17 +131,11 @@ class FemsDataUpdateCoordinator(DataUpdateCoordinator[FemsData]):
         charger0_group = "charger0/(ActualPower|Voltage|Current)"
         charger1_group = "charger1/(ActualPower|Voltage|Current)"
 
-        groups: list[str] = [
+        return [
             battery_group,
             charger0_group,
             charger1_group,
         ]
-
-        # Zellspannungen bewusst NICHT im Haupt-Coordinator laden,
-        # damit Initialisierung und normale Updates deutlich schneller sind.
-        # Diese können später optional in einen separaten Diagnose-Coordinator wandern.
-
-        return groups
 
     async def _async_fetch_rest_group(
         self,

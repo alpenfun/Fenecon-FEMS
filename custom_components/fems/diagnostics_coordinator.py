@@ -11,12 +11,17 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CELLS_PER_MODULE, DOMAIN
+from .const import (
+    CELLS_PER_MODULE,
+    CONF_BATTERY_MODULE_COUNT,
+    CONF_DIAGNOSTICS_INTERVAL,
+    DEFAULT_BATTERY_MODULE_COUNT,
+    DEFAULT_DIAGNOSTICS_INTERVAL,
+    DOMAIN,
+)
 from .fems_rest import FemsRestApi
 
 _LOGGER = logging.getLogger(__name__)
-
-DIAGNOSTICS_UPDATE_INTERVAL = timedelta(seconds=60)
 
 
 @dataclass
@@ -34,18 +39,27 @@ class FemsDiagnosticsCoordinator(DataUpdateCoordinator[FemsDiagnosticsData]):
         hass: HomeAssistant,
         entry: ConfigEntry,
         rest_api: FemsRestApi,
-        battery_module_count: int,
     ) -> None:
         """Initialize diagnostics coordinator."""
         self.entry = entry
         self.rest_api = rest_api
-        self.battery_module_count = battery_module_count
+        self.battery_module_count = entry.options.get(
+            CONF_BATTERY_MODULE_COUNT,
+            entry.data.get(
+                CONF_BATTERY_MODULE_COUNT,
+                DEFAULT_BATTERY_MODULE_COUNT,
+            ),
+        )
+        self.diagnostics_interval = entry.options.get(
+            CONF_DIAGNOSTICS_INTERVAL,
+            DEFAULT_DIAGNOSTICS_INTERVAL,
+        )
 
         super().__init__(
             hass,
             logger=_LOGGER,
             name=f"{DOMAIN}_diagnostics",
-            update_interval=DIAGNOSTICS_UPDATE_INTERVAL,
+            update_interval=timedelta(seconds=self.diagnostics_interval),
             always_update=False,
         )
 

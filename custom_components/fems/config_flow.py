@@ -11,26 +11,37 @@ import voluptuous as vol
 from pymodbus.client import AsyncModbusTcpClient
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
+    CONF_DIAGNOSTICS_INTERVAL,
+    CONF_ENABLE_CELL_VOLTAGES,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
     CONF_MODBUS_SLAVE,
     CONF_PASSWORD,
     CONF_REST_HOST,
     CONF_REST_PORT,
+    CONF_SCAN_INTERVAL,
     CONF_USERNAME,
     DEFAULT_BATTERY_MODULE_COUNT,
+    DEFAULT_DIAGNOSTICS_INTERVAL,
+    DEFAULT_ENABLE_CELL_VOLTAGES,
     DEFAULT_MODBUS_PORT,
     DEFAULT_MODBUS_SLAVE,
     DEFAULT_REST_PORT,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAX_BATTERY_MODULE_COUNT,
+    MAX_DIAGNOSTICS_INTERVAL,
+    MAX_SCAN_INTERVAL,
     MIN_BATTERY_MODULE_COUNT,
+    MIN_DIAGNOSTICS_INTERVAL,
+    MIN_SCAN_INTERVAL,
     MODBUS_TIMEOUT,
     REST_TIMEOUT,
 )
@@ -187,10 +198,97 @@ async def _validate_input(
     )
 
 
+def _options_default(entry: ConfigEntry, key: str, default: Any) -> Any:
+    """Return option default with fallback to entry.data."""
+    return entry.options.get(key, entry.data.get(key, default))
+
+
+class FemsOptionsFlow(config_entries.OptionsFlow):
+    """Handle FEMS options."""
+
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
+    async def async_step_init(
+        self,
+        user_input: dict[str, Any] | None = None,
+    ) -> FlowResult:
+        """Manage the options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_SCAN_INTERVAL,
+                    default=_options_default(
+                        self.config_entry,
+                        CONF_SCAN_INTERVAL,
+                        DEFAULT_SCAN_INTERVAL,
+                    ),
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(
+                        min=MIN_SCAN_INTERVAL,
+                        max=MAX_SCAN_INTERVAL,
+                    ),
+                ),
+                vol.Required(
+                    CONF_DIAGNOSTICS_INTERVAL,
+                    default=_options_default(
+                        self.config_entry,
+                        CONF_DIAGNOSTICS_INTERVAL,
+                        DEFAULT_DIAGNOSTICS_INTERVAL,
+                    ),
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(
+                        min=MIN_DIAGNOSTICS_INTERVAL,
+                        max=MAX_DIAGNOSTICS_INTERVAL,
+                    ),
+                ),
+                vol.Required(
+                    CONF_BATTERY_MODULE_COUNT,
+                    default=_options_default(
+                        self.config_entry,
+                        CONF_BATTERY_MODULE_COUNT,
+                        DEFAULT_BATTERY_MODULE_COUNT,
+                    ),
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(
+                        min=MIN_BATTERY_MODULE_COUNT,
+                        max=MAX_BATTERY_MODULE_COUNT,
+                    ),
+                ),
+                vol.Required(
+                    CONF_ENABLE_CELL_VOLTAGES,
+                    default=_options_default(
+                        self.config_entry,
+                        CONF_ENABLE_CELL_VOLTAGES,
+                        DEFAULT_ENABLE_CELL_VOLTAGES,
+                    ),
+                ): bool,
+            }
+        )
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=schema,
+        )
+
+
 class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for FEMS."""
 
     VERSION = 2
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry: ConfigEntry) -> FemsOptionsFlow:
+        """Return the options flow."""
+        return FemsOptionsFlow(config_entry)
 
     async def async_step_user(
         self,
@@ -221,6 +319,14 @@ class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         ),
                         CONF_USERNAME: user_input.get(CONF_USERNAME, "x"),
                         CONF_PASSWORD: user_input.get(CONF_PASSWORD, "user"),
+                    },
+                    options={
+                        CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL,
+                        CONF_DIAGNOSTICS_INTERVAL: DEFAULT_DIAGNOSTICS_INTERVAL,
+                        CONF_BATTERY_MODULE_COUNT: int(
+                            user_input[CONF_BATTERY_MODULE_COUNT]
+                        ),
+                        CONF_ENABLE_CELL_VOLTAGES: DEFAULT_ENABLE_CELL_VOLTAGES,
                     },
                 )
 
