@@ -21,7 +21,21 @@
       "cannot_connect_modbus": "Verbindung zum Modbus-Endpunkt nicht möglich",
       "invalid_auth": "Ungültige Anmeldedaten",
       "unknown": "Unerwarteter Fehler aufgetreten"
+    },
+  "options": {
+  "step": {
+    "init": {
+      "title": "FEMS Diagnostics konfigurieren",
+      "description": "Laufzeiteinstellungen für FEMS Diagnostics anpassen",
+      "data": {
+        "scan_interval": "Hauptabfrageintervall (Sekunden)",
+        "diagnostics_interval": "Diagnose-Abfrageintervall (Sekunden)",
+        "battery_module_count": "Anzahl Batteriemodule",
+        "enable_cell_voltages": "Zellspannungs-Entitäten aktivieren"
+      }
     }
+  }
+}  
   },
   "entity": {
     "sensor": {
