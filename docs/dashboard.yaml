@@ -1,5 +1,5 @@
 views:
-  - title: FEMS Diagnose Dahsboard
+  - title: FEMS Diagnose
     path: fems-diagnose
     type: sections
     max_columns: 4
