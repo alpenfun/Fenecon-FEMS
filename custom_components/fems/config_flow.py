@@ -12,41 +12,44 @@ from pymodbus.client import AsyncModbusTcpClient
 
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
-    CONF_DIAGNOSTICS_INTERVAL,
-    CONF_ENABLE_CELL_VOLTAGES,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
     CONF_MODBUS_SLAVE,
     CONF_PASSWORD,
     CONF_REST_HOST,
     CONF_REST_PORT,
-    CONF_SCAN_INTERVAL,
     CONF_USERNAME,
     DEFAULT_BATTERY_MODULE_COUNT,
-    DEFAULT_DIAGNOSTICS_INTERVAL,
-    DEFAULT_ENABLE_CELL_VOLTAGES,
     DEFAULT_MODBUS_PORT,
     DEFAULT_MODBUS_SLAVE,
     DEFAULT_REST_PORT,
-    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAX_BATTERY_MODULE_COUNT,
-    MAX_DIAGNOSTICS_INTERVAL,
-    MAX_SCAN_INTERVAL,
     MIN_BATTERY_MODULE_COUNT,
-    MIN_DIAGNOSTICS_INTERVAL,
-    MIN_SCAN_INTERVAL,
     MODBUS_TIMEOUT,
     REST_TIMEOUT,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+# Options keys
+CONF_SCAN_INTERVAL = "scan_interval"
+CONF_DIAGNOSTICS_INTERVAL = "diagnostics_interval"
+CONF_ENABLE_CELL_VOLTAGES = "enable_cell_voltages"
+
+# Options defaults
+DEFAULT_SCAN_INTERVAL = 30
+DEFAULT_DIAGNOSTICS_INTERVAL = 60
+DEFAULT_ENABLE_CELL_VOLTAGES = True
+
+MIN_SCAN_INTERVAL = 5
+MAX_SCAN_INTERVAL = 3600
 
 
 class CannotConnect(Exception):
@@ -198,97 +201,10 @@ async def _validate_input(
     )
 
 
-def _options_default(entry: ConfigEntry, key: str, default: Any) -> Any:
-    """Return option default with fallback to entry.data."""
-    return entry.options.get(key, entry.data.get(key, default))
-
-
-class FemsOptionsFlow(config_entries.OptionsFlow):
-    """Handle FEMS options."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
-
-    async def async_step_init(
-        self,
-        user_input: dict[str, Any] | None = None,
-    ) -> FlowResult:
-        """Manage the options."""
-        if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
-
-        schema = vol.Schema(
-            {
-                vol.Required(
-                    CONF_SCAN_INTERVAL,
-                    default=_options_default(
-                        self.config_entry,
-                        CONF_SCAN_INTERVAL,
-                        DEFAULT_SCAN_INTERVAL,
-                    ),
-                ): vol.All(
-                    vol.Coerce(int),
-                    vol.Range(
-                        min=MIN_SCAN_INTERVAL,
-                        max=MAX_SCAN_INTERVAL,
-                    ),
-                ),
-                vol.Required(
-                    CONF_DIAGNOSTICS_INTERVAL,
-                    default=_options_default(
-                        self.config_entry,
-                        CONF_DIAGNOSTICS_INTERVAL,
-                        DEFAULT_DIAGNOSTICS_INTERVAL,
-                    ),
-                ): vol.All(
-                    vol.Coerce(int),
-                    vol.Range(
-                        min=MIN_DIAGNOSTICS_INTERVAL,
-                        max=MAX_DIAGNOSTICS_INTERVAL,
-                    ),
-                ),
-                vol.Required(
-                    CONF_BATTERY_MODULE_COUNT,
-                    default=_options_default(
-                        self.config_entry,
-                        CONF_BATTERY_MODULE_COUNT,
-                        DEFAULT_BATTERY_MODULE_COUNT,
-                    ),
-                ): vol.All(
-                    vol.Coerce(int),
-                    vol.Range(
-                        min=MIN_BATTERY_MODULE_COUNT,
-                        max=MAX_BATTERY_MODULE_COUNT,
-                    ),
-                ),
-                vol.Required(
-                    CONF_ENABLE_CELL_VOLTAGES,
-                    default=_options_default(
-                        self.config_entry,
-                        CONF_ENABLE_CELL_VOLTAGES,
-                        DEFAULT_ENABLE_CELL_VOLTAGES,
-                    ),
-                ): bool,
-            }
-        )
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=schema,
-        )
-
-
 class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for FEMS."""
+    """Handle a config flow for FEMS Diagnostics."""
 
     VERSION = 2
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(config_entry: ConfigEntry) -> FemsOptionsFlow:
-        """Return the options flow."""
-        return FemsOptionsFlow(config_entry)
 
     async def async_step_user(
         self,
@@ -366,4 +282,89 @@ class FemsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=schema,
             errors=errors,
+        )
+
+    @staticmethod
+    def async_get_options_flow(config_entry: ConfigEntry) -> config_entries.OptionsFlow:
+        """Get the options flow for this handler."""
+        return FemsOptionsFlow(config_entry)
+
+
+class FemsOptionsFlow(config_entries.OptionsFlow):
+    """Handle FEMS Diagnostics options."""
+
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        """Initialize FEMS options flow."""
+        self._config_entry = config_entry
+
+    async def async_step_init(
+        self,
+        user_input: dict[str, Any] | None = None,
+    ) -> FlowResult:
+        """Manage the options."""
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
+        current_scan_interval = self._config_entry.options.get(
+            CONF_SCAN_INTERVAL,
+            self._config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        )
+        current_diagnostics_interval = self._config_entry.options.get(
+            CONF_DIAGNOSTICS_INTERVAL,
+            self._config_entry.data.get(
+                CONF_DIAGNOSTICS_INTERVAL,
+                DEFAULT_DIAGNOSTICS_INTERVAL,
+            ),
+        )
+        current_battery_module_count = self._config_entry.options.get(
+            CONF_BATTERY_MODULE_COUNT,
+            self._config_entry.data.get(
+                CONF_BATTERY_MODULE_COUNT,
+                DEFAULT_BATTERY_MODULE_COUNT,
+            ),
+        )
+        current_enable_cell_voltages = self._config_entry.options.get(
+            CONF_ENABLE_CELL_VOLTAGES,
+            self._config_entry.data.get(
+                CONF_ENABLE_CELL_VOLTAGES,
+                DEFAULT_ENABLE_CELL_VOLTAGES,
+            ),
+        )
+
+        schema = vol.Schema(
+            {
+                vol.Required(
+                    CONF_SCAN_INTERVAL,
+                    default=current_scan_interval,
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(min=MIN_SCAN_INTERVAL, max=MAX_SCAN_INTERVAL),
+                ),
+                vol.Required(
+                    CONF_DIAGNOSTICS_INTERVAL,
+                    default=current_diagnostics_interval,
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(min=MIN_SCAN_INTERVAL, max=MAX_SCAN_INTERVAL),
+                ),
+                vol.Required(
+                    CONF_BATTERY_MODULE_COUNT,
+                    default=current_battery_module_count,
+                ): vol.All(
+                    vol.Coerce(int),
+                    vol.Range(
+                        min=MIN_BATTERY_MODULE_COUNT,
+                        max=MAX_BATTERY_MODULE_COUNT,
+                    ),
+                ),
+                vol.Required(
+                    CONF_ENABLE_CELL_VOLTAGES,
+                    default=current_enable_cell_voltages,
+                ): bool,
+            }
+        )
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=schema,
         )
