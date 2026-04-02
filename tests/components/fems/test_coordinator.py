@@ -2,20 +2,27 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from custom_components.fems.coordinator import FemsDataUpdateCoordinator
 from custom_components.fems.diagnostics_coordinator import (
     FemsDiagnosticsCoordinator,
 )
-from tests.components.fems.conftest import MOCK_CONFIG, MOCK_OPTIONS
 
 
 async def test_data_coordinator_returns_combined_mock_data(hass, mock_config_entry) -> None:
     """Test main coordinator with mocked REST and Modbus data."""
     mock_config_entry.add_to_hass(hass)
 
-    coordinator = FemsDataUpdateCoordinator(hass, mock_config_entry)
+    with (
+        patch(
+            "custom_components.fems.coordinator.async_get_clientsession",
+            return_value=MagicMock(),
+        ),
+        patch("custom_components.fems.coordinator.FemsRestApi"),
+        patch("custom_components.fems.coordinator.FemsModbusApi"),
+    ):
+        coordinator = FemsDataUpdateCoordinator(hass, mock_config_entry)
 
     rest_payload = {
         "battery0/Soc": 78,
@@ -54,7 +61,15 @@ async def test_data_coordinator_allows_partial_data_when_rest_fails(
     """Test coordinator keeps Modbus data if REST fails."""
     mock_config_entry.add_to_hass(hass)
 
-    coordinator = FemsDataUpdateCoordinator(hass, mock_config_entry)
+    with (
+        patch(
+            "custom_components.fems.coordinator.async_get_clientsession",
+            return_value=MagicMock(),
+        ),
+        patch("custom_components.fems.coordinator.FemsRestApi"),
+        patch("custom_components.fems.coordinator.FemsModbusApi"),
+    ):
+        coordinator = FemsDataUpdateCoordinator(hass, mock_config_entry)
 
     modbus_payload = {
         "ess_soc": 80,

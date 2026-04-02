@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
@@ -50,16 +50,35 @@ async def test_migrate_entry_v1_to_v2_adds_battery_module_count(hass) -> None:
 async def test_setup_and_unload_entry_smoke(
     hass,
     mock_config_entry,
-    mock_setup_coordinators,
     mock_forward_entry_setups,
     mock_unload_platforms,
 ) -> None:
     """Smoke test for setup and unload."""
     mock_config_entry.add_to_hass(hass)
 
-    assert await async_setup_entry(hass, mock_config_entry) is True
+    mock_main_coordinator = MagicMock()
+    mock_main_coordinator.async_config_entry_first_refresh = AsyncMock()
+
+    mock_diag_coordinator = MagicMock()
+    mock_diag_coordinator.async_config_entry_first_refresh = AsyncMock()
+
+    with (
+        patch(
+            "custom_components.fems.FemsDataUpdateCoordinator",
+            return_value=mock_main_coordinator,
+        ),
+        patch(
+            "custom_components.fems.FemsDiagnosticsCoordinator",
+            return_value=mock_diag_coordinator,
+        ),
+    ):
+        assert await async_setup_entry(hass, mock_config_entry) is True
+
     assert mock_config_entry.entry_id in hass.data[DOMAIN]
     assert f"{mock_config_entry.entry_id}_diagnostics" in hass.data[DOMAIN]
+
+    mock_main_coordinator.async_config_entry_first_refresh.assert_awaited_once()
+    mock_diag_coordinator.async_config_entry_first_refresh.assert_awaited_once()
 
     assert await async_unload_entry(hass, mock_config_entry) is True
     assert mock_config_entry.entry_id not in hass.data[DOMAIN]

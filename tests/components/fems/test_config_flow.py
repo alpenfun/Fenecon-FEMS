@@ -35,9 +35,15 @@ async def test_config_flow_success(hass) -> None:
     """Test successful config flow."""
     user_input = dict(MOCK_CONFIG)
 
-    with patch(
-        "custom_components.fems.config_flow._validate_input",
-        new=AsyncMock(),
+    with (
+        patch(
+            "custom_components.fems.config_flow._validate_input",
+            new=AsyncMock(),
+        ),
+        patch(
+            "custom_components.fems.async_setup_entry",
+            new=AsyncMock(return_value=True),
+        ),
     ):
         result = await hass.config_entries.flow.async_init(
             DOMAIN,
