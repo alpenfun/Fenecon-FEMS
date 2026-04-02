@@ -11,4 +11,3 @@ respx
 requests-mock
 syrupy
 aiohttp
-github-actions-annotate-failures
