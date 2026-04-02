@@ -1,4 +1,3 @@
-# custom_components/fems/sensor.py
 """Sensor platform for fems-diagnostics."""
 
 from __future__ import annotations
@@ -318,9 +317,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda c: _scaled_rest_value(
-            c, "battery0/Tower0MinTemperature", 10, 1
-        ),
+        value_fn=lambda c: _rest_value(c, "battery0/Tower0MinTemperature"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
@@ -330,9 +327,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda c: _scaled_rest_value(
-            c, "battery0/Tower0MaxTemperature", 10, 1
-        ),
+        value_fn=lambda c: _rest_value(c, "battery0/Tower0MaxTemperature"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
@@ -359,7 +354,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "charger0/Current"),
+        value_fn=lambda c: _scaled_rest_value(c, "charger0/Current", 1000, 1),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
@@ -386,46 +381,46 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
         device_class=SensorDeviceClass.CURRENT,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_value(c, "charger1/Current"),
+        value_fn=lambda c: _scaled_rest_value(c, "charger1/Current", 1000, 1),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_run_failed",
         translation_key="battery_run_failed",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/RunFailed"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="battery_modbus_communication_failed",
         translation_key="battery_modbus_communication_failed",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/ModbusCommunicationFailed"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="low_min_voltage_fault",
         translation_key="low_min_voltage_fault",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageFault"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="low_min_voltage_warning",
         translation_key="low_min_voltage_warning",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/LowMinVoltageWarning"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="low_min_voltage_fault_battery_stopped",
         translation_key="low_min_voltage_fault_battery_stopped",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(
             c, "battery0/LowMinVoltageFaultBatteryStopped"
         ),
@@ -434,84 +429,80 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
     FemsSensorDescription(
         key="level1_cell_under_voltage",
         translation_key="level1_cell_under_voltage",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Level1CellUnderVoltage"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="level2_cell_under_voltage",
         translation_key="level2_cell_under_voltage",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Level2CellUnderVoltage"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_level1_cell_under_voltage",
         translation_key="tower0_level1_cell_under_voltage",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_bool_value(
-            c, "battery0/Tower0Level1CellUnderVoltage"
-        ),
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0Level1CellUnderVoltage"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_level2_cell_under_voltage",
         translation_key="tower0_level2_cell_under_voltage",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda c: _rest_bool_value(
-            c, "battery0/Tower0Level2CellUnderVoltage"
-        ),
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0Level2CellUnderVoltage"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="status_fault",
         translation_key="status_fault",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusFault"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="status_warning",
         translation_key="status_warning",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusWarning"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="status_alarm",
         translation_key="status_alarm",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/StatusAlarm"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_status_fault",
         translation_key="tower0_status_fault",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusFault"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_status_warning",
         translation_key="tower0_status_warning",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusWarning"),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
         key="tower0_status_alarm",
         translation_key="tower0_status_alarm",
-        entity_category=EntityCategory.DIAGNOSTIC,
         state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda c: _rest_bool_value(c, "battery0/Tower0StatusAlarm"),
         available_fn=_rest_available,
     ),
@@ -756,7 +747,10 @@ def _build_module_spread_sensors(module_count: int) -> list[FemsSensorDescriptio
     return sensors
 
 
-def _build_cell_voltage_sensors(module_count: int) -> list[FemsSensorDescription]:
+def _build_cell_voltage_sensors(
+    module_count: int,
+    enabled_default: bool,
+) -> list[FemsSensorDescription]:
     """Build cell voltage sensors dynamically."""
     sensors: list[FemsSensorDescription] = []
 
@@ -770,7 +764,7 @@ def _build_cell_voltage_sensors(module_count: int) -> list[FemsSensorDescription
                     device_class=SensorDeviceClass.VOLTAGE,
                     state_class=SensorStateClass.MEASUREMENT,
                     entity_category=EntityCategory.DIAGNOSTIC,
-                    entity_registry_enabled_default=False,
+                    entity_registry_enabled_default=enabled_default,
                     value_fn=_cell_voltage_value_fn(module, cell),
                     available_fn=_diagnostics_rest_available,
                 )
@@ -799,7 +793,10 @@ async def async_setup_entry(
     )
     enable_cell_voltages = entry.options.get(
         CONF_ENABLE_CELL_VOLTAGES,
-        DEFAULT_ENABLE_CELL_VOLTAGES,
+        entry.data.get(
+            CONF_ENABLE_CELL_VOLTAGES,
+            DEFAULT_ENABLE_CELL_VOLTAGES,
+        ),
     )
 
     base_entities = [
@@ -813,7 +810,10 @@ async def async_setup_entry(
 
     if enable_cell_voltages:
         diagnostics_descriptions.extend(
-            _build_cell_voltage_sensors(module_count)
+            _build_cell_voltage_sensors(
+                module_count=module_count,
+                enabled_default=True,
+            )
         )
 
     diagnostics_entities = [
