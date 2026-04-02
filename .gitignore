@@ -1,5 +1,16 @@
 .DS_Store
 __pycache__/
 *.pyc
+*.pyo
 *.log
 .env
+
+# Virtual Environment
+.venv/
+venv/
+
+# pytest
+.pytest_cache/
+
+# VS Code
+.vscode/
