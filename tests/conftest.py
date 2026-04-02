@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -15,6 +14,6 @@ if str(ROOT) not in sys.path:
 
 
 @pytest.fixture(autouse=True)
-def auto_enable_custom_integrations() -> Generator[bool, None, None]:
+def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable loading of custom integrations in all tests."""
-    yield True
+    yield
