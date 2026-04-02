@@ -1,5 +1,5 @@
 views:
-  - title: FEMS Diagnose
+  - title: FEMS Diagnose Dahsboard
     path: fems-diagnose
     type: sections
     max_columns: 4
@@ -270,11 +270,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
@@ -312,11 +312,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
@@ -354,11 +354,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
@@ -396,11 +396,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
@@ -438,11 +438,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
@@ -480,11 +480,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
@@ -522,11 +522,11 @@ views:
                 size: 18px
                 color_type: card
                 state:
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.05
                     color: rgb(183, 28, 28)
                     icon: mdi:alert-circle
-                  - operator: '>='
+                  - operator: ">="
                     value: 0.02
                     color: rgb(245, 158, 11)
                     icon: mdi:alert
