@@ -21,18 +21,18 @@
       "cannot_connect_modbus": "Cannot connect to Modbus endpoint",
       "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error occurred"
-    },
-    "options": {
-      "step": {
-        "init": {
-          "title": "FEMS Diagnostics options",
-          "description": "Adjust runtime settings for FEMS Diagnostics",
-          "data": {
-            "scan_interval": "Main polling interval (seconds)",
-            "diagnostics_interval": "Diagnostics polling interval (seconds)",
-            "battery_module_count": "Battery modules",
-            "enable_cell_voltages": "Enable cell voltage entities"
-          }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "FEMS Diagnostics options",
+        "description": "Adjust runtime settings for FEMS Diagnostics",
+        "data": {
+          "scan_interval": "Main polling interval (seconds)",
+          "diagnostics_interval": "Diagnostics polling interval (seconds)",
+          "battery_module_count": "Battery modules",
+          "enable_cell_voltages": "Enable cell voltage entities"
         }
       }
     }
@@ -288,20 +288,6 @@
       },
       "system_error": {
         "name": "System Error"
-      }
-    }
-  },
-  "options": {
-    "step": {
-      "init": {
-        "title": "FEMS Diagnostics options",
-        "description": "Adjust polling and diagnostics behavior",
-        "data": {
-          "scan_interval": "Main polling interval (seconds)",
-          "diagnostics_interval": "Diagnostics polling interval (seconds)",
-          "battery_module_count": "Battery modules",
-          "enable_cell_voltages": "Enable cell voltage entities"
-        }
       }
     }
   }

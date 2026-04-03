@@ -1,16 +1,16 @@
 {
   "domain": "fems",
   "name": "FEMS Diagnostics",
-  "integration_type": "hub",
-  "version": "1.0.0",
-  "documentation": "https://github.com/alpenfun/fems-diagnostics",
-  "issue_tracker": "https://github.com/alpenfun/fems-diagnostics/issues",
+  "codeowners": [
+    "@alpenfun"
+  ],
   "config_flow": true,
+  "documentation": "https://github.com/alpenfun/fems-diagnostics",
+  "integration_type": "hub",
   "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/alpenfun/fems-diagnostics/issues",
   "requirements": [
     "pymodbus==3.11.2"
   ],
-  "codeowners": [
-    "@alpenfun"
-  ]
+  "version": "1.0.0"
 }
