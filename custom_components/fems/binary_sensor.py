@@ -91,13 +91,14 @@ def _system_error(coordinator: FemsDataUpdateCoordinator) -> bool:
         not _rest_communication_ok(coordinator)
         or not _modbus_communication_ok(coordinator)
         or _fault_active(coordinator)
-        or _alarm_active(coordinator)
     )
 
 
 def _system_warning(coordinator: FemsDataUpdateCoordinator) -> bool:
     """Return True if system is in warning state but not error."""
-    return not _system_error(coordinator) and _warning_active(coordinator)
+    return not _system_error(coordinator) and (
+        _warning_active(coordinator) or _alarm_active(coordinator)
+    )
 
 
 def _system_ok(coordinator: FemsDataUpdateCoordinator) -> bool:

@@ -22,20 +22,20 @@
       "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error occurred"
     },
-  "options": {
-  "step": {
-    "init": {
-      "title": "FEMS Diagnostics options",
-      "description": "Adjust runtime settings for FEMS Diagnostics",
-      "data": {
-        "scan_interval": "Main polling interval (seconds)",
-        "diagnostics_interval": "Diagnostics polling interval (seconds)",
-        "battery_module_count": "Battery modules",
-        "enable_cell_voltages": "Enable cell voltage entities"
+    "options": {
+      "step": {
+        "init": {
+          "title": "FEMS Diagnostics options",
+          "description": "Adjust runtime settings for FEMS Diagnostics",
+          "data": {
+            "scan_interval": "Main polling interval (seconds)",
+            "diagnostics_interval": "Diagnostics polling interval (seconds)",
+            "battery_module_count": "Battery modules",
+            "enable_cell_voltages": "Enable cell voltage entities"
+          }
+        }
       }
     }
-  }
-}   
   },
   "entity": {
     "sensor": {
@@ -77,6 +77,17 @@
       },
       "cell_voltage_spread": {
         "name": "Cell Voltage Spread"
+      },
+      "cell_voltage_spread_status": {
+        "name": "Cell Voltage Spread Status",
+        "state": {
+          "normal": "Normal",
+          "observe": "Observe",
+          "critical": "Critical",
+          "low_soc": "Low state of charge",
+          "under_load": "Under load",
+          "not_evaluable": "Not evaluable"
+        }
       },
       "battery_min_cell_temperature": {
         "name": "Min Cell Temperature"

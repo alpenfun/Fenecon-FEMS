@@ -22,20 +22,20 @@
       "invalid_auth": "Ungültige Anmeldedaten",
       "unknown": "Unerwarteter Fehler aufgetreten"
     },
-  "options": {
-  "step": {
-    "init": {
-      "title": "FEMS Diagnostics konfigurieren",
-      "description": "Laufzeiteinstellungen für FEMS Diagnostics anpassen",
-      "data": {
-        "scan_interval": "Hauptabfrageintervall (Sekunden)",
-        "diagnostics_interval": "Diagnose-Abfrageintervall (Sekunden)",
-        "battery_module_count": "Anzahl Batteriemodule",
-        "enable_cell_voltages": "Zellspannungs-Entitäten aktivieren"
+    "options": {
+      "step": {
+        "init": {
+          "title": "FEMS Diagnostics konfigurieren",
+          "description": "Laufzeiteinstellungen für FEMS Diagnostics anpassen",
+          "data": {
+            "scan_interval": "Hauptabfrageintervall (Sekunden)",
+            "diagnostics_interval": "Diagnose-Abfrageintervall (Sekunden)",
+            "battery_module_count": "Anzahl Batteriemodule",
+            "enable_cell_voltages": "Zellspannungs-Entitäten aktivieren"
+          }
+        }
       }
     }
-  }
-}  
   },
   "entity": {
     "sensor": {
@@ -77,6 +77,17 @@
       },
       "cell_voltage_spread": {
         "name": "Zellspannungsdifferenz"
+      },
+      "cell_voltage_spread_status": {
+        "name": "Status Zellspannungsdifferenz",
+        "state": {
+          "normal": "Normal",
+          "observe": "Beobachten",
+          "critical": "Kritisch",
+          "low_soc": "Niedriger Ladezustand",
+          "under_load": "Unter Last",
+          "not_evaluable": "Nicht bewertbar"
+        }
       },
       "battery_min_cell_temperature": {
         "name": "Min. Zelltemperatur"

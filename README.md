@@ -80,21 +80,62 @@ The cell entities are still created by the integration and remain available for 
 
 ## 🟢 Status logic
 
-| Status | Meaning |
-|---|---|
-| 🟢 Green | System OK |
-| 🟡 Yellow | Warning condition detected |
-| 🔴 Red | Critical fault or alarm |
+⚠️ Cell voltage spread (ΔU / ΔV) interpretation
 
-### Moduldiagnose (ΔU / ΔV)
+The cell voltage spread (ΔU / ΔV) is one of the key indicators used by this integration to assess battery health.
 
-| Spread | Interpretation |
-|---|---|
-| < 0.02 V | 🟢 uncritical |
-| 0.02 – 0.05 V | 🟡 observe |
-| > 0.05 V | 🔴 critical |
+However, it is important to understand the following:
 
-These thresholds are also used visually in the example dashboard for the per-module spread cards.
+❗ Not an official manufacturer metric
+
+The thresholds used in this integration:
+
+Spread	Interpretation
+< 0.02 V	uncritical
+0.02 – 0.05 V	observe
+> 0.05 V	critical
+
+are engineering heuristics based on general lithium-ion battery behavior.
+
+👉 They are NOT official thresholds from FENECON or any other manufacturer.
+
+⚡ Strongly dependent on operating conditions
+
+The spread between cell voltages is not constant and varies depending on system conditions.
+
+Higher spread values can be completely normal during:
+
+low state of charge (SOC)
+charging phases
+high load / discharge currents
+transient system behavior
+
+In particular:
+
+A higher ΔU at low SOC does not necessarily indicate a battery defect.
+
+🧠 Context-aware evaluation in this integration
+
+To avoid false interpretations, this integration evaluates ΔU with context:
+
+low SOC → separate status (low_soc)
+high current → separate status (under_load)
+missing context → not_evaluable
+
+This helps prevent false "critical" indications under normal operating conditions.
+
+📊 Recommendation for users
+Do not evaluate ΔU based on a single measurement
+Observe trends over time
+Compare behavior at similar SOC levels
+Use manufacturer tools for final diagnosis if needed
+🚫 Important disclaimer
+
+This integration is intended as a diagnostic aid.
+
+It does not replace manufacturer diagnostics or official support.
+
+If you suspect a real issue with your system, always consult the official FENECON service.
 
 ---
 

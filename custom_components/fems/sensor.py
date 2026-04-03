@@ -161,6 +161,17 @@ def _battery_cell_voltage_spread(
 
     return round(max_voltage - min_voltage, 3)
 
+def _battery_cell_voltage_spread_status(
+    coordinator: Any,
+) -> str | None:
+    """Return evaluated status of battery cell voltage spread."""
+
+    spread = _battery_cell_voltage_spread(coordinator)
+
+    soc = _scaled_rest_value(coordinator, "battery0/Soc", 1, 1)
+    current = _scaled_rest_value(coordinator, "battery0/Current", 10, 1)
+
+    return _evaluate_spread(spread, soc, current)
 
 BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
     FemsSensorDescription(
@@ -266,6 +277,13 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=_battery_cell_voltage_spread,
+        available_fn=_rest_available,
+    ),
+    FemsSensorDescription(
+        key="cell_voltage_spread_status",
+        translation_key="cell_voltage_spread_status",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=_battery_cell_voltage_spread_status,
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
@@ -746,6 +764,35 @@ def _build_module_spread_sensors(module_count: int) -> list[FemsSensorDescriptio
 
     return sensors
 
+def _evaluate_spread(
+    spread: float | None,
+    soc: float | None,
+    current: float | None,
+) -> str | None:
+    """Evaluate cell voltage spread with context awareness."""
+
+    if spread is None:
+        return None
+
+    # Schutz: keine Bewertung ohne Kontext
+    if soc is None or current is None:
+        return "not_evaluable"
+
+    # Kontext: niedriger SOC
+    if soc < 20:
+        return "low_soc"
+
+    # Kontext: hoher Strom
+    if abs(current) > 5:
+        return "under_load"
+
+    # Normale Bewertung
+    if spread < 0.02:
+        return "normal"
+    if spread <= 0.05:
+        return "observe"
+
+    return "critical"
 
 def _build_cell_voltage_sensors(
     module_count: int,
