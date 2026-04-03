@@ -3,6 +3,9 @@ name: HACS
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
+permissions: {}
 
 jobs:
   hacs:
