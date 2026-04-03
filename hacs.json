@@ -1,6 +1,7 @@
 {
   "name": "FEMS Diagnostics",
   "category": "integration",
+  "domains": ["fems"],
   "country": "DE",
   "homeassistant": "2025.1.0",
   "render_readme": true
