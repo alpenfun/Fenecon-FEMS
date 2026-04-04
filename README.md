@@ -1,11 +1,16 @@
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/logo.png" width="300">
+  <img src="https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/logo.png" width="260" alt="FEMS Diagnostics logo">
 </p>
 
 <h1 align="center">FEMS Diagnostics</h1>
+
 <p align="center">
-  Advanced battery and system diagnostics for Home Assistant
+  Advanced diagnostics and monitoring for FEMS-based energy systems in Home Assistant
+</p>
+
+<p align="center">
+  REST + Modbus integration • Battery health • Diagnostics dashboard
 </p>
 
 
