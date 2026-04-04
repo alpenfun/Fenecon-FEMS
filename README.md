@@ -13,6 +13,19 @@
   REST + Modbus integration • Battery health • Diagnostics dashboard
 </p>
 
+---
+
+## 🇬🇧 English
+
+*(This section provides a quick overview for international users.)*
+
+---
+
+## 🇩🇪 Deutsch
+
+*(Dieser Abschnitt richtet sich an deutschsprachige Nutzer.)*
+
+---
 
 # 🔋 FEMS Diagnostics for Home Assistant
 
