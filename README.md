@@ -332,4 +332,6 @@ Feedback, issues, and pull requests are welcome.
 
 ## 📜 License
 
-MIT License
+This project is licensed under the MIT License.
+
+(Deutsch: Dieses Projekt steht unter der MIT-Lizenz – eine sehr freie Open-Source-Lizenz.)
