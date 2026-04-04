@@ -53,7 +53,7 @@ The goal is to help detect battery issues early instead of only showing general 
 
 ## 🖼️ Example dashboard
 
-![FEMS Diagnostics Dashboard](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/dashboard.jpg)
+![FEMS Diagnostics Dashboard](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/dashboard.png)
 
 A ready-to-use example dashboard YAML is included here:
 
@@ -177,7 +177,7 @@ See the official HACS documentation.
 
 ### 2. Add this repository as a custom repository in HACS
 
-![Installation über HACS](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/hacs_installation.jpg)
+![Installation über HACS](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/hacs_installation.png)
 
 Use this repository URL:
 
@@ -193,13 +193,13 @@ Integration
 
 ### 3. Search for the integration in HACS and install it
 
-![FEMS Integration in HACS suchen](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/hacs_search.jpg)
+![FEMS Integration in HACS suchen](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/hacs_search.png)
 
 ### 4. Restart Home Assistant
 
 ### 5. Add the integration in Home Assistant
 
-![FEMS einrichten](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/config_flow.jpg)
+![FEMS einrichten](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/config_flow.png)
 
 Required setup values:
 - REST host
