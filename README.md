@@ -6,7 +6,23 @@
 <h1 align="center">FEMS Diagnostics</h1>
 
 <p align="center">
-  Advanced diagnostics and monitoring for FEMS-based energy systems in Home Assistant
+  Advanced diagnostics, battery health monitoring, and system visibility for FEMS in Home Assistant
+</p>
+
+<p align="center">
+  <a href="https://github.com/alpenfun/fems-diagnostics/releases">
+    <img src="https://img.shields.io/github/v/release/alpenfun/fems-diagnostics" alt="Latest release">
+  </a>
+  <a href="https://github.com/alpenfun/fems-diagnostics/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/alpenfun/fems-diagnostics" alt="License">
+  </a>
+  <a href="https://github.com/alpenfun/fems-diagnostics/issues">
+    <img src="https://img.shields.io/github/issues/alpenfun/fems-diagnostics" alt="Issues">
+  </a>
+  <a href="https://github.com/alpenfun/fems-diagnostics/stargazers">
+    <img src="https://img.shields.io/github/stars/alpenfun/fems-diagnostics" alt="Stars">
+  </a>
+  <img src="https://img.shields.io/badge/HACS-Custom-orange.svg" alt="HACS">
 </p>
 
 <p align="center">
@@ -15,15 +31,27 @@
 
 ---
 
-## 🇬🇧 English
+## 🇩🇪 Deutsche Zusammenfassung
 
-*(This section provides a quick overview for international users.)*
+**FEMS Diagnostics** ist eine inoffizielle Home Assistant Integration für die Diagnose und Überwachung von FEMS-basierten Energiesystemen.
+
+### 🔧 Funktionen
+- REST + Modbus Integration
+- Batterie-Zustandsüberwachung
+- Diagnose von Fehlern und Warnungen
+- Spezielles Diagnose-Dashboard
+
+### 📥 Installation (Kurzfassung)
+1. HACS installieren
+2. Repository hinzufügen:
+   https://github.com/alpenfun/fems-diagnostics
+3. Integration installieren und Home Assistant neu starten
+
+👉 Eine vollständige Dokumentation ist im englischen Abschnitt enthalten.
 
 ---
 
-## 🇩🇪 Deutsch
-
-*(Dieser Abschnitt richtet sich an deutschsprachige Nutzer.)*
+## 🇬🇧 English
 
 ---
 
@@ -73,13 +101,15 @@ The goal is to help detect battery issues early instead of only showing general 
 
 ![FEMS Diagnostics Dashboard](https://raw.githubusercontent.com/alpenfun/fems-diagnostics/main/docs/images/dashboard.png)
 
-A ready-to-use example dashboard YAML is included here:
+A ready-to-use example dashboard YAML is included in this repository:
 
 ```text
 docs/dashboard/dashboard.yaml
 ```
 
-It is based on your current diagnostic layout and uses the provided entity names. The example dashboard file included in the repository reflects the current proposed standard dashboard.
+It is based on the current diagnostic layout and uses the entity names provided by the integration.
+
+The included example dashboard reflects the current recommended standard layout for diagnostics-focused daily use.
 
 ---
 
@@ -334,11 +364,104 @@ manifest.json
 ```
 
 This README assumes the following documentation files exist:
-- `docs/images/dashboard.jpg`
-- `docs/images/hacs_installation.jpg`
-- `docs/images/hacs_search.jpg`
-- `docs/images/config_flow.jpg`
+- `docs/images/dashboard.png`
+- `docs/images/hacs_installation.png`
+- `docs/images/hacs_search.png`
+- `docs/images/config_flow.png`
 - `docs/dashboard/dashboard.yaml`
+
+---
+
+## 🚧 Troubleshooting
+
+If something is not working as expected, check the following first:
+
+### 🔌 No data or sensors unavailable
+- verify REST host and port
+- verify Modbus host, port, and slave ID
+- check credentials
+
+### ⏳ Slow initialization
+- initial startup can take longer due to REST requests
+- large systems (many modules) create many entities
+
+### ⚠️ Missing or incorrect values
+- verify battery module count
+- check if your system matches the configured setup
+
+### 🔄 Integration not updating
+- check Home Assistant logs
+- verify network connectivity to the FEMS system
+
+Most issues are caused by configuration mismatches or connectivity problems.
+
+---
+
+## 🛠️ Support and diagnostics
+
+If you encounter issues with the integration, please follow these steps before opening an issue:
+
+### 🔍 1. Check Home Assistant logs
+
+Look for entries related to:
+
+```text
+custom_components.fems
+```
+
+Common indicators:
+
+- connection issues (REST / Modbus)
+- authentication problems
+- timeout warnings
+
+### 📊 2. Use integration diagnostics
+
+This integration provides a built-in diagnostics function.
+
+You can download diagnostics data via:
+
+Home Assistant → Settings → Devices & Services → FEMS → Download diagnostics
+
+The diagnostics include:
+
+- sanitized configuration (no passwords)
+- update status and timing
+- REST and Modbus data snapshots
+
+👉 This information is extremely helpful for debugging.
+
+### 🧪 3. Verify system basics
+
+Before reporting a bug, please ensure:
+
+- REST endpoint is reachable
+- Modbus connection is working
+- credentials are correct
+- battery module count matches your system
+
+### 🐞 4. Open an issue
+
+If the problem persists, please open an issue on GitHub.
+
+Include:
+
+- a clear description of the problem
+- steps to reproduce
+- relevant log excerpts
+- diagnostics file (if possible)
+
+👉 Please use the provided issue templates.
+
+### 💡 Tip
+
+Most issues are related to:
+
+- incorrect endpoints or ports
+- Modbus connectivity
+- mismatched module configuration
+
+Checking these first usually resolves the problem quickly.
 
 ---
 
