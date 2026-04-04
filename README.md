@@ -47,13 +47,11 @@
    https://github.com/alpenfun/fems-diagnostics
 3. Integration installieren und Home Assistant neu starten
 
-👉 Eine vollständige Dokumentation ist im englischen Abschnitt enthalten.
+👉 Die vollständige Dokumentation befindet sich im englischen Hauptteil dieses README.
 
 ---
 
 ## 🇬🇧 English
-
----
 
 # 🔋 FEMS Diagnostics for Home Assistant
 
