@@ -13,9 +13,9 @@
   <a href="https://github.com/alpenfun/fems-diagnostics/releases">
     <img src="https://img.shields.io/github/v/release/alpenfun/fems-diagnostics" alt="Latest release">
   </a>
-  <a href="https://github.com/alpenfun/fems-diagnostics/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/alpenfun/fems-diagnostics" alt="License">
-  </a>
+<a href="https://github.com/alpenfun/fems-diagnostics/blob/main/LICENSE">
+  <img src="https://img.shields.io/github/license/alpenfun/fems-diagnostics?cacheSeconds=300" alt="License">
+</a>
   <a href="https://github.com/alpenfun/fems-diagnostics/issues">
     <img src="https://img.shields.io/github/issues/alpenfun/fems-diagnostics" alt="Issues">
   </a>
