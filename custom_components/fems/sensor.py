@@ -335,7 +335,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda c: _rest_value(c, "battery0/Tower0MinTemperature"),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MinTemperature", 10, 1),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
@@ -345,7 +345,7 @@ BASE_SENSORS: tuple[FemsSensorDescription, ...] = (
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
         entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda c: _rest_value(c, "battery0/Tower0MaxTemperature"),
+        value_fn=lambda c: _scaled_rest_value(c, "battery0/Tower0MaxTemperature", 10, 1),
         available_fn=_rest_available,
     ),
     FemsSensorDescription(
