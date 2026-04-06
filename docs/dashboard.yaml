@@ -111,6 +111,16 @@ views:
                 secondary: "{{ states('sensor.energy_management_batterieleistung') }} W"
                 icon: mdi:flash
                 fill_container: true
+              - type: custom:mushroom-template-card
+                entity: sensor.battery_ladezustand
+                primary: SoC
+                secondary: "{{ states('sensor.battery_ladezustand') }} %"
+                icon: mdi:battery
+                fill_container: true
+                icon_color: >-
+                  {% set soc = states('sensor.battery_ladezustand') | float(0)
+                  %} {% if soc > 60 %} green {% elif soc > 30 %} amber {% else
+                  %} red {% endif %}
           - type: grid
             square: false
             columns: 2
