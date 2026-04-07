@@ -859,7 +859,7 @@ async def async_setup_entry(
         diagnostics_descriptions.extend(
             _build_cell_voltage_sensors(
                 module_count=module_count,
-                enabled_default=True,
+                enabled_default=False,
             )
         )
 
