@@ -301,6 +301,9 @@ The provided dashboard view is currently named **FEMS Diagnostics** and includes
 
 ## 📡 Sensors and diagnostics
 
+For a detailed explanation of all sensors and diagnostic values, see:
+👉 [Sensors and Diagnostics Guide](docs/sensors_and_diagnostics.md)
+
 The integration provides, among other things:
 
 ### Battery
