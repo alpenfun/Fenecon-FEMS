@@ -8,7 +8,7 @@ It is intended to help users understand system behavior, interpret values correc
 > All values should be interpreted in context. Individual readings can vary depending on load, temperature, system configuration, and operating state.
 
 For installation, setup, and general usage, see the main project documentation:
-👉 [README](../README.md)
+👉 [README](./README.md)
 
 ---
 
