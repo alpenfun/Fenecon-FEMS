@@ -275,9 +275,71 @@ The integration creates six logical devices:
 
 ## ⚙️ Configuration notes
 
-During setup, the battery module count can be configured from **1 to 10**, with **7 modules** as the default. This controls how many module spread and cell sensors are created. The integration constants define that range and default explicitly.
+During setup, the battery module count can be configured from **1 to 10**.  
+This setting controls how many module spread and cell sensors are created.
+
+> ⚠️ The current default value is a technical placeholder and must be adjusted to match the real system.
 
 If the configured module count does not match the real system, diagnostic values may become misleading.
+
+---
+
+## 🛠️ Configuration options
+
+The integration provides a small set of runtime options to balance update speed, diagnostic depth, and entity count.
+
+### `scan_interval`
+Controls how often the main sensor data is updated.
+
+- Lower value = faster updates
+- Higher value = lower system load
+
+**Recommended default:** `30` seconds
+
+Use a lower value only if you need faster updates in daily operation.
+
+### `diagnostics_interval`
+Controls how often health and diagnostic values are refreshed.
+
+- Lower value = faster diagnostic updates
+- Higher value = lower system load
+
+**Recommended default:** `60` seconds
+
+In most setups, diagnostics do not need to update as often as general power and status values.
+
+### `battery_module_count`
+Defines how many battery modules are installed in your system.
+
+**Important:** This value must match your real physical battery configuration.
+
+> ⚠️ This setting has a direct impact on sensor creation and diagnostic accuracy.
+
+If the value is incorrect:
+- expected sensors may be missing
+- additional sensors may appear that do not exist
+- diagnostic values may become misleading
+
+**Default value:** `7` (placeholder only)
+
+The default does not represent a recommended system size.
+
+Typical real-world examples:
+- 3 modules → small system (~6–7 kWh)
+- 5 modules → common residential setup (~10 kWh)
+- 7+ modules → larger systems
+
+Always configure this value according to your actual installation.
+
+### `enable_cell_voltages`
+Enables creation of individual cell voltage entities.
+
+- Enabled = maximum detail
+- Disabled = fewer entities and lower overhead
+
+**Recommended default:** `True`
+
+Disable this option if you want to reduce the number of entities or keep the setup simpler.
 
 ---
 
