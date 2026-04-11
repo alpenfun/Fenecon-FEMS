@@ -10,7 +10,7 @@
           "modbus_host": "Modbus host (usually same as REST host)",
           "modbus_port": "Modbus port (default: 502)",
           "modbus_slave": "Modbus slave (default: 1)",
-          "battery_module_count": "Battery modules",
+          "battery_module_count": "Battery module count (must match the real system)",
           "username": "Username (default: x)",
           "password": "Password (default: user)"
         }
@@ -29,10 +29,10 @@
         "title": "FEMS Diagnostics options",
         "description": "Adjust runtime settings for FEMS Diagnostics",
         "data": {
-          "scan_interval": "Main polling interval (seconds)",
-          "diagnostics_interval": "Diagnostics polling interval (seconds)",
-          "battery_module_count": "Battery modules",
-          "enable_cell_voltages": "Enable cell voltage entities"
+          "scan_interval": "Main polling interval in seconds (general sensor updates)",
+          "diagnostics_interval": "Diagnostics polling interval in seconds (health and diagnostic values)",
+          "battery_module_count": "Battery module count (must match the real system)",
+          "enable_cell_voltages": "Enable individual cell voltage entities (more detail, more entities)"
         }
       }
     }

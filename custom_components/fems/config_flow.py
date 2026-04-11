@@ -18,38 +18,35 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
     CONF_BATTERY_MODULE_COUNT,
+    CONF_DIAGNOSTICS_INTERVAL,
+    CONF_ENABLE_CELL_VOLTAGES,
     CONF_MODBUS_HOST,
     CONF_MODBUS_PORT,
     CONF_MODBUS_SLAVE,
     CONF_PASSWORD,
     CONF_REST_HOST,
     CONF_REST_PORT,
+    CONF_SCAN_INTERVAL,
     CONF_USERNAME,
     DEFAULT_BATTERY_MODULE_COUNT,
+    DEFAULT_DIAGNOSTICS_INTERVAL,
+    DEFAULT_ENABLE_CELL_VOLTAGES,
     DEFAULT_MODBUS_PORT,
     DEFAULT_MODBUS_SLAVE,
     DEFAULT_REST_PORT,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAX_BATTERY_MODULE_COUNT,
+    MAX_DIAGNOSTICS_INTERVAL,
+    MAX_SCAN_INTERVAL,
     MIN_BATTERY_MODULE_COUNT,
+    MIN_DIAGNOSTICS_INTERVAL,
+    MIN_SCAN_INTERVAL,
     MODBUS_TIMEOUT,
     REST_TIMEOUT,
 )
 
 _LOGGER = logging.getLogger(__name__)
-
-# Options keys
-CONF_SCAN_INTERVAL = "scan_interval"
-CONF_DIAGNOSTICS_INTERVAL = "diagnostics_interval"
-CONF_ENABLE_CELL_VOLTAGES = "enable_cell_voltages"
-
-# Options defaults
-DEFAULT_SCAN_INTERVAL = 30
-DEFAULT_DIAGNOSTICS_INTERVAL = 60
-DEFAULT_ENABLE_CELL_VOLTAGES = True
-
-MIN_SCAN_INTERVAL = 5
-MAX_SCAN_INTERVAL = 3600
 
 
 class CannotConnect(Exception):
@@ -345,7 +342,10 @@ class FemsOptionsFlow(config_entries.OptionsFlow):
                     default=current_diagnostics_interval,
                 ): vol.All(
                     vol.Coerce(int),
-                    vol.Range(min=MIN_SCAN_INTERVAL, max=MAX_SCAN_INTERVAL),
+                    vol.Range(
+                        min=MIN_DIAGNOSTICS_INTERVAL,
+                        max=MAX_DIAGNOSTICS_INTERVAL,
+                    ),
                 ),
                 vol.Required(
                     CONF_BATTERY_MODULE_COUNT,
