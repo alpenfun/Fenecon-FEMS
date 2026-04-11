@@ -38,19 +38,6 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-# Options keys
-CONF_SCAN_INTERVAL = "scan_interval"
-CONF_DIAGNOSTICS_INTERVAL = "diagnostics_interval"
-CONF_ENABLE_CELL_VOLTAGES = "enable_cell_voltages"
-
-# Options defaults
-DEFAULT_SCAN_INTERVAL = 30
-DEFAULT_DIAGNOSTICS_INTERVAL = 60
-DEFAULT_ENABLE_CELL_VOLTAGES = True
-
-MIN_SCAN_INTERVAL = 5
-MAX_SCAN_INTERVAL = 3600
-
 
 class CannotConnect(Exception):
     """Error to indicate we cannot connect."""
@@ -345,7 +332,10 @@ class FemsOptionsFlow(config_entries.OptionsFlow):
                     default=current_diagnostics_interval,
                 ): vol.All(
                     vol.Coerce(int),
-                    vol.Range(min=MIN_SCAN_INTERVAL, max=MAX_SCAN_INTERVAL),
+                    vol.Range(
+                        min=MIN_DIAGNOSTICS_INTERVAL,
+                        max=MAX_DIAGNOSTICS_INTERVAL,
+                    ),
                 ),
                 vol.Required(
                     CONF_BATTERY_MODULE_COUNT,
