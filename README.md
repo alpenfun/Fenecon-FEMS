@@ -359,6 +359,10 @@ docs/dashboard.yaml
 
 The provided dashboard view is currently named **FEMS Diagnostics** and includes status badges, KPI cards, module spread cards, compact health information, critical diagnostics, warnings, phase values, and energy counters.
 
+For a step-by-step setup and customization guide, see:
+
+👉 [Dashboard Setup and Customization Guide](./docs/dashboard_guide.md)
+
 ---
 
 ## 📡 Sensors and diagnostics
