@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="./images/logo.png" width="220" alt="FEMS Diagnostics logo">
+</p>
+
+---
+
 # Dashboard Setup and Customization Guide
 
 This guide explains how to use and adapt the example dashboard included in this repository.
@@ -17,23 +23,36 @@ The example dashboard file is located at:
 docs/dashboard.yaml
 ```
 
+---
+
 ## 1. Import or copy the dashboard YAML
 
 1. Open Home Assistant.
 2. Open the dashboard you want to use.
-3. Create a new view or edit an existing one.  
-   See: `docs/images/add_new_Dashboard_-_raw-Konfigurationseditor.png`
+3. Create a new view or edit an existing one.
+
+<p align="center">
+  <img src="./images/add_new_Dashboad_-_raw-Konfigurationseditor.png" width="700" alt="Open raw dashboard configuration editor">
+</p>
 
 4. Switch to YAML mode if required.
 5. Open the file `docs/dashboard.yaml` from this repository.
-6. Copy the YAML content.  
-   See: `docs/images/copy_dashboard_yaml_Code.png`
+6. Copy the YAML content.
+
+<p align="center">
+  <img src="./images/copy_dashboard_yaml_Code.png" width="700" alt="Copy dashboard YAML">
+</p>
 
 7. Paste it into your dashboard or view configuration.
-8. Save the dashboard.  
-   Example result: `docs/images/dashboard.png`
+8. Save the dashboard.
+
+<p align="center">
+  <img src="./images/dashboard.png" width="700" alt="Example dashboard">
+</p>
 
 If the dashboard does not render correctly, first verify that all required custom cards (Mushroom Cards, button-card) are installed.
+
+---
 
 ## 2. Adapt entity names
 
@@ -59,6 +78,8 @@ To adapt the dashboard:
 In most cases, only the entity IDs need to be changed.  
 The visible card labels can usually remain unchanged.
 
+---
+
 ## 3. Adjust the dashboard to your battery configuration
 
 The example dashboard currently includes module cards from `M0` to `M6`.
@@ -74,6 +95,8 @@ Examples:
 
 If the configured `battery_module_count` does not match the real system, some entities may be missing or unavailable.
 
+---
+
 ## 4. Optional sensors and detail level
 
 The example dashboard is intentionally designed as a compact diagnostics view.
@@ -88,6 +111,8 @@ Why:
 If `enable_cell_voltages` is enabled, the additional cell voltage entities are available in Home Assistant and can be added manually to custom views.
 
 If `enable_cell_voltages` is disabled, these detailed entities will not exist.
+
+---
 
 ## 5. Recommended first customization steps
 
