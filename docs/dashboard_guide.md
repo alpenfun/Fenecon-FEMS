@@ -32,7 +32,7 @@ docs/dashboard.yaml
 3. Create a new view or edit an existing one.
 
 <p align="center">
-  <img src="./images/add_new_Dashboad_-_raw-Konfigurationseditor.png" width="700" alt="Open raw dashboard configuration editor">
+  <img src="./images/add_new_Dashboard_-_raw-Konfigurationseditor.png" width="700" alt="Open raw dashboard configuration editor">
 </p>
 
 4. Switch to YAML mode if required.
