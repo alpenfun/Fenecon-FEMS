@@ -352,7 +352,7 @@ To use the included example dashboard:
 3. Copy the content of:
 
 ```text
-docs/dashboard/dashboard.yaml
+docs/dashboard.yaml
 ```
 
 4. Paste it into your dashboard / view configuration
