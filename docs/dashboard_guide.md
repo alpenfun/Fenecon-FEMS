@@ -21,12 +21,17 @@ docs/dashboard.yaml
 
 1. Open Home Assistant.
 2. Open the dashboard you want to use.
-3. Create a new view or edit an existing one.
+3. Create a new view or edit an existing one.  
+   See: `docs/images/add_new_Dashboard_-_raw-Konfigurationseditor.png`
+
 4. Switch to YAML mode if required.
 5. Open the file `docs/dashboard.yaml` from this repository.
-6. Copy the YAML content.
+6. Copy the YAML content.  
+   See: `docs/images/copy_dashboard_yaml_Code.png`
+
 7. Paste it into your dashboard or view configuration.
-8. Save the dashboard.
+8. Save the dashboard.  
+   Example result: `docs/images/dashboard.png`
 
 If the dashboard does not render correctly, first verify that all required custom cards (Mushroom Cards, button-card) are installed.
 
