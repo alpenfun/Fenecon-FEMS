@@ -102,7 +102,7 @@ The goal is to help detect battery issues early instead of only showing general 
 A ready-to-use example dashboard YAML is included in this repository:
 
 ```text
-docs/dashboard/dashboard.yaml
+docs/dashboard.yaml
 ```
 
 It is based on the current diagnostic layout and uses the entity names provided by the integration.
@@ -432,7 +432,7 @@ This README assumes the following documentation files exist:
 - `docs/images/hacs_installation.png`
 - `docs/images/hacs_search.png`
 - `docs/images/config_flow.png`
-- `docs/dashboard/dashboard.yaml`
+- `docs/dashboard.yaml`
 
 ---
 
